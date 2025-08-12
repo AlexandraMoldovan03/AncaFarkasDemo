@@ -1,0 +1,29 @@
+<form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+  <!-- Câmp ascuns pentru spam -->
+  <input type="hidden" name="form-name" value="contact">
+  <p style="display:none;">
+    <label>Nu completa: <input name="bot-field"></label>
+  </p>
+  
+  <p>
+    <label>Nume:<br>
+      <input type="text" name="name" required>
+    </label>
+  </p>
+  
+  <p>
+    <label>E-mail:<br>
+      <input type="email" name="email" required>
+    </label>
+  </p>
+  
+  <p>
+    <label>Mesaj:<br>
+      <textarea name="message" rows="5" required></textarea>
+    </label>
+  </p>
+  
+  <p>
+    <button type="submit">Trimite</button>
+  </p>
+</form>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Register</title>
+</head>
+<body>
+  <h1>Login / Register</h1>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Parolă"><br>
+  <button onclick="registerUser()">Înregistrare</button>
+  <button onclick="loginUser()">Logare</button>
+
+  <script type="module">
+    import { registerUser, loginUser } from './auth.js';
+    window.registerUser = registerUser;
+    window.loginUser = loginUser;
+  </script>
+
+
+
+<button id="buyButton1">Cumpără cursul 1</button>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const supabase = createClient(
+    'https://gxavdytkcukxnvonasur.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8' 
+  );
+
+  document.getElementById("buyButton1").addEventListener("click", async () => {
+    // 1️⃣ Verificăm dacă utilizatorul e autentificat
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Trebuie să fii autentificat pentru a cumpăra un curs!");
+      window.location.href = "/auth.html";
+      return;
+    }
+
+    // 2️⃣ Trimitem cererea către backend pentru creare sesiune Stripe
+    const response = await fetch("http://localhost:3000/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        itemId: 1,
+        userEmail: user.email
+      })
+    });
+
+    const data = await response.json();
+
+    // 3️⃣ Redirecționăm către Stripe Checkout
+    window.location.href = data.url;
+  });
+</script>
+
+  <script src="checkout.js"></script>
+</body>
+</html>

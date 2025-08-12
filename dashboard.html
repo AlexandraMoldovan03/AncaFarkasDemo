@@ -1,0 +1,62 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Utilizator</title>
+</head>
+<body>
+  <h1>Bun venit în dashboard!</h1>
+  <p id="user-email"></p>
+
+  <h2>Cursurile tale:</h2>
+  <ul id="courseList"></ul>
+
+  <button onclick="logout()">Deconectare</button>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const supabase = createClient(
+      'https://gxavdytkcukxnvonasur.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
+    );
+
+    // 1️⃣ Verificăm autentificarea
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Trebuie să fii autentificat!");
+      window.location.href = "/auth.html";
+    } else {
+      document.getElementById("user-email").textContent = `Email: ${user.email}`;
+    }
+
+    // 2️⃣ Cerem lista de achiziții
+    const { data: achizitii, error } = await supabase
+      .from('achizitii')
+      .select('*')
+      .eq('email', user.email);
+
+    const courseList = document.getElementById('courseList');
+
+    if (error) {
+      courseList.innerHTML = `<li>Eroare: ${error.message}</li>`;
+    } else if (achizitii.length === 0) {
+      courseList.innerHTML = `<li>Nu ai achiziționat niciun curs.</li>`;
+    } else {
+      achizitii.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `Curs: ${item.stripe_session_id} - Status: ${item.status}`;
+        courseList.appendChild(li);
+      });
+    }
+
+    // 3️⃣ Logout
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "/auth.html";
+    }
+  </script>
+</body>
+</html>

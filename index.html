@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta name="keywords" content="Farkas Anca, Coach, Profesor, Educație, Dezvoltare personală, Copii, Parenting">
+    <meta name="description" content="Farkas Anca, Life Coach și Profesor cu peste 15 ani de experiență. Ofer sesiuni de coaching și sfaturi educaționale pentru copii și adulți.">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farkas-Rusu Anca</title>
+    <link rel="stylesheet" href="src/style.css">
+    <script src="src/script.js"></script>
+    <script src="script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Bootstrap JS (pentru funcționalitate JavaScript) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("Pagina s-a încărcat și JavaScript-ul funcționează!");
+  
+        let testimonials = document.querySelectorAll(".testimonial");
+        let index = 0;
+  
+        function showTestimonial(n) {
+            testimonials.forEach((test, i) => {
+                test.style.display = i === n ? "block" : "none";
+            });
+        }
+  
+        document.getElementById("prevBtn").addEventListener("click", function () {
+            index = (index - 1 + testimonials.length) % testimonials.length;
+            showTestimonial(index);
+        });
+  
+        document.getElementById("nextBtn").addEventListener("click", function () {
+            index = (index + 1) % testimonials.length;
+            showTestimonial(index);
+        });
+  
+        showTestimonial(index);
+    });
+</script>
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript"></script>
+
+
+<body>
+    <!-- Header cu Bootstrap -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="logo1.jpg" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                    <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
+                  </a>
+                  
+
+                <!-- Buton Hamburger -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Meniu Navbar -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">Despre Mine</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#services">Servicii</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="auth.html">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero-section-custom">
+        <div class="container d-flex flex-column flex-lg-row align-items-center justify-content-center py-5">
+      
+          <!-- Poză profil (în stânga) -->
+          <div class="profile-img-wrapper text-center mb-4 mb-lg-0">
+            <img src="Mai.jpg" alt="Farkas Rusu Anca" class="profile-img">
+          </div>
+      
+          <!-- Conținutul din dreapta (logo + text) -->
+          <div class="text-content text-center text-lg-start ps-lg-5 d-flex flex-column align-items-center align-items-lg-start">
+      
+            <br>
+            <!-- Logo deasupra textului
+            <div class="mb-4 text-center">
+              <img src="logo1.jpg" alt="Education with Style" class="logo-style">
+            </div> -->
+      
+            <!-- Textul sub logo -->
+            <h1 class="mb-3">Misiunea mea ca Mamă, Profesor și LifeCoach</h1>
+            <p class="mb-4">Creștem împreună prin educație și dezvoltare personală.</p>
+            <!-- <div class="d-flex flex-column flex-md-row gap-3">
+                <a href="https://calendly.com/anka-rusu26" target="_blank" class="cta-button">
+                  <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i> Rezervă o întâlnire
+                </a>
+                <a href="https://wa.me/40767283598" target="_blank" class="cta-button" style="background-color: #25D366;">
+                  <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Scrie-mi pe WhatsApp
+                </a>
+              </div>
+               -->
+            <div class="d-flex flex-column flex-md-row gap-3">
+                <a href="https://calendly.com/anka-rusu26" target="_blank" class="cta-button">
+                <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i> Rezervă o întâlnire
+                </a>
+                <a href="https://wa.me/40767283598" target="_blank" class="cta-button" style="background-color: #25D366;">
+                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Scrie-mi pe WhatsApp
+                </a>
+                <a href="auth.html" class="cta-button" style="background-color: #343a40; color: white;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Login / Autentificare
+                </a>
+            </div>
+
+
+                
+              </a>
+              
+      
+          </div>
+      
+        </div>
+      </section>
+          
+      
+      
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container about-container">
+            <div class="about-text">
+                <h2>🌟 Cine sunt eu?</h2>
+                <p class="intro-text">
+                    👋 <strong>Bine ai venit!</strong> Sunt <strong>Prof & Coach Anca</strong>, mamă, profesor și coach. 
+                    Prin viziunea mea, <span class="highlight">„Educație cu Stil”</span>, îmi propun să aduc <b>inspirație, claritate și dezvoltare autentică</b> 
+                    în viața celor care își doresc să învețe cu <b>pasiune și bucurie</b>!
+                </p>
+            </div>
+            <div class="about-image">
+                <img src="portretFata.jpg" alt="Prof & Coach Anca">
+            </div>
+        </div>
+
+        <!-- Secțiunea Personală - Imagine + Text -->
+        <div class="about-personal">
+            <div class="about-image">
+                <img src="portret3.jpg" alt="Anca - Coach & Profesor">
+            </div>
+            <div class="about-text">
+                <h2>💛 Educația este pasiunea mea</h2>
+                <p>
+                    Cred că <b>educația nu este doar teorie</b>, ci o călătorie în care ne descoperim, evoluăm și învățăm să fim mai buni. 
+                    <b>Ca mamă, profesor și coach</b>, am văzut cum fiecare om are un <b>potențial unic</b> și cum sprijinul potrivit poate face diferența.  
+                </p>
+                <p>
+                    De aceea, am creat <b>"Educație cu Stil"</b>, un loc în care părinții, profesorii și copiii pot găsi <b>motivație, strategii și 
+                    inspirație pentru o învățare mai eficientă și mai plăcută</b>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Secțiunea "Ce mă definește?" -->
+        <div class="container">
+            <h3>💡 Ce mă definește?</h3>
+            <ul class="about-list">
+                <li>🔹 <strong>Ca Mamă</strong> – Împărtășesc experiențe despre <span class="highlight">parenting, creștere și educația copilului</span> cu iubire și echilibru.</li>
+                <li>🔹 <strong>Ca Profesor</strong> – Creez <span class="highlight">conținut educațional captivant</span> pentru a face învățarea **mai ușoară și mai plăcută**.</li>
+                <li>🔹 <strong>Ca Coach</strong> – Sprijin <strong>părinți, profesori și copii</strong> să își descopere **potențialul real** și să găsească **motivația interioară**.</li>
+            </ul>
+        </div>
+
+        <!-- Secțiunea "Experiența mea ca Mamă" -->
+        <section id="mama" class="about-mama">
+            <div class="container">
+                <div class="mama-content">
+                    <div class="mama-text">
+                        <h2>👩‍👧‍👦 Experiența mea ca Mamă</h2>
+                        <p>
+                            A fi mamă este una dintre cele mai importante lecții de viață. 
+                            Am învățat să îmbin <b>iubirea, răbdarea și educația</b>, 
+                            oferind sprijin fetiței mele, dar și celorlalți părinți care vor să creeze o legătură autentică cu micuții lor.
+                        </p>
+                        <p>
+                            Educația începe acasă, iar <b>un părinte informat</b> poate fi cel mai bun profesor pentru copilul său.
+                            Prin această experiență, am descoperit <b>metode eficiente de învățare, tehnici de parenting pozitiv și strategii pentru dezvoltarea emoțională a copilului</b>.
+                        </p>
+                    </div>
+                    <div class="mama-image">
+                        <img src="educatieSuflet.jpg" alt="Mamă și copil" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Urmează-mă pentru... -->
+        <div class="container">
+            <h3>💡 Urmează-mă pentru:</h3>
+            <ul class="follow-list">
+                <li>✅ Sfaturi pentru părinți și profesori</li>
+                <li>✅ Metode creative de învățare</li>
+                <li>✅ Motivație și dezvoltare personală</li>
+                <li>✅ Inspirație pentru a face educația un stil de viață</li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <p class="cta-text">
+                🔗 <span class="highlight">Fii parte din comunitatea „Educație cu Stil”!</span> Împreună putem transforma educația într-o experiență frumoasă și valoroasă.
+            </p>
+        </div>
+    </section>
+
+    <!-- Secțiunea "Despre Concept" -->
+    <section id="concept" class="concept">
+        <div class="container">
+            <h2>📚 Despre conceptul „Education with Style”</h2>
+            <p>
+                „Education with Style” este despre educație, dar într-un mod diferit. Este despre a învăța cum să fii mai bun, 
+                nu doar în sala de clasă, ci și în viață. Este un concept care ajută părinții, copiii și profesorii să abordeze 
+                învățătura cu o mentalitate deschisă, inovativă și plină de energie pozitivă. Aici, fiecare lecție devine o 
+                oportunitate de creștere, fiecare întâlnire este o oportunitate de învățare.
+            </p>
+        </div>
+
+        <!-- Realizări importante -->
+        <div class="container">
+            <h3>🏆 Realizări importante</h3>
+            <ul class="about-list">
+                <li>✔ Fondatoarea „Education with Style” – Un concept care îmbină educația clasică și coaching-ul modern.</li>
+                <li>✔ Peste 15 ani de experiență în educație – Am ghidat sute de copii pe drumul lor educațional.</li>
+                <li>✔ Formator de formatori – Certificată pentru a susține formarea profesorilor și educatorilor.</li>
+                <li>✔ Coach certificat – Ofer sesiuni de coaching pentru dezvoltare personală și profesională.</li>
+                <li>✔ Fondatoarea unui mic afterschool – Un spațiu educațional unde copiii învață și se dezvoltă.</li>
+                <li>✔ Creator de conținut educațional – Lecții video, resurse și materiale pentru părinți, profesori și copii.</li>
+            </ul>
+        </div>
+
+        <!-- Viziunea mea -->
+        <div class="container">
+            <h3>🎯 Viziunea mea</h3>
+            <p>
+                Cred că educația este cheia succesului, dar mai presus de toate, educația trebuie să fie cu stil – 
+                o educație care să îmbine cunoștințele cu dezvoltarea personală. Misiunea mea este să ofer un spațiu în care 
+                să înveți cu plăcere, să te dezvolți ca persoană și să atingi succesul într-un mod autentic.
+            </p>
+            <p class="cta-text">
+                🔗 <span class="highlight">Programează o sesiune de coaching</span> sau află mai multe despre „Education with Style” 
+                și cum îți pot sprijini copilul sau cariera profesională. Sunt aici să te ajut să faci pași concreți către un viitor mai bun!
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2>Serviciile Mele</h2>
+        <div class="service-cards">
+            <div class="card">
+                <h3>Coaching Individual (personalizat și adaptat nevoilor fiecărui client)</h3>
+                <p>Sesiuni 1:1 pentru părinți, profesori sau persoane care doresc dezvoltare personală.</p>
+                <p>Plan personalizat de creștere și obiective clare.</p>
+                <p>Sprijin în gestionarea provocărilor educaționale și de viață.</p>
+            </div>
+            <div class="card">
+                <h3>Coaching de Grup (învățare colaborativă și inspirație din experiențele altora)</h3>
+                <p>Workshop-uri și sesiuni tematice interactive.</p>
+                <p>Grupuri de suport pentru părinți și profesori.</p>
+                <p>Comunitate activă pentru schimb de experiențe și soluții.</p>
+            </div>
+            <div class="card">
+                <h3>Învățare cu Suflet – Educație prin Ochii unui Profesor și Părinte</h3>
+                <p>Videoclipuri și postări inspiraționale – Lecții de viață, povești reale și strategii practice.</p>
+                <p>Resurse educaționale pentru părinți și copii – Activități, fișe de lucru, metode de învățare eficientă.</p>
+                <p>Ateliere online – Sesiuni interactive pentru dezvoltare personală și educațională.</p>
+            </div>
+        </div>
+
+<!-- Tarife Sesiuni de Coaching -->
+<div class="tarife-container">
+    <h3>💰 Tarife Sesiuni de Coaching</h3>
+    <ul>
+        <li><strong>Coaching individual adulți:</strong> 250 lei / oră</li>
+        <li><strong>Coaching individual copii:</strong> 200 lei / oră</li>
+        <li><strong>Coaching de grup (maxim 15 persoane):</strong> 150 lei / persoană</li>
+        <li><strong>Workshopuri pentru copii (maxim 10 copii):</strong> 150 lei / copil</li>
+    </ul>
+    <p>📍 <em>Ședințele se pot desfășura fizic sau online (Zoom / WhatsApp).</em></p>
+
+    <!-- Coaching Gratuit pentru Copiii cu Dizabilități -->
+    <div class="coaching-gratuit">
+        <h3>💙 Coaching Gratuit pentru Copiii cu Dizabilități</h3>
+        <p>
+            Cred în <strong>educația cu stil, accesibilă tuturor!</strong> Ofer sesiuni gratuite de coaching pentru copiii cu dizabilități, 
+            ajutându-i să-și dezvolte <b>încrederea, motivația și abilitățile de învățare</b> într-un mod blând și personalizat.  
+        </p>
+        <p><em>Fiecare copil merită șansa de a învăța și de a crește într-un mediu care îl sprijină!</em></p>
+    </div>
+</div>
+
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>🌟 Ce spun clienții mei</h2>
+
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="testimonial">
+                        <p>"O recomand pe Anca cu drag; un profesionist, dar mai ales un OM implicat si dedicat in realizarea obiectivelor personale ale celor care apeleaza la ea. ❤"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Omul potrivit la locul potrivit❤❤❤"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Anca este un om de încredere, profesionista, vesela, are un nivel de pozitivism care, de-a dreptul, se molipsește. Recomand cu mare drag ❤"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Anca dă dovadă de profesionalism, de implicare și de ambiție! 👍"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Pot sa spun faptul ca recomand cu mare placere sedintele de coaching impreuna cu Anca, este de un real ajutor si o profesionista in ceea ce face."</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Mulțumesc,pentru ca m-ai ajutat să-mi deschid ochii,eliberez sufletul și să accept usor lucruri reale care defapt nu sunt atât de negre cum le simțeam și vedeam eu.
+                            Faci o muncă minunată!"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Recomand cu mare încredere!!!! Anca este un om de excepție care da dovada de profesionalism în orice situație. Cu ajutorul și sfaturile ei, fetita mea a reușit sa gestioneze emoțiile și sa devina un copil care are încredere în forțele proprii. Este cea mai implicata persoana pe care o cunosc!❤❤❤"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Recomand cu încredere ședințele de coaching cu Anca!"</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Recomand cu încredere ședințele alături de Anca! Un profesionist dedicat, care știe să te ajute să cauți răspunsul la întrebări pe care nu ști să ți le pui, sau care nu le iei în calcul la momentul potrivit."</p>
+                        <span> </span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Recomand cu încredere!
+                            Profesionalism și încredere și totodata Anca m-a ajutat sa descopăr singura ceea ce am nevoie și ceea ce-mi doresc și cum sa muncesc la asta!
+                            Mulțumesc cu recunoștință Anca!🙏
+                            Mult succes in tot ceea ce faci!😘🤗
+                            "</p>
+                        <span> </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Butoane pentru control manual -->
+            <button id="prevBtn" class="prev">&#10094;</button>
+            <button id="nextBtn" class="next">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>📞 Contact</h2>
+            <p><strong>Telefon:</strong> <a href="tel:+40 767 283 598">+40 767 283 598</a></p>
+            <p><strong>Email:</strong> <a href="mailto:anka.rusu26@yahoo.com">anka.rusu26@yahoo.com</a></p>
+
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61566509236700&locale=ro_RO" target="_blank" class="social-button">
+                    <img src="facebook.jpg" alt="Facebook">
+                </a>
+                <a href="https://www.tiktok.com/@farkasrusuanca" target="_blank" class="social-button">
+                    <img src="tiktok.png" alt="Instagram">
+                </a>
+                <a href="https://www.youtube.com/@Educa%C8%9BieCuStil" target="_blank" class="social-button">
+                    <img src="yt.png" alt="Instagram">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Farkas Rusu Anca. Toate drepturile rezervate.</p>
+        <p>Website created by Moldovan Alexandra.</p>
+        <i>alemoldovan04@gmail.com</i>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector(".nav-links").classList.toggle("active");
+        }
+    </script>
+
+</body>
+</html>

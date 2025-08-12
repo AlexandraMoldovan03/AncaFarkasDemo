@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="logo.jpg" alt="Logo Educație cu Stil">
+        <span>Farkas Rusu Anca</span>
+    </div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index.html">Acasă</a></li>
+            <li><a href="coach.html">Coaching</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><a href="testimonials.html">Testimoniale</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="upload-section">
+    <h2>Încarcă un videoclip</h2>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*">
+        <button type="submit">Încarcă</button>
+    </form>
+</section>
+
+<footer>
+    <p>&copy; 2025 Farkas Rusu Anca. Toate drepturile rezervate.</p>
+</footer>
+
+</body>
+</html>
