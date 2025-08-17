@@ -135,11 +135,21 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const app = express()
 
 // CORS – aici pui domeniile tale permise
+// app.use(cors({
+//   origin: ['http://localhost:5173', 'https://www.anca-farkas-rusu.com'],
+//   methods: ['GET', 'POST'],
+//   credentials: true
+// }))
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://www.anca-farkas-rusu.com'],
-  methods: ['GET', 'POST'],
+  origin: [
+    'http://localhost:5173',
+    'https://www.anca-farkas-rusu.com',
+    'https://stripe-backend-q89t.onrender.com' // <- adăugat
+  ],
+  methods: ['GET','POST'],
   credentials: true
-}))
+}));
 
 // ✅ Webhook (important: înainte de express.json)
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -173,31 +183,51 @@ app.use(express.json())
 // ✅ Ruta health check (test rapid dacă serverul merge)
 app.get('/health', (_req, res) => res.send('ok'))
 
-// ✅ Creare sesiune de checkout
+// ✅ Creare sesiune de checkout – variantă cu price_data (nu-ți trebuie priceId)
 app.post('/create-checkout-session', async (req, res) => {
   try {
-    const { priceId, customerEmail } = req.body
+    const { itemId, userEmail } = req.body;
+
+    // Catalog simplu (cenți)
+    const storeItems = new Map([
+      [1, { name: 'Learn first course', amount: 1000 }], // 10 RON
+      [2, { name: 'Learn second course', amount: 2000 }], // 20 RON
+    ]);
+
+    const item = storeItems.get(itemId);
+    if (!item) {
+      return res.status(400).json({ error: 'Item not found' });
+    }
 
     const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
       payment_method_types: ['card'],
       line_items: [
         {
-          price: priceId, // ex: "price_1234..."
-          quantity: 1
-        }
+          price_data: {
+            currency: 'ron',
+            product_data: { name: item.name },
+            unit_amount: item.amount, // cenți
+          },
+          quantity: 1,
+        },
       ],
-      mode: 'payment',
-      customer_email: customerEmail,
-      success_url: 'https://www.anca-farkas-rusu.com/success',
-      cancel_url: 'https://www.anca-farkas-rusu.com/cancel'
-    })
+      // trimitem emailul din frontend (util pentru factură Stripe)
+      customer_email: userEmail,
+      // pentru test local – după plată te întoarce în Vite
+      success_url: 'http://localhost:5173/success.html',
+      cancel_url: 'http://localhost:5173/anulare.html',
+      // dacă vrei să primești emailul și în webhook:
+      metadata: { user_email: userEmail, item_id: String(itemId) },
+    });
 
-    res.json({ url: session.url })
+    res.json({ url: session.url });
   } catch (error) {
-    console.error('❌ Error creating checkout session:', error)
-    res.status(500).json({ error: 'Unable to create checkout session' })
+    console.error('❌ Error creating checkout session:', error);
+    res.status(500).json({ error: 'Unable to create checkout session' });
   }
-})
+});
+
 
 // ✅ Pornire server
 const PORT = process.env.PORT || 3000
