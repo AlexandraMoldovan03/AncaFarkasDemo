@@ -1,4 +1,4 @@
-<!-- dashboard.html -->
+<!-- dashboard.html
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -13,6 +13,7 @@
   <ul id="courseList"></ul>
 
   <button onclick="logout()">Deconectare</button>
+<script type="module" src="dashboard.js"></script>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -60,3 +61,17 @@
   </script>
 </body>
 </html>
+
+
+ -->
+
+
+ <h1>Bun venit în dashboard!</h1>
+<p>Email: <span id="userEmail"></span></p>
+
+<h2>Cursurile tale:</h2>
+<ul id="courses"><li>Încărcare...</li></ul>
+
+<button onclick="logout()">Deconectare</button>
+
+<script type="module" src="/dashboard.js"></script>
