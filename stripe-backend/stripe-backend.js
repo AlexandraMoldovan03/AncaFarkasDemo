@@ -143,6 +143,11 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 // DUPĂ webhook putem folosi JSON global
 app.use(express.json())
 
+
+
+
+
+
 /* ----------------- Healthcheck ---------------- */
 app.get('/health', (_req, res) => res.send('ok'))
 
@@ -246,6 +251,66 @@ app.get('/download', async (req, res) => {
     res.status(500).json({ error: 'Server error' })
   }
 })
+
+
+
+// Retrimite pe email un link semnat proaspăt (24h)
+app.post('/resend-download', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1]
+    if (!token) return res.status(401).json({ error: 'No token' })
+
+    const { data: { user }, error: uErr } = await supa.auth.getUser(token)
+    if (uErr || !user) return res.status(401).json({ error: 'Invalid user' })
+
+    const { itemId } = req.body || {}
+    if (!itemId) return res.status(400).json({ error: 'Missing itemId' })
+
+    // verifică achiziția și ia file_path + amount/status (optional)
+    const { data: rows, error: qErr } = await supa
+      .from('purchases')
+      .select('file_path, amount, status')
+      .eq('user_email', user.email)
+      .eq('item_id', String(itemId))
+      .limit(1)
+
+    if (qErr) return res.status(500).json({ error: 'DB error' })
+    if (!rows || rows.length === 0) return res.status(403).json({ error: 'Not purchased' })
+
+    const filePath = rows[0].file_path
+    const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // 24h
+    const { data: signed, error: sErr } = await supa
+      .storage
+      .from('digital')
+      .createSignedUrl(filePath, ttl)
+
+    if (sErr) return res.status(500).json({ error: 'Sign error' })
+
+    if (!resend) {
+      console.warn('⚠️  Cannot send email: RESEND_API_KEY not configured')
+      return res.status(503).json({ error: 'Email service not configured' })
+    }
+
+    await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
+      to: user.email,
+      subject: 'Link de descărcare (PDF)',
+      html: `
+        <p>Iată linkul tău de descărcare (valabil ${Math.floor(ttl/3600)}h):</p>
+        <p><a href="${signed.signedUrl}" target="_blank" rel="noreferrer">Descarcă PDF</a></p>
+      `
+    })
+
+    console.log('📧 Re-sent email to', user.email, 'for item', itemId)
+    res.json({ ok: true })
+  } catch (e) {
+    console.error('❌ /resend-download error:', e)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+
+
 
 /* ----------------- Start server ---------------- */
 const PORT = process.env.PORT || 3000
