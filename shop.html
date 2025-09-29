@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <title>Shop — Alege categoria</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="shop.css" rel="stylesheet">
+  <style>
+    :root{ --bg:#0b0f0c; --card:#101417; --muted:#9fb3c8; --txt:#f9fafb; --brand:#e2b964; --pill:#1f2a33; }
+    *{box-sizing:border-box} html,body{margin:0}
+    body{font-family:'Poppins',sans-serif;background:radial-gradient(1200px 600px at 10% -10%, #20303a 0, #0b0f0c 55%);}
+    .with-navbar{padding-top:84px}
+
+    /* HERO */
+    .hero{
+      position:relative; border-radius:22px; overflow:hidden; min-height:280px;
+      box-shadow:0 30px 80px rgba(0,0,0,.45); isolation:isolate;
+    }
+    .hero > img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:contrast(1.05) saturate(1.05)}
+    .hero::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.65))}
+    .hero .inner{position:relative; z-index:1; color:#fff; padding:32px}
+    .hero h1{font-weight:700; letter-spacing:.4px; margin:0 0 6px}
+    .hero p{margin:0; opacity:.9}
+
+    /* GRID */
+    .grid{display:grid; gap:22px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:22px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+    .card-cat{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:22px;
+      box-shadow:0 16px 50px rgba(0,0,0,.35); color:var(--txt);
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .card-cat:hover{ transform:translateY(-4px); border-color:rgba(255,255,255,.18); box-shadow:0 24px 70px rgba(0,0,0,.45) }
+    .card-cat h3{margin:0 0 6px; font-weight:700}
+    .card-cat p{margin:0 0 12px; color:var(--muted)}
+    .pill{
+      display:inline-block; padding:6px 10px; border-radius:999px; background:var(--pill);
+      font-size:.85rem; color:#dfe8f1; margin:0 6px 6px 0
+    }
+    .btn-cta{ background:var(--brand); border:none; color:#000; font-weight:700; padding:10px 16px; border-radius:12px }
+    .btn-cta:hover{ filter:brightness(.95) }
+    .footer{color:#a4b3c2; text-align:center; padding:24px 0}
+  </style>
+</head>
+<body>
+  <!-- NAVBAR (identic cu al tău) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="/index.html">
+        <img src="/logo1.jpg" alt="Logo" style="height:40px;width:auto;margin-right:10px;">
+        <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="/auth.html" id="nav-auth">Login / Register</a></li>
+          <li class="nav-item d-none"><a class="nav-link" href="/dashboard.html" id="nav-dash">Dashboard</a></li>
+          <li class="nav-item d-none"><button class="btn btn-sm btn-outline-light ms-lg-2" id="btnLogout">Logout</button></li>
+          <li class="nav-item d-none"><span class="nav-link disabled" id="navEmail" style="opacity:.8;"></span></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container with-navbar">
+    <!-- HERO -->
+  <section class="container with-navbar">
+  <div class="hero-banner">
+    <img class="hero-bg" src="shop.jpg" alt="" aria-hidden="true">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-center">
+      <img class="hero-foreground" src="shop.jpg" alt="Education with Style">
+      <div class="hero-text">
+        <h1>Education with Style</h1>
+        <p>Mai puțin haos, mai multă claritate. Aici începe transformarea ta — cu ritm, eleganță și rezultate.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <!-- CATEGORII -->
+    <section class="grid">
+      <!-- 1) Experiențele mele... -->
+      <article class="card-cat">
+        <h3>Experiențele mele, lecțiile tale – Când viața întâlnește Stilul</h3>
+        <p>Descoperă cum am depășit provocări și ce m-a susținut pe drum. La final, găsești întrebări de reflecție — tu îți creezi stilul.</p>
+        <div class="mb-2">
+          <span class="pill">Ghiduri PDF</span><span class="pill">Reflecții</span><span class="pill">Inspirație</span>
+        </div>
+        <a class="btn btn-cta" href="/shop-category.html?cat=exp">Intră în categorie</a>
+      </article>
+
+      <!-- 2) Școala cu Stil Online -->
+      <article class="card-cat">
+        <h3>Școala cu Stil Online — by Prof &amp; Coach Anca</h3>
+        <p>Fișe educative, mini-ghiduri interactive și videouri explicative pentru ciclul primar, plus sfaturi pentru părinți.</p>
+        <div class="mb-2">
+          <span class="pill">Clasa pregătitoare</span><span class="pill">Clasa I–IV</span><span class="pill">Sfaturi pentru părinți</span>
+        </div>
+        <a class="btn btn-cta" href="/shop-category.html?cat=school">Vezi materialele</a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>&copy; <span id="year"></span> — Toate drepturile rezervate.</small>
+  </footer>
+
+  <!-- Auth mini-logic identic cu ce ai deja -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    const supabase = createClient('https://gxavdytkcukxnvonasur.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8')
+    const navAuth = document.getElementById('nav-auth')
+    const navDash = document.getElementById('nav-dash')?.parentElement
+    const btnLogoutWrap = document.getElementById('btnLogout')?.parentElement
+    const navEmailWrap = document.getElementById('navEmail')?.parentElement
+    const setNav = (email)=>{
+      const logged = !!email
+      navAuth?.classList.toggle('d-none', logged)
+      navDash?.classList.toggle('d-none', !logged)
+      btnLogoutWrap?.classList.toggle('d-none', !logged)
+      navEmailWrap?.classList.toggle('d-none', !logged)
+      if (logged) document.getElementById('navEmail').textContent = email
+    }
+    const { data:{ user } } = await supabase.auth.getUser()
+    setNav(user?.email || null)
+    supabase.auth.onAuthStateChange((_e,s)=>setNav(s?.user?.email||null))
+    document.getElementById('btnLogout')?.addEventListener('click', async()=>{
+      await supabase.auth.signOut(); location.href='/auth.html'
+    })
+    document.getElementById('year').textContent = new Date().getFullYear()
+  </script>
+</body>
+
+
+
+
+</html>

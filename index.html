@@ -5,11 +5,15 @@
     <meta name="description" content="Farkas Anca, Life Coach și Profesor cu peste 15 ani de experiență. Ofer sesiuni de coaching și sfaturi educaționale pentru copii și adulți.">
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farkas-Rusu Anca</title>
-    <link rel="stylesheet" href="src/style.css">
-    <script src="src/script.js"></script>
-    <script src="script.js"></script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farkas-Rusu Anca</title>
+
+<link rel="stylesheet" href="src/style.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap CSS -->
@@ -21,37 +25,112 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 </head>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("Pagina s-a încărcat și JavaScript-ul funcționează!");
-  
-        let testimonials = document.querySelectorAll(".testimonial");
-        let index = 0;
-  
-        function showTestimonial(n) {
-            testimonials.forEach((test, i) => {
-                test.style.display = i === n ? "block" : "none";
-            });
-        }
-  
-        document.getElementById("prevBtn").addEventListener("click", function () {
-            index = (index - 1 + testimonials.length) % testimonials.length;
-            showTestimonial(index);
-        });
-  
-        document.getElementById("nextBtn").addEventListener("click", function () {
-            index = (index + 1) % testimonials.length;
-            showTestimonial(index);
-        });
-  
-        showTestimonial(index);
-    });
+<script type="module">
+const qs  = s => document.querySelector(s);
+const qsa = s => [...document.querySelectorAll(s)];
+
+/* -------- SCROLL PROGRESS + BACK TO TOP -------- */
+const bar   = qs('#scrollProgress');
+const toTop = qs('#toTop');
+function onScroll(){
+  const h = document.documentElement;
+  const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  if (bar)   bar.style.width = pct + '%';
+  if (toTop) toTop.style.display = (h.scrollTop > 400) ? 'grid' : 'none';
+}
+document.addEventListener('scroll', onScroll, { passive:true });
+toTop?.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+/* -------- REVEAL ON SCROLL -------- */
+const revealer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if (e.isIntersecting){ e.target.classList.add('visible'); revealer.unobserve(e.target); }
+  });
+},{ threshold:.12 });
+qsa('.reveal').forEach(el=>revealer.observe(el));
+
+/* -------- COUNTERS -------- */
+function animateCounter(el){
+  const target = +el.dataset.count;
+  const dur = 1400;
+  const t0 = performance.now();
+  function tick(t){
+    const p = Math.min(1, (t - t0)/dur);
+    const val = Math.floor(target * (1 - Math.pow(1-p, 3))); // easeOutCubic
+    el.textContent = val.toLocaleString('ro-RO');
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const counters = qsa('.stat-num');
+const cntObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if (e.isIntersecting){ animateCounter(e.target); cntObs.unobserve(e.target); }
+  });
+},{ threshold:.6 });
+counters.forEach(c => cntObs.observe(c));
+
+/* -------- HERO PARALLAX -------- */
+const hero = qs('.hero-section-custom');
+if (hero){
+  document.addEventListener('scroll', ()=>{
+    const y = window.scrollY * 0.25;
+    hero.style.backgroundPosition = `center calc(50% + ${y}px)`;
+  }, { passive:true });
+}
+
+/* -------- TILT CARDS -------- */
+qsa('.tilt').forEach(card=>{
+  const r = 8;
+  card.addEventListener('mousemove', e=>{
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left)/rect.width * 2 - 1;
+    const y = (e.clientY - rect.top)/rect.height * 2 - 1;
+    card.style.transform = `rotateX(${-y*r}deg) rotateY(${x*r}deg)`;
+  });
+  card.addEventListener('mouseleave', ()=> card.style.transform = '');
+});
+
+/* -------- TESTIMONIALE (un singur slider, cu auto-play + butoane) -------- */
+const carousel = qs('.carousel');
+const tests    = qsa('.testimonial');
+const prevBtn  = qs('#prevBtn');
+const nextBtn  = qs('#nextBtn');
+let idx = 0, timer;
+
+function show(n){
+  idx = (n + tests.length) % tests.length;
+  carousel.style.transform = `translateX(-${idx*100}%)`;
+}
+function play(){ timer = setInterval(()=> show(idx+1), 5000); }
+function pause(){ clearInterval(timer); }
+
+if (carousel && tests.length){
+  carousel.style.width = (tests.length*100) + '%';
+  tests.forEach(t => t.style.width = (100/tests.length) + '%');
+  show(0); play();
+  carousel.addEventListener('mouseenter', pause);
+  carousel.addEventListener('mouseleave', play);
+  prevBtn?.addEventListener('click', ()=>{ pause(); show(idx-1); play(); });
+  nextBtn?.addEventListener('click', ()=>{ pause(); show(idx+1); play(); });
+}
+
+/* -------- MINI TOAST -------- */
+const toastEl = qs('#toast');
+window.toast = (txt)=>{
+  if (!toastEl) return;
+  toastEl.textContent = txt;
+  toastEl.classList.add('show');
+  setTimeout(()=> toastEl.classList.remove('show'), 1800);
+};
 </script>
+
 <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript"></script>
 
 
 <body>
     <!-- Header cu Bootstrap -->
+     <div id="scrollProgress"></div>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div class="container-fluid">
@@ -94,7 +173,7 @@
       
           <!-- Poză profil (în stânga) -->
           <div class="profile-img-wrapper text-center mb-4 mb-lg-0">
-            <img src="Mai.jpg" alt="Farkas Rusu Anca" class="profile-img">
+            <img src="Mai.jpg" alt="Farkas Rusu Anca" class="profile-img" loading="lazy">
           </div>
       
           <!-- Conținutul din dreapta (logo + text) -->
@@ -125,14 +204,14 @@
                 <a href="https://wa.me/40767283598" target="_blank" class="cta-button" style="background-color: #25D366;">
                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Scrie-mi pe WhatsApp
                 </a>
-                <a href="auth.html" class="cta-button" style="background-color: #343a40; color: white;">
-                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Login / Autentificare
+                <a href="shop.html" class="cta-button" style="background-color: #343a40; color: white;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Shop
                 </a>
             </div>
 
 
                 
-              </a>
+              
               
       
           </div>
@@ -141,6 +220,46 @@
       </section>
           
       
+
+      <!-- STATS (numărători) -->
+<section class="stats reveal">
+  <div class="container stats-grid">
+    <div class="stat">
+      <div class="stat-num" data-count="15">0</div>
+      <div class="stat-label">Ani experiență</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="450">0</div>
+      <div class="stat-label">Familii sprijinite</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="1200">0</div>
+      <div class="stat-label">Ore de coaching</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES (carduri cu tilt) -->
+<section class="features reveal">
+  <div class="container features-grid">
+    <article class="feature-card tilt">
+      <i class="fa-solid fa-seedling feature-ico"></i>
+      <h3>Creștere autentică</h3>
+      <p>Instrumente clare și blânde pentru evoluția ta și a copilului.</p>
+    </article>
+    <article class="feature-card tilt">
+      <i class="fa-solid fa-chalkboard-user feature-ico"></i>
+      <h3>Educație cu stil</h3>
+      <p>Materiale moderne și metode care economisesc timp.</p>
+    </article>
+    <article class="feature-card tilt">
+      <i class="fa-solid fa-heart feature-ico"></i>
+      <h3>Abordare umană</h3>
+      <p>Fără presiune. Cu ritm, empatie și rezultate reale.</p>
+    </article>
+  </div>
+</section>
+
       
 
     <!-- About Section -->
@@ -155,14 +274,14 @@
                 </p>
             </div>
             <div class="about-image">
-                <img src="portretFata.jpg" alt="Prof & Coach Anca">
+                <img src="portretFata.jpg" alt="Prof & Coach Anca" loanding="lazy">
             </div>
         </div>
 
         <!-- Secțiunea Personală - Imagine + Text -->
         <div class="about-personal">
             <div class="about-image">
-                <img src="portret3.jpg" alt="Anca - Coach & Profesor">
+                <img src="portret3.jpg" alt="Anca - Coach & Profesor" loading="lazy">
             </div>
             <div class="about-text">
                 <h2>💛 Educația este pasiunea mea</h2>
@@ -204,7 +323,7 @@
                         </p>
                     </div>
                     <div class="mama-image">
-                        <img src="educatieSuflet.jpg" alt="Mamă și copil" />
+                        <img src="educatieSuflet.jpg" alt="Mamă și copil" loading="lazy"/>
                     </div>
                 </div>
             </div>
@@ -291,6 +410,50 @@
                 <p>Ateliere online – Sesiuni interactive pentru dezvoltare personală și educațională.</p>
             </div>
         </div>
+
+
+
+        <section class="faq reveal">
+  <div class="container">
+    <h2 class="mb-3 text-center">Întrebări frecvente</h2>
+
+    <div class="accordion" id="faqAcc">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="fq1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fq1c">
+            Cum au loc sesiunile (online/fizic)?
+          </button>
+        </h2>
+        <div id="fq1c" class="accordion-collapse collapse show" data-bs-parent="#faqAcc">
+          <div class="accordion-body">Online (Zoom/WhatsApp) sau fizic, după preferințe.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="fq2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq2c">
+            Pentru cine este coachingul?
+          </button>
+        </h2>
+        <div id="fq2c" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">Părinți, profesori și copii care vor claritate, motivație și rezultate.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="fq3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq3c">
+            Primesc materiale după sesiune?
+          </button>
+        </h2>
+        <div id="fq3c" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">Da—rezumat, exerciții, recomandări și follow-up unde e cazul.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- Tarife Sesiuni de Coaching -->
 <div class="tarife-container">
@@ -409,6 +572,17 @@
             document.querySelector(".nav-links").classList.toggle("active");
         }
     </script>
+
+
+<a href="https://wa.me/40767283598" class="fab-whatsapp" aria-label="WhatsApp">
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+<button id="toTop" class="fab-top" aria-label="Înapoi sus">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- toast minimal pentru confirmări -->
+<div id="toast" class="toast-min"></div>
 
 </body>
 </html>

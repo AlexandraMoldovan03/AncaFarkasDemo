@@ -66,18 +66,23 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
 
     // Ia file_path din products
-  let filePath = 'curs-1.pdf'
-  if (itemId) {
-    const { data: prod, error: pErr } = await supa
-      .from('products')
-      .select('file_path')
-      .eq('id', String(itemId))
-      .eq('active', true)
-      .maybeSingle()
+  // ACUM: ia și file_bucket
+let bucket = 'product-files'
+let filePath = 'curs-1.pdf'
 
-    if (pErr) console.error('❌ products query error:', pErr)
-    if (prod?.file_path) filePath = prod.file_path
-  }
+if (itemId) {
+  const { data: prod, error: pErr } = await supa
+    .from('products')
+    .select('file_path, file_bucket')
+    .eq('id', String(itemId))
+    .eq('active', true)
+    .maybeSingle()
+
+  if (pErr) console.error('❌ products query error:', pErr)
+  if (prod?.file_path)  filePath = prod.file_path
+  if (prod?.file_bucket) bucket  = prod.file_bucket   // ← AICI decidem bucketul corect
+}
+
 
 
 
@@ -106,10 +111,12 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
     // 2) generăm un link semnat (expirabil) pentru PDF — pt. email
     try {
       const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // default 24h
+      // ACUM:
       const { data: signed, error: signErr } = await supa
         .storage
-        .from('digital')                 // bucket privat
+        .from(bucket)
         .createSignedUrl(filePath, ttl)
+            
 
       if (signErr) {
         console.error('❌ Create signed URL error:', signErr)
@@ -217,44 +224,53 @@ app.get('/download', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1]
     if (!token) return res.status(401).json({ error: 'No token' })
 
-    // validează tokenul la Supabase
+    // validează userul
     const { data: { user }, error: uErr } = await supa.auth.getUser(token)
     if (uErr || !user) return res.status(401).json({ error: 'Invalid user' })
 
     const { itemId } = req.query
     if (!itemId) return res.status(400).json({ error: 'Missing itemId' })
 
-    // verifică achiziția (și ia file_path)
-    const { data: rows, error: qErr } = await supa
+    // ultima achiziție a acestui item
+    const { data: purch, error: qErr } = await supa
       .from('purchases')
       .select('file_path')
       .eq('user_email', user.email)
       .eq('item_id', String(itemId))
+      .order('created_at', { ascending: false })
       .limit(1)
 
     if (qErr) return res.status(500).json({ error: 'DB error' })
-    if (!rows || rows.length === 0) return res.status(403).json({ error: 'Not purchased' })
+    if (!purch?.length) return res.status(403).json({ error: 'Not purchased' })
 
-    const filePath = rows[0].file_path
+    const filePath = purch[0].file_path
 
-    // semnează URL 10 minute pt. dashboard
+    // află bucketul corect din products
+    const { data: prod, error: prodErr } = await supa
+      .from('products')
+      .select('file_bucket, file_path')
+      .eq('id', String(itemId))
+      .maybeSingle()
+
+    const bucket = prod?.file_bucket || 'product-files'
+    const pathToSign = prod?.file_path || filePath
+    const ttl = 60 * 10 // 10 minute pentru dashboard
+
     const { data: signed, error: sErr } = await supa
       .storage
-      .from('digital')
-      .createSignedUrl(filePath, 60 * 10) // 10 min
+      .from(bucket)
+      .createSignedUrl(pathToSign, ttl)
 
-    if (sErr) return res.status(500).json({ error: 'Sign error' })
-
-    res.json({ url: signed.signedUrl })
+    if (sErr) return res.status(500).json({ error: 'Sign error: ' + sErr.message })
+    return res.json({ url: signed.signedUrl })
   } catch (e) {
     console.error('❌ /download error:', e)
-    res.status(500).json({ error: 'Server error' })
+    return res.status(500).json({ error: 'Server error' })
   }
 })
 
 
 
-// Retrimite pe email un link semnat proaspăt (24h)
 app.post('/resend-download', async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1]
@@ -266,48 +282,55 @@ app.post('/resend-download', async (req, res) => {
     const { itemId } = req.body || {}
     if (!itemId) return res.status(400).json({ error: 'Missing itemId' })
 
-    // verifică achiziția și ia file_path + amount/status (optional)
-    const { data: rows, error: qErr } = await supa
+    // ultima achiziție pt. item
+    const { data: purch, error: qErr } = await supa
       .from('purchases')
-      .select('file_path, amount, status')
+      .select('file_path')
       .eq('user_email', user.email)
       .eq('item_id', String(itemId))
+      .order('created_at', { ascending: false })
       .limit(1)
 
     if (qErr) return res.status(500).json({ error: 'DB error' })
-    if (!rows || rows.length === 0) return res.status(403).json({ error: 'Not purchased' })
+    if (!purch?.length) return res.status(403).json({ error: 'Not purchased' })
 
-    const filePath = rows[0].file_path
+    const filePath = purch[0].file_path
+
+    // ia bucketul din products
+    const { data: prod, error: prodErr } = await supa
+      .from('products')
+      .select('file_bucket, file_path, name')
+      .eq('id', String(itemId))
+      .maybeSingle()
+
+    const bucket = prod?.file_bucket || 'product-files'
+    const pathToSign = prod?.file_path || filePath
+
     const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // 24h
     const { data: signed, error: sErr } = await supa
       .storage
-      .from('digital')
-      .createSignedUrl(filePath, ttl)
+      .from(bucket)
+      .createSignedUrl(pathToSign, ttl)
 
-    if (sErr) return res.status(500).json({ error: 'Sign error' })
-
-    if (!resend) {
-      console.warn('⚠️  Cannot send email: RESEND_API_KEY not configured')
-      return res.status(503).json({ error: 'Email service not configured' })
-    }
+    if (sErr) return res.status(500).json({ error: 'Sign error: ' + sErr.message })
 
     await resend.emails.send({
       from: 'Acme <onboarding@resend.dev>',
       to: user.email,
-      subject: 'Link de descărcare (PDF)',
+      subject: `Link de descărcare — ${prod?.name || 'material'}`,
       html: `
         <p>Iată linkul tău de descărcare (valabil ${Math.floor(ttl/3600)}h):</p>
-        <p><a href="${signed.signedUrl}" target="_blank" rel="noreferrer">Descarcă PDF</a></p>
+        <p><a href="${signed.signedUrl}" target="_blank" rel="noreferrer">Descarcă</a></p>
       `
     })
 
-    console.log('📧 Re-sent email to', user.email, 'for item', itemId)
-    res.json({ ok: true })
+    return res.json({ ok: true })
   } catch (e) {
     console.error('❌ /resend-download error:', e)
-    res.status(500).json({ error: 'Server error' })
+    return res.status(500).json({ error: 'Server error' })
   }
 })
+
 
 
 

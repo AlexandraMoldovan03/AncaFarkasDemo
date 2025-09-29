@@ -1,0 +1,160 @@
+/* Paleta existentă (fallback) */
+:root{
+  --bg: var(--background-color, #F8F1E7);
+  --accent: var(--accent-color, #E2B964);
+  --text: var(--primary-text, #2C3E50);
+  --btn: var(--button-color, #E67E22);
+  --white: var(--white, #FFF);
+  --shadow: var(--shadow-color, rgba(0,0,0,.15));
+
+  /* extra pentru dash */
+  --muted: #6b6b6b;
+  --border: rgba(0,0,0,.06);
+  --success-bg:#eef7ee; --success:#1b6e1b;
+  --fail-bg:#fff2f0;   --fail:#a8071a;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{ background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+.with-navbar{ padding-top: 90px; }
+
+/* ——— HERO modern (banner panoramic, fără crop pe imaginea portret) ——— */
+.dash-hero{
+  position:relative; overflow:hidden;
+  border-radius:22px;
+  min-height: clamp(220px, 34vw, 380px);
+  box-shadow: 0 30px 80px rgba(0,0,0,.15);
+  isolation:isolate;
+  background: radial-gradient(1100px 520px at 10% -10%, #20303a22 0, #00000000 55%), var(--white);
+  border: 1px solid var(--border);
+}
+.dash-hero .bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; filter: blur(18px) brightness(.85) saturate(1.1);
+  transform: scale(1.1);
+  opacity:.28; pointer-events:none;
+}
+.dash-hero .shade{
+  position:absolute; inset:0;
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(0,0,0,.12), rgba(0,0,0,.32));
+  mix-blend-mode: multiply; opacity:.55;
+}
+.dash-hero .inner{
+  position:relative; z-index:1;
+  height:100%; display:flex; align-items:center; gap: clamp(16px, 3vw, 28px);
+  padding: clamp(16px, 2.4vw, 28px);
+}
+.dash-hero .cover{
+  background:#0c1216; border-radius:16px; padding: clamp(6px, 1.5vw, 12px);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 16px 40px rgba(0,0,0,.25);
+}
+.dash-hero .cover img{
+  height: clamp(180px, 28vw, 320px);
+  aspect-ratio: 3/4; object-fit: contain; border-radius:12px;
+}
+.dash-hero .copy h1{
+  margin:0 0 6px; font-weight:800; letter-spacing:.2px;
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem); color:#fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.dash-hero .copy p{
+  margin:0; color:#e9eef5; max-width: 60ch;
+}
+.dash-hero .actions{ margin-top:12px; display:flex; gap:10px; flex-wrap:wrap }
+
+/* Butoane (aliniate cu shop) */
+.btn-cta{
+  background: var(--btn); color: var(--white); font-weight:700;
+  border:none; border-radius:12px; padding:10px 16px;
+  box-shadow: 0 10px 26px rgba(230,126,34,.28);
+}
+.btn-ghost{
+  background: var(--white); color: var(--text);
+  border:1px solid #e7e7e7; border-radius:12px; padding:10px 16px; font-weight:600;
+}
+.btn-cta:hover{ filter:brightness(.96) }
+.btn-ghost:hover{ background:#fafafa }
+
+/* ——— Secțiuni / headings ——— */
+.page h2{ font-weight:800; letter-spacing:.2px }
+
+/* ——— Grid carduri cursuri ——— */
+.courses-grid{
+  display:grid; gap: 16px;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  padding:0; margin:0;
+}
+@media (max-width: 992px){ .courses-grid{ grid-template-columns: 1fr; } }
+
+.courses-grid > li{
+  list-style:none;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 14px 32px var(--shadow);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.courses-grid > li:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(0,0,0,.18);
+  border-color: rgba(0,0,0,.12);
+}
+
+/* rândul generat de dashboard.js */
+.courses-grid .meta{
+  display:flex; flex-wrap:wrap; gap: 6px 12px; align-items: baseline; margin-bottom:6px;
+}
+.courses-grid .title{ font-weight:800; letter-spacing:.2px }
+.courses-grid .name{ opacity:.9 }
+.courses-grid .status{
+  font-size:12px; padding: 3px 10px; border-radius:999px;
+  background: var(--success-bg); color: var(--success);
+}
+.courses-grid .status.fail{ background: var(--fail-bg); color: var(--fail) }
+.courses-grid small{ color:var(--muted) }
+
+/* acțiuni */
+.courses-grid .actions{
+  margin-top: 10px; display:flex; gap: 10px; flex-wrap:wrap;
+}
+.courses-grid .actions .dl,
+.courses-grid .actions .email{
+  appearance:none; border:0; cursor:pointer; border-radius:12px; font-weight:700;
+  padding:10px 14px;
+}
+.courses-grid .actions .dl{
+  background: var(--btn); color: var(--white);
+  box-shadow: 0 6px 18px rgba(230,126,34,.28);
+}
+.courses-grid .actions .email{
+  background: var(--white); color: var(--text);
+  border:1px solid #e7e7e7;
+}
+.courses-grid .actions .dl:hover{ filter:brightness(.95) }
+.courses-grid .actions .email:hover{ background:#fafafa }
+
+/* ——— Skeleton (loading) ——— */
+.skel{ position:relative; overflow:hidden; border-radius:12px; background:#f3f3f3; height:14px }
+.skel.lg{ height:18px }
+.skel.img{ height:140px; border-radius:10px }
+.skel::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.65) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-100%); animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer{ to { transform: translateX(100%); } }
+
+/* ——— Empty State ——— */
+.empty{
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  text-align:center;
+  color: var(--muted);
+  box-shadow: 0 14px 32px var(--shadow);
+}
+.empty h3{ margin:0 0 6px; color: var(--text); font-weight:800 }
+.empty p{ margin:0 0 12px }

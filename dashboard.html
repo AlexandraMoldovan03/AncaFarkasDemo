@@ -1,77 +1,150 @@
-<!-- dashboard.html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard Utilizator</title>
+  <title>Dashboard — Cursurile mele</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <link rel="stylesheet" href="/dashboard.css" />
 </head>
 <body>
-  <h1>Bun venit în dashboard!</h1>
-  <p id="user-email"></p>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="/index.html">
+        <img src="/logo1.jpg" alt="Logo" style="height:40px;width:auto;margin-right:10px;">
+        <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/shop.html">Shop</a></li>
+          <li class="nav-item d-none" id="nav-user"><span class="nav-link disabled" id="navEmail" style="opacity:.85;"></span></li>
+          <li class="nav-item"><button class="btn btn-sm btn-outline-light ms-lg-2" id="btnLogout">Logout</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <h2>Cursurile tale:</h2>
-  <ul id="courseList"></ul>
+  <!-- CONȚINUT -->
+  <main class="container page with-navbar">
+    <!-- HERO panoramic -->
+     <p class="text-muted mb-0">Email: <strong id="userEmail">—</strong></p>
 
-  <button onclick="logout()">Deconectare</button>
-<script type="module" src="dashboard.js"></script>
+    <section class="dash-hero mb-4">
+      <img class="bg" src="shop.jpg" alt="" aria-hidden="true">
+      <div class="shade" aria-hidden="true"></div>
+      <div class="inner">
+        <div class="cover">
+          <!-- folosește aceeași imagine, portret, ca în shop; schimbă calea la nevoie -->
+          <img src="shop.jpg" alt="Education with Style">
+        </div>
+        <div class="copy">
+          <h1>Salut! Aici sunt cursurile tale</h1>
+          <p id="dashLead">Accesează rapid materialele cumpărate, retrimite link-urile pe email sau descarcă direct.</p>
+          <div class="actions">
+            <a href="/shop.html" class="btn-cta">Cumpără alte cursuri</a>
+            <a href="/dashboard.html" class="btn-ghost">Actualizează lista</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- LISTA CURSURILOR -->
+    <section aria-live="polite">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h2 class="h5 mb-0">Cursurile tale <small class="text-muted">( <span id="courseCount">0</span> )</small></h2>
+        <small class="text-muted">Link-urile de download expiră; poți genera altele oricând.</small>
+      </div>
+
+      <!-- #courses: dashboard.js scrie <li> aici -->
+      <ul id="courses" class="courses-grid">
+        <!-- Skeleton la încărcare (va fi înlocuit de dashboard.js) -->
+        <li>
+          <div class="skel img"></div>
+          <div class="meta" style="margin-top:8px">
+            <div class="skel lg" style="width:50%"></div>
+            <div class="skel" style="width:18%"></div>
+          </div>
+          <div class="skel" style="width:65%; margin-top:8px"></div>
+          <div class="skel" style="width:40%; margin-top:6px"></div>
+          <div class="actions" style="margin-top:10px">
+            <div class="skel" style="width:120px; height:38px; border-radius:12px"></div>
+            <div class="skel" style="width:140px; height:38px; border-radius:12px"></div>
+          </div>
+        </li>
+        <li>
+          <div class="skel img"></div>
+          <div class="meta" style="margin-top:8px">
+            <div class="skel lg" style="width:46%"></div>
+            <div class="skel" style="width:22%"></div>
+          </div>
+          <div class="skel" style="width:60%; margin-top:8px"></div>
+          <div class="skel" style="width:38%; margin-top:6px"></div>
+          <div class="actions" style="margin-top:10px">
+            <div class="skel" style="width:120px; height:38px; border-radius:12px"></div>
+            <div class="skel" style="width:140px; height:38px; border-radius:12px"></div>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Empty state (ascuns până când vedem că nu ai cursuri) -->
+      <div id="empty" class="empty mt-3 d-none">
+        <h3>Nu ai încă niciun curs</h3>
+        <p>Descoperă colecțiile „Experiențele mele” sau „Școala cu Stil Online”.</p>
+        <a class="btn-cta" href="/shop.html">Mergi la Shop</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-muted py-4 small">
+    &copy; <span id="year"></span> — Toate drepturile rezervate.
+  </footer>
+
+  <!-- Nav + an + logout (mini) -->
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     const supabase = createClient(
       'https://gxavdytkcukxnvonasur.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
-    );
+    )
+    document.getElementById('year').textContent = new Date().getFullYear()
 
-    // 1️⃣ Verificăm autentificarea
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data:{ user } } = await supabase.auth.getUser()
+    const elUser = document.getElementById('nav-user')
+    const elEmail = document.getElementById('navEmail')
+    if (user?.email){ elUser?.classList.remove('d-none'); elEmail.textContent = user.email }
 
-    if (!user) {
-      alert("Trebuie să fii autentificat!");
-      window.location.href = "/auth.html";
-    } else {
-      document.getElementById("user-email").textContent = `Email: ${user.email}`;
+    document.getElementById('btnLogout').addEventListener('click', async()=>{
+      await supabase.auth.signOut(); location.href = '/auth.html'
+    })
+
+    // Observă când dashboard.js a populat #courses —> actualizează contor + empty-state
+    const list = document.getElementById('courses')
+    const empty = document.getElementById('empty')
+    const countSpan = document.getElementById('courseCount')
+
+    const refresh = ()=>{
+      // numărăm doar elementele <li> reale (ignorăm placeholderul „Încărcare...” dacă rămâne)
+      const items = Array.from(list.querySelectorAll(':scope > li'))
+      const count = items.filter(li => !li.classList.contains('sk-placeholder')).length
+      countSpan.textContent = String(count)
+      empty.classList.toggle('d-none', count > 0)
     }
 
-    // 2️⃣ Cerem lista de achiziții
-    const { data: achizitii, error } = await supabase
-      .from('achizitii')
-      .select('*')
-      .eq('email', user.email);
-
-    const courseList = document.getElementById('courseList');
-
-    if (error) {
-      courseList.innerHTML = `<li>Eroare: ${error.message}</li>`;
-    } else if (achizitii.length === 0) {
-      courseList.innerHTML = `<li>Nu ai achiziționat niciun curs.</li>`;
-    } else {
-      achizitii.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `Curs: ${item.stripe_session_id} - Status: ${item.status}`;
-        courseList.appendChild(li);
-      });
-    }
-
-    // 3️⃣ Logout
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "/auth.html";
-    }
+    // inițial și la orice modificare
+    refresh()
+    const mo = new MutationObserver(refresh)
+    mo.observe(list, { childList:true, subtree:false })
   </script>
+
+
+  <script type="module" src="./dashboard.js"></script>
 </body>
 </html>
-
-
- -->
-
-
- <h1>Bun venit în dashboard!</h1>
-<p>Email: <span id="userEmail"></span></p>
-
-<h2>Cursurile tale:</h2>
-<ul id="courses"><li>Încărcare...</li></ul>
-
-<button onclick="logout()">Deconectare</button>
-
-<script type="module" src="/dashboard.js"></script>
