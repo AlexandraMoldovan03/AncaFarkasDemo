@@ -29,8 +29,69 @@ const supa = createClient(
 /* ----------------- Resend --------------------- */
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+
+
 /* -------------- Stripe webhook ---------------- */
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+
+
+/* ------ Rate limit pe trimiterea parolei ------ */
+const sendTempPwdLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minut
+  max: 3,              // max 3 cereri/minut/ip
+  standardHeaders: true,
+  legacyHeaders: false
+})
+
+function genTempPassword() {
+  const len = Number(process.env.TEMP_PASSWORD_LENGTH || 10)
+  const alphabet = process.env.TEMP_PASSWORD_ALPHABET || 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
+  let out = ''
+  const bytes = crypto.randomBytes(len)
+  for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length]
+  return out
+}
+
+/* ------ Admin GoTrue REST (căutare user + update parolă) ------ */
+async function findUserByEmail(email) {
+  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`
+  const r = await fetch(url, {
+    headers: {
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+    }
+  })
+  if (!r.ok) throw new Error('Nu am putut căuta utilizatorul.')
+  const data = await r.json()
+  const user = Array.isArray(data?.users) ? data.users.find(u => u.email?.toLowerCase() === email.toLowerCase()) : data
+  return user || null
+}
+
+async function updateUserPassword(userId, newPassword) {
+  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users/${userId}`
+  const r = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password: newPassword })
+  })
+  if (!r.ok) {
+    const errText = await r.text().catch(() => '')
+    throw new Error(errText || 'Nu am putut seta parola temporară.')
+  }
+}
+
+
+
+
+
+
+
+
 
 // IMPORTANT: raw body DOAR pe ruta webhook
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -85,56 +146,6 @@ if (itemId) {
 }
 
 
-
-
-/* ------ Rate limit pe trimiterea parolei ------ */
-const sendTempPwdLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minut
-  max: 3,              // max 3 cereri/minut/ip
-  standardHeaders: true,
-  legacyHeaders: false
-})
-
-function genTempPassword() {
-  const len = Number(process.env.TEMP_PASSWORD_LENGTH || 10)
-  const alphabet = process.env.TEMP_PASSWORD_ALPHABET || 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
-  let out = ''
-  const bytes = crypto.randomBytes(len)
-  for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length]
-  return out
-}
-
-/* ------ Admin GoTrue REST (căutare user + update parolă) ------ */
-async function findUserByEmail(email) {
-  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`
-  const r = await fetch(url, {
-    headers: {
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
-    }
-  })
-  if (!r.ok) throw new Error('Nu am putut căuta utilizatorul.')
-  const data = await r.json()
-  const user = Array.isArray(data?.users) ? data.users.find(u => u.email?.toLowerCase() === email.toLowerCase()) : data
-  return user || null
-}
-
-async function updateUserPassword(userId, newPassword) {
-  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users/${userId}`
-  const r = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ password: newPassword })
-  })
-  if (!r.ok) {
-    const errText = await r.text().catch(() => '')
-    throw new Error(errText || 'Nu am putut seta parola temporară.')
-  }
-}
 
 
 
