@@ -62,28 +62,29 @@ async function findUserByEmail(email) {
       'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
     }
   })
-  if (!r.ok) throw new Error('Nu am putut căuta utilizatorul.')
-  const data = await r.json()
+  const body = await r.text().catch(()=>'')
+  if (!r.ok) {
+    console.error('findUserByEmail FAILED', r.status, body)
+    throw new Error('Nu am putut căuta utilizatorul.')
+  }
+  const data = body ? JSON.parse(body) : null
   const user = Array.isArray(data?.users) ? data.users.find(u => u.email?.toLowerCase() === email.toLowerCase()) : data
   return user || null
 }
 
+
+// ⤵️ folosește clientul "supa" creat cu SERVICE KEY
 async function updateUserPassword(userId, newPassword) {
-  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users/${userId}`
-  const r = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ password: newPassword })
+  const { data, error } = await supa.auth.admin.updateUserById(userId, {
+    password: newPassword
   })
-  if (!r.ok) {
-    const errText = await r.text().catch(() => '')
-    throw new Error(errText || 'Nu am putut seta parola temporară.')
+  if (error) {
+    console.error('updateUserById error:', error) // vezi logul în Render
+    throw new Error(error.message || 'Nu am putut seta parola temporară.')
   }
+  return data
 }
+
 
 
 
@@ -217,48 +218,69 @@ app.use(express.json())
 /* POST /api/auth/send-temp-password  { email }   */
 app.post('/api/auth/send-temp-password', sendTempPwdLimiter, async (req, res) => {
   try {
-    const { email } = req.body || {}
+    const { email } = req.body || {};
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      return res.status(400).json({ message: 'Email invalid.' })
+      return res.status(400).json({ message: 'Email invalid.' });
     }
 
-    // 1) caută user
-    const user = await findUserByEmail(email)
-    if (!user) return res.status(404).json({ message: 'Nu există cont cu acest email.' })
+    // find user by email (GoTrue REST)
+    const findUrl = `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`;
+    const rFind = await fetch(findUrl, {
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+      },
+    });
+    const findText = await rFind.text();
+    if (!rFind.ok) {
+      console.error('findUser error:', rFind.status, findText);
+      return res.status(500).json({ message: `Nu am putut căuta utilizatorul (${rFind.status}).` });
+    }
+    const parsed = (() => { try { return JSON.parse(findText) } catch { return {} } })();
+    const user = Array.isArray(parsed?.users)
+      ? parsed.users.find(u => u.email?.toLowerCase() === email.toLowerCase())
+      : (Array.isArray(parsed) ? parsed.find(u => u.email?.toLowerCase() === email.toLowerCase()) : parsed);
+    if (!user?.id) return res.status(404).json({ message: 'Nu există cont cu acest email.' });
 
-    // 2) generează și setează parola temporară
-    const tempPwd = genTempPassword()
-    await updateUserPassword(user.id, tempPwd)
+    // set temp password via Admin SDK
+    const tempPwd = genTempPassword();
+    const upd = await supa.auth.admin.updateUserById(user.id, { password: tempPwd });
+    if (upd.error) {
+      console.error('updateUserById error:', upd.error);
+      return res.status(500).json({ message: upd.error.message || 'Nu am putut seta parola temporară.' });
+    }
 
-    // 3) trimite email
-    const fromName  = process.env.SEND_FROM_NAME  || 'Education with Style'
-    const fromEmail = process.env.SEND_FROM_EMAIL || 'onboarding@resend.dev'
+    // send email
+    const fromName  = process.env.SEND_FROM_NAME  || 'Education with Style';
+    const fromEmail = process.env.SEND_FROM_EMAIL || 'onboarding@resend.dev';
+    let mailError = null;
+    try {
+      await resend.emails.send({
+        from: `${fromName} <${fromEmail}>`,
+        to: email,
+        subject: 'Parola ta temporară',
+        html: `
+          <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif">
+            <h2>Salut!</h2>
+            <p>Parola ta temporară este:</p>
+            <p style="font-size:20px;font-weight:700;letter-spacing:.5px;background:#f7f7f9;padding:12px 16px;border-radius:10px;display:inline-block;">
+              ${tempPwd}
+            </p>
+            <p>Autentifică-te cu emailul și această parolă, apoi o poți schimba din Dashboard.</p>
+          </div>
+        `,
+      });
+    } catch (e) {
+      console.error('Resend send error:', e);
+      mailError = e?.message || 'Nu am putut trimite emailul.';
+    }
 
-    await resend.emails.send({
-      from: `${fromName} <${fromEmail}>`,
-      to: email,
-      subject: 'Parola ta temporară',
-      html: `
-        <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif">
-          <h2>Salut!</h2>
-          <p>Ai solicitat o <strong>parolă temporară</strong>.</p>
-          <p>Parola ta temporară este:</p>
-          <p style="font-size:20px;font-weight:700;letter-spacing:.5px;background:#f7f7f9;padding:12px 16px;border-radius:10px;display:inline-block;">
-            ${tempPwd}
-          </p>
-          <p>Autentifică-te cu <strong>emailul</strong> și această parolă, apoi schimb-o din Dashboard → <em>Resetează parola</em>.</p>
-          <hr />
-          <p style="font-size:12px;color:#666">Dacă nu ai cerut tu, schimbă parola imediat după login și anunță-ne.</p>
-        </div>
-      `
-    })
-
-    return res.json({ ok: true })
+    return res.json({ ok: true, mailError });
   } catch (e) {
-    console.error('❌ /auth/send-temp-password:', e)
-    return res.status(500).json({ message: e.message || 'Eroare internă.' })
+    console.error('send-temp-password fatal:', e);
+    return res.status(500).json({ message: e?.message || 'Eroare internă.' });
   }
-})
+});
 
 
 

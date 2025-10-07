@@ -35,35 +35,33 @@
   <!-- CONȚINUT: doar cardul (fără imagine) -->
   <main class="auth-wrapper with-navbar auth-narrow">
     <section class="auth-card">
-  <header class="auth-head">
-    <h1 class="auth-title">Login / Register</h1>
-    <p class="auth-sub">Intră în cont sau creează unul nou — simplu și rapid.</p>
-  </header>
+      <header class="auth-head">
+        <h1 class="auth-title">Login / Register</h1>
+        <p class="auth-sub">Intră în cont sau creează unul nou — simplu și rapid.</p>
+      </header>
 
-  <div id="msg" class="auth-msg d-none"></div>
+      <div id="msg" class="auth-msg d-none"></div>
 
-  <div class="form-grid">
-    <input type="email" id="email" placeholder="Email" autocomplete="email" />
-    <div class="pwd-wrap">
-      <input type="password" id="password" placeholder="Parolă" autocomplete="current-password" />
-      <button class="toggle-pwd" type="button" aria-label="Arată/ascunde parola">👁</button>
-    </div>
-  </div>
+      <div class="form-grid">
+        <input type="email" id="email" placeholder="Email" autocomplete="email" />
+        <div class="pwd-wrap">
+          <input type="password" id="password" placeholder="Parolă" autocomplete="current-password" />
+          <button class="toggle-pwd" type="button" aria-label="Arată/ascunde parola">👁</button>
+        </div>
+      </div>
 
-  <div class="actions">
-    <button onclick="registerUser()">Înregistrare</button>
-    <button onclick="loginUser()" class="btn-outline">Logare</button>
-  </div>
+      <div class="actions">
+        <button onclick="registerUser()">Înregistrare</button>
+        <button onclick="loginUser()" class="btn-outline">Logare</button>
+      </div>
 
-  <div class="divider"><span>sau</span></div>
+      <div class="divider"><span>sau</span></div>
 
-<div class="extras">
-  <button id="btnTempPwd" class="btn-ghost" type="button">↻ Primește o parolă temporară pe email</button>
-  <a href="/shop.html" class="btn-ghost">→ Mergi la magazin</a>
-</div>
-
-</section>
-
+      <div class="extras">
+        <button id="btnTempPwd" class="btn-ghost" type="button">↻ Primește o parolă temporară pe email</button>
+        <a href="/shop.html" class="btn-ghost">→ Mergi la magazin</a>
+      </div>
+    </section>
   </main>
 
   <!-- Conectează auth.js existent -->
@@ -73,22 +71,21 @@
     window.loginUser = loginUser;
   </script>
 
-  <!-- Resetare parolă: trimite email + redirect către pagina de actualizare parolei -->
-  <!-- <script type="module">
+  <!-- Script pentru parolă temporară + toggle parolă -->
+  <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
     const supabase = createClient(
       'https://gxavdytkcukxnvonasur.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
     )
 
-    const msg = document.getElementById('msg')
-    function showMsg(text, type='success'){
-      msg.textContent = text
-      msg.className = `auth-msg ${type==='success'?'success':'error'}`
-      msg.classList.remove('d-none')
-    }
+    /* API backend (Render) — schimbi aici dacă ai alt host */
+    const API_BASE =
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE)
+      || 'https://stripe-backend-q89t.onrender.com';
 
-    // toggle parola
+    // toggle parolă
     const btnToggle = document.querySelector('.toggle-pwd')
     const pwd = document.getElementById('password')
     btnToggle?.addEventListener('click', () => {
@@ -97,61 +94,31 @@
       btnToggle.textContent = show ? '🙈' : '👁'
     })
 
-    // RESET PAROLĂ PRIN EMAIL
-    document.getElementById('btnReset').addEventListener('click', async ()=>{
+    // ——— Parolă temporară via backend ———
+    document.getElementById('btnTempPwd').addEventListener('click', async ()=>{
       const email = (document.getElementById('email').value || '').trim()
-      if (!email){ showMsg('Te rog introdu emailul pentru resetare.', 'error'); return }
+      if (!email) {
+        await window.showPopup?.({ title:'Eroare', message:'Te rog introdu emailul.' })
+        return
+      }
 
       try{
-        const redirectTo = 'https://www.anca-farkas-rusu.com/update-password.html';
-        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+        const r = await fetch(`${API_BASE}/api/auth/send-temp-password`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json' },
+          body: JSON.stringify({ email })
+        })
+        const out = await r.json().catch(()=> ({}))
+        if (!r.ok) throw new Error(out.message || 'Nu am putut trimite parola temporară.')
 
-        if (error) throw error
-        showMsg('Ți-am trimis un email cu link pentru resetare. Verifică inbox/spam.', 'success')
+        await window.showPopup?.({
+          title:'Email trimis',
+          message:'Ți-am trimis o parolă temporară. Autentifică-te cu emailul + parola primită, apoi o poți schimba din Dashboard.'
+        })
       }catch(e){
-        showMsg(e.message || 'A apărut o eroare la trimiterea emailului.', 'error')
+        await window.showPopup?.({ title:'Eroare', message: e.message || 'A apărut o problemă. Reîncearcă.' })
       }
     })
-  </script> -->
-  <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-  const supabase = createClient(
-    'https://gxavdytkcukxnvonasur.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
-  )
-
-  // toggle parolă (opțional)
-  const btnToggle = document.querySelector('.toggle-pwd')
-  const pwd = document.getElementById('password')
-  btnToggle?.addEventListener('click', () => {
-    const show = pwd.type === 'password'
-    pwd.type = show ? 'text' : 'password'
-    btnToggle.textContent = show ? '🙈' : '👁'
-  })
-
-  // ——— Parolă temporară via backend ———
-  document.getElementById('btnTempPwd').addEventListener('click', async ()=>{
-    const email = (document.getElementById('email').value || '').trim()
-    if (!email) { await window.showPopup({ title:'Eroare', message:'Te rog introdu emailul.' }); return }
-
-    try{
-      const r = await fetch('/api/auth/send-temp-password', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ email })
-      })
-      const out = await r.json().catch(()=> ({}))
-      if (!r.ok) throw new Error(out.message || 'Nu am putut trimite parola temporară.')
-
-      await window.showPopup({
-        title:'Email trimis',
-        message:'Ți-am trimis o parolă temporară. Autentifică-te cu emailul + parola primită, apoi o poți schimba din Dashboard.'
-      })
-    }catch(e){
-      await window.showPopup({ title:'Eroare', message: e.message || 'A apărut o problemă. Reîncearcă.' })
-    }
-  })
-</script>
-
+  </script>
 </body>
 </html>
