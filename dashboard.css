@@ -158,3 +158,114 @@ body{ background: var(--bg); color: var(--text); font-family: system-ui, -apple-
 }
 .empty h3{ margin:0 0 6px; color: var(--text); font-weight:800 }
 .empty p{ margin:0 0 12px }
+
+
+
+
+.courses-grid{
+  list-style:none; padding:0; margin:0;
+  display:grid; gap:16px;
+}
+.courses-grid .course{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  grid-template-areas:
+    "img meta"
+    "img desc"
+    "img actions";
+  gap:10px;
+  padding:12px;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.courses-grid .course .img{
+  grid-area: img;
+  width:100%; height:100%; object-fit:cover;
+  border-radius:10px; background:#f6f6f6;
+  min-height:120px;
+}
+.courses-grid .course .meta{ grid-area: meta; }
+.courses-grid .course .title{ display:flex; align-items:center; gap:8px; }
+.courses-grid .course .desc{
+  grid-area: desc;
+  margin: 6px 0 0;
+  color:#444;
+  display:-webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow:hidden;
+}
+.courses-grid .course .actions{ grid-area: actions; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+@media (max-width: 640px){
+  .courses-grid .course{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "img"
+      "meta"
+      "desc"
+      "actions";
+  }
+  .courses-grid .course .img{ max-height: 220px; }
+}
+
+
+
+
+/* în dashboard.css (opțional) */
+#appModal .modal-header{
+  background: linear-gradient(135deg,#1f2937,#0f172a);
+  color:#fff;
+}
+
+
+
+/* === Navbar: permite wrap + shrink pe mobil === */
+.navbar .container-fluid{
+  display:flex;               /* corectează calculele flex */
+  align-items:center;
+}
+
+.navbar .navbar-brand{
+  flex:1 1 auto;              /* ia spațiul rămas, dar poate micșora */
+  min-width:0;                /* IMPORTANT: permite textului să se strângă */
+  white-space:normal !important;  /* anulează nowrap-ul Bootstrap */
+  overflow-wrap:anywhere;     /* rupe cuvintele lungi dacă e nevoie */
+  line-height:1.2;
+}
+
+.navbar .navbar-brand img{ height:28px; width:auto; }
+.navbar .navbar-toggler{ flex:0 0 auto; margin-left:.5rem; }
+
+/* Email-ul din navbar (dacă îl afișezi acolo) să poată face wrap */
+#nav-user .nav-link{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  max-width:100%;
+  padding-top:.5rem;
+  padding-bottom:.5rem;
+}
+
+/* === Offset sub navbar fix — ca să se vadă „Email: …” din pagină === */
+.with-navbar{ padding-top: 96px; }             /* desktop / mediu */
+@media (max-width: 540px){
+  .with-navbar{ padding-top: 120px; }          /* pe ecrane mici, navbar-ul e mai înalt */
+}
+
+/* Email-ul din primul paragraf să se rupă corect și pe cuvinte lungi */
+#userEmail{ overflow-wrap:anywhere; word-break:break-word; }
+
+
+/* butoane custom din hero */
+.btn-cta{
+  display:inline-block; padding:.75rem 1.1rem; border-radius:12px;
+  background: linear-gradient(135deg,#5560ff,#7a80ff); color:#fff; text-decoration:none;
+  box-shadow:0 10px 22px rgba(0,0,0,.18); transition:transform .15s, box-shadow .15s;
+}
+.btn-cta:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.22) }
+
+.btn-ghost{
+  display:inline-block; padding:.72rem 1.05rem; border-radius:12px; 
+  border:1px solid rgba(255,255,255,.6); color:#fff; background:transparent; 
+  text-decoration:none; transition:.15s;
+}
+.btn-ghost:hover{ background:rgba(255,255,255,.12); }

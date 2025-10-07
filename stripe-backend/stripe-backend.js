@@ -5,7 +5,8 @@ const cors = require('cors')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const { Resend } = require('resend')
 const { createClient } = require('@supabase/supabase-js')
-
+const rateLimit = require('express-rate-limit')
+const crypto = require('crypto')
 const app = express()
 
 /* -------------------- CORS -------------------- */
@@ -124,7 +125,8 @@ if (itemId) {
         // 3) trimitem email cu linkul (pentru test: onboarding@resend.dev)
         try {
           await resend.emails.send({
-            from: 'Acme <onboarding@resend.dev>',
+            from: 'Prof&Coach ANCA <orders@mail.anca-farkas-rusu.com>',
+
             to: email,
             subject: 'Accesul tău la curs (PDF)',
             html: `
@@ -150,6 +152,52 @@ if (itemId) {
 // DUPĂ webhook putem folosi JSON global
 app.use(express.json())
 
+/* --------- Parolă temporară via email --------- */
+/* POST /api/auth/send-temp-password  { email }   */
+app.post('/api/auth/send-temp-password', sendTempPwdLimiter, async (req, res) => {
+  try {
+    const { email } = req.body || {}
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: 'Email invalid.' })
+    }
+
+    // 1) caută user
+    const user = await findUserByEmail(email)
+    if (!user) return res.status(404).json({ message: 'Nu există cont cu acest email.' })
+
+    // 2) generează și setează parola temporară
+    const tempPwd = genTempPassword()
+    await updateUserPassword(user.id, tempPwd)
+
+    // 3) trimite email
+    const fromName  = process.env.SEND_FROM_NAME  || 'Education with Style'
+    const fromEmail = process.env.SEND_FROM_EMAIL || 'onboarding@resend.dev'
+
+    await resend.emails.send({
+      from: `${fromName} <${fromEmail}>`,
+      to: email,
+      subject: 'Parola ta temporară',
+      html: `
+        <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif">
+          <h2>Salut!</h2>
+          <p>Ai solicitat o <strong>parolă temporară</strong>.</p>
+          <p>Parola ta temporară este:</p>
+          <p style="font-size:20px;font-weight:700;letter-spacing:.5px;background:#f7f7f9;padding:12px 16px;border-radius:10px;display:inline-block;">
+            ${tempPwd}
+          </p>
+          <p>Autentifică-te cu <strong>emailul</strong> și această parolă, apoi schimb-o din Dashboard → <em>Resetează parola</em>.</p>
+          <hr />
+          <p style="font-size:12px;color:#666">Dacă nu ai cerut tu, schimbă parola imediat după login și anunță-ne.</p>
+        </div>
+      `
+    })
+
+    return res.json({ ok: true })
+  } catch (e) {
+    console.error('❌ /auth/send-temp-password:', e)
+    return res.status(500).json({ message: e.message || 'Eroare internă.' })
+  }
+})
 
 
 
@@ -335,6 +383,66 @@ app.post('/resend-download', async (req, res) => {
 
 
 
+function genTempPassword() {
+  const len = Number(process.env.TEMP_PASSWORD_LENGTH || 10)
+  const alphabet = process.env.TEMP_PASSWORD_ALPHABET || 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
+  let out = ''
+  const bytes = crypto.randomBytes(len)
+  for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length]
+  return out
+}
+
+/* ------ Admin GoTrue REST (căutare user + update parolă) ------ */
+async function findUserByEmail(email) {
+  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`
+  const r = await fetch(url, {
+    headers: {
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+    }
+  })
+  if (!r.ok) throw new Error('Nu am putut căuta utilizatorul.')
+  const data = await r.json()
+  const user = Array.isArray(data?.users) ? data.users.find(u => u.email?.toLowerCase() === email.toLowerCase()) : data
+  return user || null
+}
+
+async function updateUserPassword(userId, newPassword) {
+  const url = `${process.env.SUPABASE_URL}/auth/v1/admin/users/${userId}`
+  const r = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password: newPassword })
+  })
+  if (!r.ok) {
+    const errText = await r.text().catch(() => '')
+    throw new Error(errText || 'Nu am putut seta parola temporară.')
+  }
+}
+
+/* ------ Rate limit pe trimiterea parolei ------ */
+const sendTempPwdLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minut
+  max: 3,              // max 3 cereri/minut/ip
+  standardHeaders: true,
+  legacyHeaders: false
+})
+
+
+
 /* ----------------- Start server ---------------- */
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`))
+
+
+
+
+
+
+
+
+

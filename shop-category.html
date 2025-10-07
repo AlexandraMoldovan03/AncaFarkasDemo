@@ -101,6 +101,7 @@
   // --- CATEGORIE din URL (MUTAT + DEBLOCAT) ---
   const qs  = new URLSearchParams(location.search)
   const CAT = (qs.get('cat') === 'school') ? 'school' : 'exp'   // default 'exp'
+  let currentSub = (qs.get('sub') || '').trim().toLowerCase();
 
   // arată subcapitolele doar pentru categoria "school"
   const subnav = document.getElementById('subnav')
@@ -153,20 +154,28 @@
 
   // --- LISTARE produse, doar după category ---
   const wrap = document.getElementById('products')
+  let prodsAll = []                     // toate produsele din categoria curentă
 
-  async function load(){
-    wrap.innerHTML = '<p>Se încarcă…</p>'
-    const { data: prods, error } = await supabase
-      .from('products')
-      .select('id, name, amount_cents, description, image_url, active, category')
-      .eq('active', true)
-      .eq('category', CAT)
-      .order('id')
+  const norm = v => String(v ?? '').trim().toLowerCase()
 
-    if (error){ wrap.innerHTML = `<p>Eroare: ${error.message}</p>`; return }
-    if (!prods?.length){ wrap.innerHTML = '<p>Nu sunt produse în această categorie.</p>'; return }
+  function setActiveChip(sub){
+    if (!subnav || subnav.hidden) return
+    subnav.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('active', norm(c.dataset.sub) === norm(sub))
+    })
+  }
 
-    wrap.innerHTML = prods.map(p => `
+  function render(){
+    const list = currentSub
+      ? prodsAll.filter(p => norm(p.subcategory) === currentSub)
+      : prodsAll
+
+    if (!list.length) {
+      wrap.innerHTML = '<p>Nu sunt materiale pentru subcategoria aleasă.</p>'
+      return
+    }
+
+    wrap.innerHTML = list.map(p => `
       <article class="card">
         ${p.image_url ? `<img class="card-img" src="${p.image_url}" alt="${p.name}" loading="lazy">` : ''}
         <h3>${p.name}</h3>
@@ -176,26 +185,69 @@
       </article>
     `).join('')
 
-    // imagine contain + „Mai mult” doar la nevoie
+    // aspect ratio real & contain
     document.querySelectorAll('#products .card-img').forEach(img=>{
       const fit=()=>{ if(img.naturalWidth&&img.naturalHeight){ img.style.aspectRatio=`${img.naturalWidth}/${img.naturalHeight}`; img.style.objectFit='contain' } }
       img.complete ? fit() : img.addEventListener('load',fit,{once:true})
     })
+
+    // arată „Mai mult” doar dacă e necesar
     requestAnimationFrame(()=>{
       document.querySelectorAll('#products .desc').forEach(d=>{
         const b = d.nextElementSibling?.classList.contains('more') ? d.nextElementSibling : null
         if (!b) return
-        const clamped = d.scrollHeight > d.clientHeight + 1
-        if (!clamped) b.remove()
+        if (d.scrollHeight <= d.clientHeight + 1) b.remove()
       })
     })
   }
+
+  async function load(){
+    wrap.innerHTML = '<p>Se încarcă…</p>'
+
+    // !!! includem și subcategory aici
+    const { data: prods, error } = await supabase
+      .from('products')
+      .select('id, name, amount_cents, description, image_url, category, subcategory')
+      .eq('active', true)
+      .eq('category', CAT)
+      .order('id')
+
+    if (error){ wrap.innerHTML = `<p>Eroare: ${error.message}</p>`; return }
+
+    prodsAll = (prods ?? []).map(p => ({ ...p, subcategory: norm(p.subcategory) }))
+    // dacă sub din URL nu există, revenim pe „Toate”
+    if (CAT === 'school'){
+      const subs = new Set(prodsAll.map(p=>p.subcategory))
+      if (currentSub && !subs.has(currentSub)) currentSub = ''
+      setActiveChip(currentSub)
+    }
+    render()
+  }
   await load()
 
-  // toggles + checkout
+  // click pe chip-uri (filtru)
+  subnav?.addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip'); if(!chip) return
+    currentSub = norm(chip.dataset.sub || '')
+    setActiveChip(currentSub)
+    // păstrăm filtrul în URL (fără reload)
+    const url = new URL(location.href)
+    currentSub ? url.searchParams.set('sub', currentSub) : url.searchParams.delete('sub')
+    history.replaceState({}, '', url)
+    render()
+  })
+
+  // toggles descriere + checkout (event delegation)
   wrap.addEventListener('click', async e=>{
-    const m = e.target.closest('.more')
-    if (m){ const id=m.dataset.target, p=document.getElementById(id); const ex=p.classList.toggle('expanded'); m.textContent=ex?'Mai puțin':'Mai mult'; m.setAttribute('aria-expanded',String(ex)); return }
+    const more = e.target.closest('.more')
+    if (more){
+      const id = more.dataset.target
+      const p  = document.getElementById(id)
+      const ex = p.classList.toggle('expanded')
+      more.textContent = ex ? 'Mai puțin' : 'Mai mult'
+      more.setAttribute('aria-expanded', String(ex))
+      return
+    }
 
     const btn = e.target.closest('.buy'); if (!btn) return
     const itemId = btn.dataset.id
@@ -215,6 +267,5 @@
     finally{ btn.disabled=false; btn.textContent='Cumpără' }
   })
 </script>
-
 </body>
 </html>

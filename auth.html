@@ -57,10 +57,11 @@
 
   <div class="divider"><span>sau</span></div>
 
-  <div class="extras">
-    <button id="btnReset" class="btn-ghost" type="button">↻ Resetare parolă pe email</button>
-    <a href="/shop.html" class="btn-ghost">→ Mergi la magazin</a>
-  </div>
+<div class="extras">
+  <button id="btnTempPwd" class="btn-ghost" type="button">↻ Primește o parolă temporară pe email</button>
+  <a href="/shop.html" class="btn-ghost">→ Mergi la magazin</a>
+</div>
+
 </section>
 
   </main>
@@ -73,7 +74,7 @@
   </script>
 
   <!-- Resetare parolă: trimite email + redirect către pagina de actualizare parolei -->
-  <script type="module">
+  <!-- <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     const supabase = createClient(
       'https://gxavdytkcukxnvonasur.supabase.co',
@@ -111,6 +112,46 @@
         showMsg(e.message || 'A apărut o eroare la trimiterea emailului.', 'error')
       }
     })
-  </script>
+  </script> -->
+  <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  const supabase = createClient(
+    'https://gxavdytkcukxnvonasur.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
+  )
+
+  // toggle parolă (opțional)
+  const btnToggle = document.querySelector('.toggle-pwd')
+  const pwd = document.getElementById('password')
+  btnToggle?.addEventListener('click', () => {
+    const show = pwd.type === 'password'
+    pwd.type = show ? 'text' : 'password'
+    btnToggle.textContent = show ? '🙈' : '👁'
+  })
+
+  // ——— Parolă temporară via backend ———
+  document.getElementById('btnTempPwd').addEventListener('click', async ()=>{
+    const email = (document.getElementById('email').value || '').trim()
+    if (!email) { await window.showPopup({ title:'Eroare', message:'Te rog introdu emailul.' }); return }
+
+    try{
+      const r = await fetch('/api/auth/send-temp-password', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ email })
+      })
+      const out = await r.json().catch(()=> ({}))
+      if (!r.ok) throw new Error(out.message || 'Nu am putut trimite parola temporară.')
+
+      await window.showPopup({
+        title:'Email trimis',
+        message:'Ți-am trimis o parolă temporară. Autentifică-te cu emailul + parola primită, apoi o poți schimba din Dashboard.'
+      })
+    }catch(e){
+      await window.showPopup({ title:'Eroare', message: e.message || 'A apărut o problemă. Reîncearcă.' })
+    }
+  })
+</script>
+
 </body>
 </html>

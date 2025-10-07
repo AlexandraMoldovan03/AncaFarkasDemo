@@ -300,3 +300,108 @@ html,body{margin:0;padding:0;font-family:'Poppins',sans-serif;color:var(--text);
 
 
 
+/* === SHOP HEADER – FIX MOBILE WRAP === */
+.shop-header{
+  gap: 10px;                 /* puțin spațiu între brand și meniu */
+}
+
+/* Brandul să se poată micșora și să se rupă pe 2 rânduri */
+.shop-header .brand{
+  display: flex; align-items: center; gap: 8px;
+  flex: 1 1 auto;            /* ia spațiul rămas, dar permite micșorare */
+  min-width: 0;              /* IMPORTANT: lasă textul să intre pe două rânduri */
+  white-space: normal;       /* permite wrap */
+  word-break: break-word;    /* rupe dacă e nevoie pe cratimă */
+  text-wrap: balance;        /* wrap mai frumos (unde e suportat) */
+  font-size: clamp(0.95rem, 3.6vw, 1.15rem);
+  line-height: 1.2;
+}
+
+/* dacă ai logo în brand */
+.shop-header .brand img{
+  height: 26px; width: auto; flex: 0 0 auto;
+}
+
+/* Meniul să nu forțeze îngustarea brandului */
+.shop-nav{
+  flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+}
+
+/* Pe ecrane mici ascunde link-urile text din nav (păstrează doar hamburgerul) */
+@media (max-width: 420px){
+  .shop-nav a{ display: none; }
+}
+
+
+
+/* === SHOP HEADER – forțează wrap + shrink pe mobile === */
+
+/* container */
+.shop-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* acoperă toate variantele posibile de brand din markup */
+.shop-header .brand,
+.shop-header .navbar-brand,          /* dacă e link bootstrap */
+.shop-header [data-brand]{
+  display:flex; align-items:center; gap:8px;
+  flex: 1 1 auto;                   /* ia spațiul rămas, dar permite micșorare */
+  min-width: 0;                     /* IMPORTANT pt. flex: lasă conținutul să se strângă */
+  white-space: normal !important;   /* anulează nowrap-ul Bootstrap */
+  overflow-wrap: anywhere;          /* rupe liniile chiar și în cuvinte lungi */
+  word-break: break-word;           /* fallback */
+  line-height: 1.2;
+  font-size: clamp(.95rem, 3.6vw, 1.15rem);
+}
+
+/* logo din brand (dacă există) */
+.shop-header .brand img,
+.shop-header .navbar-brand img{
+  height:26px; width:auto; flex:0 0 auto;
+}
+
+/* navigația să nu împingă brandul */
+.shop-nav{ flex:0 0 auto; display:flex; align-items:center; gap:10px; }
+
+/* pe ecrane foarte mici, ascunde linkurile text din nav (păstrează burgerul) */
+@media (max-width:420px){
+  .shop-nav a{ display:none; }
+}
+
+
+
+
+
+/* Mobile */
+@media (max-width: 576px){
+  #testimonials .prev{ left: 6px; }
+  #testimonials .next{ right: 6px; }
+  #testimonials .testimonial p{ border-radius: 16px; font-size: 1rem; }
+}
+/* ——— Navbar brand: permite wrap + shrink pe mobile ——— */
+.navbar .container-fluid{
+  display: flex;                /* ca să funcționeze flex shrink corect */
+  align-items: center;
+}
+
+.navbar .navbar-brand{
+  flex: 1 1 auto;               /* ia spațiul rămas, dar poate să se micșoreze */
+  min-width: 0;                 /* IMPORTANT: permite conținutului să se strângă */
+  white-space: normal !important;/* anulează nowrap-ul Bootstrap */
+  overflow-wrap: anywhere;      /* rupe textul dacă e nevoie */
+  line-height: 1.2;
+}
+
+/* Toggler-ul rămâne compact pe dreapta */
+.navbar .navbar-toggler{
+  margin-left: .5rem;
+  flex: 0 0 auto;
+}
+
+/* Opțional: pe foarte mic, micșorează puțin logo-ul */
+@media (max-width: 420px){
+  .navbar .navbar-brand img{ height: 28px; width: auto; }
+}
