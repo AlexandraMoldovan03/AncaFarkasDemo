@@ -1661,3 +1661,142 @@ footer i {
   transform: translateY(-50%) scale(1.06);
   box-shadow: 0 14px 30px rgba(18,39,120,.18);
 }
+
+
+
+
+
+/* ——— CTA ghost pentru butonul nou ——— */
+.cta-ghost {
+  background: transparent;
+  color: #111;
+  border: 2px solid rgba(0,0,0,.2);
+}
+.cta-ghost:hover { background: rgba(0,0,0,.06); }
+
+
+
+
+/* să fie deasupra oricărui overlay custom */
+.modal-backdrop { z-index: 1990; }
+.modal          { z-index: 2000; }
+.modal-backdrop.show { opacity: .7; }
+
+/* dialog sus, nu centrat vertical */
+.modal-dialog-top { margin: 1rem auto; }
+
+/* cutia albă a modalului */
+.virtual-content{
+  background:#fff;
+  border:0;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+/* cadrul video – păstrează 9:16 și nu taie conținutul */
+.virtual-frame{
+  position:relative;
+  margin: 0 auto;
+  background:#000;
+  display:grid;
+  place-items:center;
+}
+
+/* video întreg în cadru, fără tăiere */
+.virtual-frame video{
+  width:100%;
+  height:100%;
+  object-fit: contain;
+  background:#000;
+}
+
+/* buton unmute */
+.unmute-btn{
+  position:absolute; left:12px; bottom:12px; z-index:3;
+  display:none; border:0; border-radius:999px; padding:8px 12px; font-size:14px;
+  background:rgba(0,0,0,.65); color:#fff; backdrop-filter:blur(4px);
+}
+.unmute-btn:hover{ background:rgba(0,0,0,.85); }
+/* --- vizită virtuală: strat peste orice overlay custom --- */
+.modal-backdrop { z-index: 1990; }
+.modal          { z-index: 2000; }
+.modal-backdrop.show { opacity: .7; }
+
+/* dialog aliniat sus (nu centrat vertical) */
+.modal-dialog-top { margin: 1rem auto; }
+
+/* cutia albă a modalului */
+.virtual-content{
+  background:#fff;
+  border:0;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+/* spațiul util care rămâne în înălțime pentru cadru (header + footer + margini).
+   Poți regla valoarea dacă folosești un header/footer mai mare. */
+:root{ --vt-chrome: 160px; }          /* spațiu rezervat pe verticală */
+@media (max-height: 640px){
+  :root{ --vt-chrome: 180px; }        /* ecrane foarte scurte: un pic mai mult */
+}
+
+/* containerul video – centrează și ține 9:16 fără să taie conținutul */
+.virtual-shell{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding: 0;                          /* zero padding ca să nu stricăm calc-urile */
+}
+
+/* trucul de dimensionare:
+   - nu depășim lățimea viewport-ului (96vw pentru un mic “respir”)
+   - nu depășim nici înălțimea utilă: (100dvh - --vt-chrome) convertită la lățime 9:16
+   - păstrăm raportul 9/16 cu aspect-ratio */
+.virtual-frame{
+  position:relative;
+  background:#000;
+  display:grid;
+  place-items:center;
+
+  width: min(96vw, calc((100dvh - var(--vt-chrome)) * 9 / 16));
+  max-width: 560px;                    /* plafon plăcut pe desktop; ajustează dacă vrei */
+  aspect-ratio: 9 / 16;
+  max-height: calc(100dvh - var(--vt-chrome));
+  margin: 0 auto;
+}
+
+/* video întreg în cadru, fără tăiere */
+.virtual-frame video{
+  width:100%;
+  height:100%;
+  object-fit: contain;
+  background:#000;
+}
+
+/* butonul “Sunet” peste video */
+.unmute-btn{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  z-index:3;
+  display:none;                        /* JS îl face vizibil la deschidere */
+  border:0;
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:14px;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  backdrop-filter:blur(4px);
+}
+.unmute-btn:hover{ background:rgba(0,0,0,.85); }
+
+/* bara de jos a modalului: mereu vizibilă și compactă */
+.virtual-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px;
+  border-top:1px solid #eee;
+  background:#fff;
+}

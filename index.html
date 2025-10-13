@@ -133,6 +133,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="auth.html">Login</a>
                         </li>
+                                                
+                        <li class="nav-item">
+                          <a class="nav-link" href="/galerie.html">Galerie</a>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -178,6 +183,9 @@
                 <a href="shop.html" class="cta-button" style="background-color: #343a40; color: white;">
                 <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Shop
                 </a>
+                 <button id="btnVirtualTour" class="cta-button cta-ghost ripple" type="button">
+                 <i class="fa-solid fa-vr-cardboard" style="margin-right:8px;"></i> Vizită virtuală
+                 </button>
             </div>
 
 
@@ -833,6 +841,85 @@
   window.addEventListener('load', kick);
 })();
 </script>
+
+
+
+<script type="module">
+(() => {
+  const btnVirtual = document.getElementById('btnVirtualTour');
+  const modalEl    = document.getElementById('virtualTourModal');
+  const videoEl    = document.getElementById('virtualVideo');
+  const unmuteBtn  = document.getElementById('unmuteBtn');
+  if (!btnVirtual || !modalEl || !videoEl) return;
+
+  // dacă din greșeală a rămas în alt container, mută-l sub <body>
+  if (modalEl.parentElement !== document.body) document.body.appendChild(modalEl);
+
+  const modal = new bootstrap.Modal(modalEl, { backdrop: true, focus: true });
+
+  btnVirtual.addEventListener('click', () => modal.show());
+
+  modalEl.addEventListener('shown.bs.modal', async () => {
+    try { videoEl.muted = true; await videoEl.play(); } catch {}
+    if (unmuteBtn) unmuteBtn.style.display = 'inline-flex';
+  });
+
+  modalEl.addEventListener('hidden.bs.modal', () => {
+    videoEl.pause(); videoEl.currentTime = 0; videoEl.muted = true;
+    if (unmuteBtn) unmuteBtn.style.display = 'none';
+  });
+
+  unmuteBtn?.addEventListener('click', async () => {
+    try { videoEl.muted = false; videoEl.volume = 1; await videoEl.play(); unmuteBtn.style.display = 'none'; } catch {}
+  });
+
+  // opțional: deschide direct cu ?virtual=1
+  if (new URL(location.href).searchParams.get('virtual') === '1') btnVirtual.click();
+})();
+</script>
+
+<!-- Modal: Vizită virtuală -->
+<div class="modal fade" id="virtualTourModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" id="virtualDlg" role="document">
+    <div class="modal-content virtual-content">
+
+      <!-- X în colț -->
+      <button type="button" class="btn-close position-absolute end-0 top-0 m-2 z-3"
+              data-bs-dismiss="modal" aria-label="Închide"></button>
+
+      <!-- Conținut video -->
+      <div class="virtual-shell">
+        <div class="virtual-frame">
+          <video id="virtualVideo"
+                 preload="metadata"
+                 playsinline
+                 webkit-playsinline
+                 controls
+                 muted
+                 poster="shop.jpg">
+            <source src="vizitaVirtuala.mp4" type="video/mp4">
+            Browserul tău nu suportă redarea video.
+          </video>
+
+          <!-- Buton Unmute (opțional) -->
+          <button id="unmuteBtn" type="button" class="unmute-btn" aria-label="Activează sunetul">
+            <i class="fa-solid fa-volume-high"></i> Sunet
+          </button>
+        </div>
+      </div>
+
+      <!-- Bara de jos -->
+      <div class="virtual-footer">
+        <small class="text-muted">
+          <i class="fa-solid fa-mobile-screen-button me-1"></i> Video vertical (9:16)
+        </small>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Închide</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>

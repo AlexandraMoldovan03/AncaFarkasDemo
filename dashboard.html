@@ -57,7 +57,7 @@
       </div>
     </section>
 
-    <section class="container mb-4">
+    <!-- <section class="container mb-4">
   <div class="p-3 p-md-4 rounded-3 border bg-light d-flex flex-column flex-md-row align-items-md-center justify-content-between">
     <div>
       <div class="small text-muted">Autentificat ca</div>
@@ -68,7 +68,7 @@
       <a href="/shop.html" class="btn btn-primary">Cumpără alte cursuri</a>
     </div>
   </div>
-</section>
+</section> -->
 
 
     <!-- LISTA CURSURILOR -->
@@ -131,11 +131,13 @@
 
   <!-- Nav + an + logout (mini) -->
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-    const supabase = createClient(
-      'https://gxavdytkcukxnvonasur.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
-    )
+   // import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    // const supabase = createClient(
+    //   'https://gxavdytkcukxnvonasur.supabase.co',
+    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
+    // )
+    window.supabaseClient = supabase;
+
     document.getElementById('year').textContent = new Date().getFullYear()
 
     const { data:{ user } } = await supabase.auth.getUser()
@@ -168,44 +170,6 @@
 
 
   <script type="module" src="./dashboard.js">
-
-
-
-// ====== Resetare parolă din Dashboard ======
-const pwdModalEl = document.getElementById('pwdModal');
-const pwdModal = new bootstrap.Modal(pwdModalEl);
-const openPwdBtn = document.getElementById('btnOpenPwd');
-const savePwdBtn = document.getElementById('btnSavePwd');
-const pwdMsg = document.getElementById('pwdMsg');
-
-openPwdBtn?.addEventListener('click', () => {
-  document.getElementById('pwd1').value = '';
-  document.getElementById('pwd2').value = '';
-  pwdMsg.className = 'mt-2 small d-none';
-  pwdMsg.textContent = '';
-  pwdModal.show();
-});
-
-function showPwdMsg(text, ok = true){
-  pwdMsg.textContent = text;
-  pwdMsg.className = `mt-2 small ${ok ? 'text-success' : 'text-danger'}`;
-}
-
-savePwdBtn?.addEventListener('click', async ()=>{
-  const p1 = document.getElementById('pwd1').value.trim();
-  const p2 = document.getElementById('pwd2').value.trim();
-  if (!p1 || p1.length < 6) { showPwdMsg('Parola trebuie să aibă minim 6 caractere.', false); return; }
-  if (p1 !== p2)           { showPwdMsg('Parolele nu coincid.', false); return; }
-
-  try{
-    const { error } = await supabase.auth.updateUser({ password: p1 });
-    if (error) throw error;
-    showPwdMsg('Parola a fost schimbată. Data viitoare te vei loga cu noua parolă.', true);
-    setTimeout(()=> pwdModal.hide(), 900);
-  }catch(e){
-    showPwdMsg(e.message || 'Nu am putut actualiza parola.', false);
-  }
-});
 
 
 
@@ -257,6 +221,51 @@ savePwdBtn?.addEventListener('click', async ()=>{
   </div>
 </div>
 
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+  const supabase = window.supabaseClient;
+  if (!supabase) {
+    console.error('Supabase client missing'); 
+    // opțional: poți afișa un mesaj frumos
+  }
+
+  const modalEl = document.getElementById('pwdModal');
+  const modal = new bootstrap.Modal(modalEl);
+  const btnOpen = document.getElementById('btnOpenPwd');
+  const btnSave = document.getElementById('btnSavePwd');
+  const msg = document.getElementById('pwdMsg');
+
+  const openPwd = () => {
+    document.getElementById('pwd1').value = '';
+    document.getElementById('pwd2').value = '';
+    msg.className = 'mt-2 small d-none';
+    msg.textContent = '';
+    modal.show();
+  };
+  btnOpen?.addEventListener('click', openPwd);
+
+  function showPwdMsg(text, ok = true){
+    msg.textContent = text;
+    msg.className = `mt-2 small ${ok ? 'text-success' : 'text-danger'}`;
+  }
+
+  btnSave?.addEventListener('click', async ()=>{
+    const p1 = document.getElementById('pwd1').value.trim();
+    const p2 = document.getElementById('pwd2').value.trim();
+    if (!p1 || p1.length < 6) { showPwdMsg('Parola trebuie să aibă minim 6 caractere.', false); return; }
+    if (p1 !== p2)           { showPwdMsg('Parolele nu coincid.', false); return; }
+
+    try{
+      const { error } = await supabase.auth.updateUser({ password: p1 });
+      if (error) throw error;
+      showPwdMsg('Parola a fost schimbată. Te vei loga cu noua parolă data viitoare.', true);
+      setTimeout(()=> modal.hide(), 900);
+    }catch(e){
+      showPwdMsg(e?.message || 'Nu am putut actualiza parola.', false);
+    }
+  });
+</script>
 
 </body>
 </html>

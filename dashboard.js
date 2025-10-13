@@ -184,6 +184,3 @@ function fixOffset(){
 
 
 
-  document.getElementById('btnOpenPwd2')?.addEventListener('click', () => openPwdBtn?.click());
-document.getElementById('userEmailCard').textContent = user?.email || '—';
-document.getElementById('userEmail').textContent = user?.email || '—'; // ai deja elementul în HERO
