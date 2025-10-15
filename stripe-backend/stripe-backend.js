@@ -327,7 +327,7 @@ app.post('/create-checkout-session', async (req, res) => {
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const successURL =
-  process.env.SUCCESS_URL || new URL('/succes.html', FRONTEND_URL).href;
+  process.env.SUCCESS_URL || new URL('/success.html', FRONTEND_URL).href;
 
 const cancelURL  =
   process.env.CANCEL_URL  || new URL('/anulare.html', FRONTEND_URL).href;
