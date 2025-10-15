@@ -323,9 +323,15 @@ app.post('/create-checkout-session', async (req, res) => {
     }
     if (!prod) return res.status(404).json({ error: 'Product not found' })
 
-    // URLs (poți seta în .env: SUCCESS_URL / CANCEL_URL)
-SUCCESS_URL=https://anca-farkas-test.vercel.app/succes.html
-CANCEL_URL=https://anca-farkas-test.vercel.app/anulare.html
+    // === URL-urile de redirect Stripe (JS corect) ====================
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+const successURL =
+  process.env.SUCCESS_URL || new URL('/succes.html', FRONTEND_URL).href;
+
+const cancelURL  =
+  process.env.CANCEL_URL  || new URL('/anulare.html', FRONTEND_URL).href;
+
 
 
     // Linie Stripe: preferă price din Stripe dacă există; altfel price_data din DB
