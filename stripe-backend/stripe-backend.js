@@ -9,6 +9,19 @@ const rateLimit = require('express-rate-limit')
 const crypto = require('crypto')
 const app = express()
 
+
+/* ---- Root & health ---- */
+app.get('/', (_req, res) => {
+  res.json({
+    ok: true,
+    service: 'stripe-backend',
+    version: '1.0.0'
+  });
+});
+
+app.get('/health', (_req, res) => res.send('OK'));
+
+
 /* -------------------- CORS -------------------- */
 app.use(cors({
   origin: [
@@ -463,6 +476,19 @@ app.post('/resend-download', async (req, res) => {
 })
 
 
+/* ---- 404 pentru rute inexistente (non-API) ---- */
+app.use((req, res, next) => {
+  if (req.method === 'GET') {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  next();
+});
+
+/* ---- handler global de erori ---- */
+app.use((err, _req, res, _next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
 
 
