@@ -16,12 +16,10 @@ export default defineConfig({
         confidentialitatecookie: 'confidentialitate-cookie.html',
         contact: 'contact.html',
         dashboard: 'dashboard.html',
-        galerie: 'galerie.html',
-        index: 'index.html',
         reset: 'reset.html',
         retur: 'retur.html',
         shopCategory: 'shop-category.html',
-        success: 'succes.html',
+        success: 'success.html',
         termeni: 'termeni.html',
         updatePassword: 'update-password.html'
 

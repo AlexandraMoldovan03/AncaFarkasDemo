@@ -324,8 +324,9 @@ app.post('/create-checkout-session', async (req, res) => {
     if (!prod) return res.status(404).json({ error: 'Product not found' })
 
     // URLs (poți seta în .env: SUCCESS_URL / CANCEL_URL)
-    const successURL = process.env.SUCCESS_URL || 'http://localhost:5173/success.html'
-    const cancelURL  = process.env.CANCEL_URL  || 'http://localhost:5173/anulare.html'
+SUCCESS_URL=https://anca-farkas-test.vercel.app/succes.html
+CANCEL_URL=https://anca-farkas-test.vercel.app/anulare.html
+
 
     // Linie Stripe: preferă price din Stripe dacă există; altfel price_data din DB
     const lineItems = prod.stripe_price_id
