@@ -19,18 +19,40 @@ app.get('/', (_req, res) => {
   });
 });
 
-app.get('/health', (_req, res) => res.send('OK'));
+
 
 
 /* -------------------- CORS -------------------- */
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://www.anca-farkas-rusu.com'
-  ],
-  methods: ['GET', 'POST'],
-  credentials: true
-}))
+// adaugă TOATE origin-urile reale ale frontendului tău
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'https://anca-farkas-test-cty6.vercel.app', // Vercel app (exact așa cum apare în adresă)
+  'https://www.anca-farkas-rusu.com',         // domeniul tău (dacă îl folosești)
+  'https://anca-farkas.ro'                     // alt domeniu (dacă îl folosești)
+];
+
+// funcție care permite doar origin-urile de mai sus (sau fără Origin – ex. curl/health)
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    return cb(new Error('Origin not allowed by CORS: ' + origin));
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400,
+  credentials: false // nu folosești cookie-uri; ai Bearer token -> ține-l pe false
+};
+
+// aplică CORS la toate rutele + răspunde la preflight
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+// (opțional, ajută la cache corect când CORS variază)
+app.use((req, res, next) => {
+  res.header('Vary', 'Origin');
+  next();
+});
+
 
 /* ------------- Supabase server client ---------- */
 // ATENȚIE: service key DOAR pe backend!
@@ -300,7 +322,8 @@ app.post('/api/auth/send-temp-password', sendTempPwdLimiter, async (req, res) =>
 
 
 /* ----------------- Healthcheck ---------------- */
-app.get('/health', (_req, res) => res.send('ok'))
+app.get('/healthz', (_req, res) => res.status(200).send('ok'));
+
 
 /* ------ Create Checkout Session (din DB `products`) -------- */
 app.post('/create-checkout-session', async (req, res) => {
