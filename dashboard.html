@@ -129,109 +129,47 @@
     &copy; <span id="year"></span> — Toate drepturile rezervate.
   </footer>
 
-  <!-- Nav + an + logout (mini) -->
-  <script type="module">
-   // import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-    // const supabase = createClient(
-    //   'https://gxavdytkcukxnvonasur.supabase.co',
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
-    // )
-    window.supabaseClient = supabase;
-
-    document.getElementById('year').textContent = new Date().getFullYear()
-
-    const { data:{ user } } = await supabase.auth.getUser()
-    const elUser = document.getElementById('nav-user')
-    const elEmail = document.getElementById('navEmail')
-    if (user?.email){ elUser?.classList.remove('d-none'); elEmail.textContent = user.email }
-
-    document.getElementById('btnLogout').addEventListener('click', async()=>{
-      await supabase.auth.signOut(); location.href = '/auth.html'
-    })
-
-    // Observă când dashboard.js a populat #courses —> actualizează contor + empty-state
-    const list = document.getElementById('courses')
-    const empty = document.getElementById('empty')
-    const countSpan = document.getElementById('courseCount')
-
-    const refresh = ()=>{
-      // numărăm doar elementele <li> reale (ignorăm placeholderul „Încărcare...” dacă rămâne)
-      const items = Array.from(list.querySelectorAll(':scope > li'))
-      const count = items.filter(li => !li.classList.contains('sk-placeholder')).length
-      countSpan.textContent = String(count)
-      empty.classList.toggle('d-none', count > 0)
-    }
-
-    // inițial și la orice modificare
-    refresh()
-    const mo = new MutationObserver(refresh)
-    mo.observe(list, { childList:true, subtree:false })
-  </script>
-
-
-  <script type="module" src="./dashboard.js">
-
-
-
-
-  </script>
-
-  <!-- App Modal (frumos, cu OK) -->
-<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg">
-      <div class="modal-header">
-        <h5 class="modal-title" id="appModalTitle">Mesaj</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
-      </div>
-      <div class="modal-body" id="appModalBody">
-        <!-- aici setăm din JS textul -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="appModalOk" data-bs-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Modal: Resetează parola -->
-<div class="modal fade" id="pwdModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content shadow">
-      <div class="modal-header">
-        <h5 class="modal-title">Schimbă parola</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-2">
-          <input type="password" id="pwd1" class="form-control" placeholder="Parolă nouă (min 6 caractere)">
-        </div>
-        <div>
-          <input type="password" id="pwd2" class="form-control" placeholder="Confirmă parola">
-        </div>
-        <div id="pwdMsg" class="mt-2 small d-none"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
-        <button id="btnSavePwd" class="btn btn-primary">Salvează</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-  const supabase = window.supabaseClient;
-  if (!supabase) {
-    console.error('Supabase client missing'); 
-    // opțional: poți afișa un mesaj frumos
+  // 1) Creează clientul (poți lăsa cheile inline sau din env; anon key e publică by design)
+  const SUPABASE_URL = import.meta?.env?.VITE_SUPABASE_URL || 'https://gxavdytkcukxnvonasur.supabase.co';
+  const SUPABASE_ANON = import.meta?.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+
+  // 2) Expune pe window pentru dashboard.js
+  window.supabaseClient = supabase;
+
+  // 3) UI – anul curent
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // 4) Afișează emailul în navbar + în „Email: —”
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    const elUser = document.getElementById('nav-user');
+    const elEmail = document.getElementById('navEmail');
+    const elUserEmail = document.getElementById('userEmail');
+    if (user?.email) {
+      elUser?.classList.remove('d-none');
+      if (elEmail) elEmail.textContent = user.email;
+      if (elUserEmail) elUserEmail.textContent = user.email;
+    }
+  } catch (e) {
+    console.warn('auth.getUser failed:', e);
   }
 
+  // 5) Logout
+  document.getElementById('btnLogout')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    location.href = '/auth.html';
+  });
+
+  // 6) Modal „Resetează parola”
   const modalEl = document.getElementById('pwdModal');
-  const modal = new bootstrap.Modal(modalEl);
+  const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
   const btnOpen = document.getElementById('btnOpenPwd');
   const btnSave = document.getElementById('btnSavePwd');
   const msg = document.getElementById('pwdMsg');
@@ -241,7 +179,7 @@
     document.getElementById('pwd2').value = '';
     msg.className = 'mt-2 small d-none';
     msg.textContent = '';
-    modal.show();
+    modal?.show();
   };
   btnOpen?.addEventListener('click', openPwd);
 
@@ -250,22 +188,41 @@
     msg.className = `mt-2 small ${ok ? 'text-success' : 'text-danger'}`;
   }
 
-  btnSave?.addEventListener('click', async ()=>{
+  btnSave?.addEventListener('click', async () => {
     const p1 = document.getElementById('pwd1').value.trim();
     const p2 = document.getElementById('pwd2').value.trim();
     if (!p1 || p1.length < 6) { showPwdMsg('Parola trebuie să aibă minim 6 caractere.', false); return; }
     if (p1 !== p2)           { showPwdMsg('Parolele nu coincid.', false); return; }
-
-    try{
+    try {
       const { error } = await supabase.auth.updateUser({ password: p1 });
       if (error) throw error;
       showPwdMsg('Parola a fost schimbată. Te vei loga cu noua parolă data viitoare.', true);
-      setTimeout(()=> modal.hide(), 900);
-    }catch(e){
+      setTimeout(() => modal?.hide(), 900);
+    } catch (e) {
       showPwdMsg(e?.message || 'Nu am putut actualiza parola.', false);
     }
   });
+
+  // 7) Contor cursuri / empty state (rămâne cum l-ai scris)
+  const list = document.getElementById('courses');
+  const empty = document.getElementById('empty');
+  const countSpan = document.getElementById('courseCount');
+  const refresh = () => {
+    const items = Array.from(list.querySelectorAll(':scope > li'));
+    const count = items.filter(li => !li.classList.contains('sk-placeholder')).length;
+    countSpan.textContent = String(count);
+    empty.classList.toggle('d-none', count > 0);
+  };
+  refresh();
+  const mo = new MutationObserver(refresh);
+  mo.observe(list, { childList: true, subtree: false });
 </script>
+
+<!-- IMPORTANT: după scriptul de mai sus -->
+<script type="module" src="./dashboard.js"></script>
+
+
+
 
 </body>
 </html>
