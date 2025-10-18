@@ -21,37 +21,58 @@ app.get('/', (_req, res) => {
 
 
 
-
 /* -------------------- CORS -------------------- */
-// adaugă TOATE origin-urile reale ale frontendului tău
-const ALLOWED_ORIGINS = [
-  'http://localhost:5173',
-  'https://anca-farkas-test-cty6.vercel.app', // Vercel app (exact așa cum apare în adresă)
-  'https://www.anca-farkas-rusu.com',         // domeniul tău (dacă îl folosești)
-  'https://anca-farkas.ro'                     // alt domeniu (dacă îl folosești)
-];
 
-// funcție care permite doar origin-urile de mai sus (sau fără Origin – ex. curl/health)
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
-    return cb(new Error('Origin not allowed by CORS: ' + origin));
+    // permite localhost, orice *.vercel.app și domeniile tale
+    if (!origin) return cb(null, true); // curl/health etc.
+    try {
+      const u = new URL(origin);
+      const host = u.hostname;
+      const ok =
+        origin === 'http://localhost:5173' ||
+        host.endsWith('.vercel.app') ||
+        host === 'www.anca-farkas-rusu.com' ||
+        host === 'anca-farkas.ro' 
+      return cb(null, ok);
+    } catch {
+      return cb(null, false);
+    }
   },
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  // mai simplu: lasă cors să reflecte header-ele cerute de browser
+  allowedHeaders: undefined, // (reflectă Access-Control-Request-Headers)
   maxAge: 86400,
-  credentials: false // nu folosești cookie-uri; ai Bearer token -> ține-l pe false
+  credentials: false, // folosești Bearer, nu cookie-uri
+  optionsSuccessStatus: 204
 };
 
-// aplică CORS la toate rutele + răspunde la preflight
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+// (opțional) pentru cache corect când Origin diferă
+app.use((req, res, next) => { res.header('Vary', 'Origin'); next(); });
 
-// (opțional, ajută la cache corect când CORS variază)
-app.use((req, res, next) => {
-  res.header('Vary', 'Origin');
-  next();
-});
+
+
+
+
+async function fetchJSON(url, opts = {}, { timeoutMs = 15000, retries = 1 } = {}) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort('timeout'), timeoutMs);
+  try {
+    const resp = await fetch(url, { ...opts, signal: ctrl.signal, mode: 'cors', cache: 'no-store' });
+    clearTimeout(t);
+    return resp;
+  } catch (e) {
+    clearTimeout(t);
+    if (retries > 0) {
+      try { await fetch(`${API_BASE}/healthz`, { mode:'cors' }); } catch {}
+      return fetchJSON(url, opts, { timeoutMs, retries: retries - 1 });
+    }
+    throw e;
+  }
+}
 
 
 /* ------------- Supabase server client ---------- */
@@ -64,7 +85,94 @@ const supa = createClient(
 /* ----------------- Resend --------------------- */
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+/* ---------- Email templates (Anca Farkas-Rusu) ---------- */
+function emailText({ productName='materialul tău', link, ttlHours=24 }) {
+  return [
+    `Mulțumesc pentru încredere!`,
+    ``,
+    `Poți descărca ${productName} de aici (link valabil ${ttlHours}h):`,
+    link,
+    ``,
+    `Dacă linkul expiră, îl poți regenera oricând din contul tău, în Dashboard.`,
+    ``,
+    `Cu drag,`,
+    `Anca Farkas-Rusu`,
+    (process.env.BRAND_SITE_URL || '')
+  ].join('\n');
+}
 
+function emailHtml({ productName='materialul tău', intro='Mulțumesc pentru încredere!', link, ttlHours=24 }) {
+  const fromName  = process.env.SEND_FROM_NAME  || 'Anca Farkas-Rusu';
+  const siteUrl   = process.env.BRAND_SITE_URL  || 'https://www.anca-farkas-rusu.com';
+  const logoUrl   = process.env.BRAND_LOGO_URL  || 'https://anca-farkas-test-cty6.vercel.app/logo1.jpg';
+  const support   = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
+
+  return `
+  <!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(productName)}</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f6f7fb;">
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="center" style="padding:28px 16px;">
+          <table width="100%" style="max-width:640px;background:#ffffff;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.08);overflow:hidden;">
+            <tr>
+              <td align="center" style="background:#0b0f0c;padding:18px 20px;">
+                ${logoUrl ? `<img src="${logoUrl}" alt="${escapeHtml(fromName)}" width="52" height="52" style="display:block;border-radius:10px;">` : ''}
+                <div style="font:600 16px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#f1f5f9;margin-top:10px;">
+                  ${escapeHtml(fromName)}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px 24px 6px 24px;font:400 15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#17202a;">
+                <h1 style="margin:0 0 10px 0;font:700 22px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0b0f0c;">
+                  ${escapeHtml(productName)}
+                </h1>
+                <p style="margin:0 0 18px 0;">${escapeHtml(intro)}</p>
+                <p style="margin:0 0 22px 0;">Apasă pe butonul de mai jos pentru a descărca materialul. Linkul rămâne activ <strong>${ttlHours} ore</strong>.</p>
+                <table cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td align="center" bgcolor="#1f7a4f" style="border-radius:10px;">
+                      <a href="${link}" target="_blank" rel="noopener"
+                         style="display:inline-block;padding:12px 20px;font:600 15px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#ffffff;text-decoration:none;">
+                        Descarcă acum
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:18px 0 0 0;font-size:13px;color:#6b7280;">
+                  Dacă butonul nu funcționează, copiază linkul în browser:<br>
+                  <a href="${link}" target="_blank" rel="noopener" style="color:#0ea5e9;word-break:break-all;">${link}</a>
+                </p>
+                <hr style="border:none;border-top:1px solid #e9eef3;margin:24px 0;">
+                <p style="margin:0 0 8px 0;">Dacă linkul expiră, îl poți regenera din <a href="${siteUrl}" target="_blank" style="color:#0ea5e9;">Dashboard</a>.</p>
+                ${support ? `<p style="margin:0;color:#6b7280;font-size:13px;">Întrebări? Scrie-mi la <a href="mailto:${support}" style="color:#0ea5e9;">${support}</a>.</p>` : ''}
+                <p style="margin:18px 0 0 0;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="background:#f3f5f8;padding:14px 20px;color:#6b7280;font:400 12px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
+                © ${new Date().getFullYear()} ${escapeHtml(fromName)} — Toate drepturile rezervate
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>`;
+}
+
+function escapeHtml(s=''){ 
+  return String(s).replace(/[&<>"']/g, m=>({ 
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' 
+  }[m])); 
+}
 
 /* -------------- Stripe webhook ---------------- */
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -221,18 +329,23 @@ if (itemId) {
       } else if (email) {
         // 3) trimitem email cu linkul (pentru test: onboarding@resend.dev)
         try {
-          await resend.emails.send({
-            from: 'Prof&Coach ANCA <orders@mail.anca-farkas-rusu.com>',
+          if (email && signed?.signedUrl) {
+  const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+  const productName = prod?.name || 'Cursul tău';
+  await resend.emails.send({
+    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+    to: email,
+    subject: `Acces la ${productName} — link de descărcare`,
+    text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+    html: emailHtml({
+      productName,
+      link: signed.signedUrl,
+      ttlHours,
+      intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
+    })
+  });
+}
 
-            to: email,
-            subject: 'Accesul tău la curs (PDF)',
-            html: `
-              <p>Mulțumim pentru achiziție!</p>
-              <p>Poți descărca PDF-ul de aici (link valabil ${Math.floor(ttl/3600)}h):</p>
-              <p><a href="${signed.signedUrl}" target="_blank" rel="noreferrer">Descarcă PDF</a></p>
-              <p>Dacă expiră, îl poți descărca și din cont, în Dashboard.</p>
-            `
-          })
           console.log('📧 Email trimis către', email)
         } catch (mailErr) {
           console.error('❌ Email error:', mailErr)
@@ -488,15 +601,22 @@ app.post('/resend-download', async (req, res) => {
 
     if (sErr) return res.status(500).json({ error: 'Sign error: ' + sErr.message })
 
-    await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
-      to: user.email,
-      subject: `Link de descărcare — ${prod?.name || 'material'}`,
-      html: `
-        <p>Iată linkul tău de descărcare (valabil ${Math.floor(ttl/3600)}h):</p>
-        <p><a href="${signed.signedUrl}" target="_blank" rel="noreferrer">Descarcă</a></p>
-      `
-    })
+    const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+const productName = prod?.name || 'materialul tău';
+
+await resend.emails.send({
+  from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+  to: user.email,
+  subject: `Link de descărcare — ${productName}`,
+  text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+  html: emailHtml({
+    productName,
+    link: signed.signedUrl,
+    ttlHours,
+    intro: 'Regenerez linkul tău de descărcare. Spor la studiu și inspirație!'
+  })
+});
+
 
     return res.json({ ok: true })
   } catch (e) {

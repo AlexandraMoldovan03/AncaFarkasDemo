@@ -141,7 +141,8 @@ const showPopup = (title='Mesaj', message='', variant='primary') => {
           try { const u = new URL(url); u.searchParams.delete('download'); url = u.toString() } catch {}
           window.open(url, '_blank', 'noopener')
         } catch (e) {
-          showPopup('Nu am putut deschide fișierul', e.message || 'Eroare necunoscută.', 'danger')
+         notify({ title:'Nu am putut deschide fișierul', message: e?.message || 'Eroare necunoscută.', variant:'danger' });
+
         } finally {
           btn.disabled = false; btn.textContent = 'Deschide'
         }
@@ -162,9 +163,11 @@ const showPopup = (title='Mesaj', message='', variant='primary') => {
           })
           const js = await resp.json().catch(()=>({}))
           if (!resp.ok || !js?.ok) throw new Error(js?.error || 'Nu am putut trimite emailul.')
-          showPopup('Gata!', 'Ți-am trimis emailul cu linkul de descărcare.', 'success')
+          notify({ title: 'Gata!', message: 'Ți-am trimis emailul cu linkul de descărcare.', variant: 'success' });
+
         } catch (e) {
-          showPopup('Eroare', e.message || 'Eroare la trimiterea emailului.', 'danger')
+         notify({ title: 'Eroare', message: e?.message || 'Eroare la trimiterea emailului.', variant: 'danger' });
+
         } finally {
           btn.disabled = false; btn.textContent = 'Trimite link de descărcare pe email'
         }
