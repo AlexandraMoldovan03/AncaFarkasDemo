@@ -104,11 +104,7 @@ function emailText({ productName='materialul tău', link, ttlHours=24 }) {
 function emailHtml({ productName='materialul tău', intro='Mulțumesc pentru încredere!', link, ttlHours=24 }) {
   const fromName  = process.env.SEND_FROM_NAME  || 'Anca Farkas-Rusu';
   const siteUrl   = process.env.BRAND_SITE_URL  || 'https://www.anca-farkas-rusu.com';
- const logoUrl = process.env.BRAND_LOGO_URL 
-  || (process.env.NODE_ENV === 'production'
-      ? 'https://www.anca-farkas-rusu.com/logo1.jpg'
-      : 'https://anca-farkas-test-cty6.vercel.app/logo1.jpg');
-
+  const logoUrl   = process.env.BRAND_LOGO_URL  || 'https://anca-farkas-test-cty6.vercel.app/logo1.jpg';
   const support   = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
 
   return `
@@ -242,48 +238,65 @@ async function updateUserPassword(userId, newPassword) {
 
 
 // IMPORTANT: raw body DOAR pe ruta webhook
-// IMPORTANT: raw body DOAR pe ruta webhook
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-
+  const sig = req.headers['stripe-signature']
+  let event
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret)
   } catch (err) {
-    console.error('❌ Webhook error:', err.message);
-    return res.status(400).send(`Webhook error: ${err.message}`);
+    console.error('❌ Webhook error:', err.message)
+    return res.status(400).send(`Webhook error: ${err.message}`)
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session   = event.data.object;
-    const email     = session.metadata?.user_email
-                   || session.customer_details?.email
-                   || session.customer_email || null;
-    const amount    = session.amount_total ?? null;
-    const status    = session.payment_status ?? null;
-    const sessionId = session.id;
-    const itemId    = session.metadata?.item_id ?? null;
+    const session = event.data.object
 
-    // 1) Produs + bucket + path + name (pt. email)
-    let bucket   = 'product-files';
-    let filePath = 'curs-1.pdf';
-    let prodRow  = null;
+    // email din mai multe surse
+    const email =
+      session.metadata?.user_email ||
+      session.customer_details?.email ||
+      session.customer_email || null
 
-    if (itemId) {
-      const { data, error: pErr } = await supa
-        .from('products')
-        .select('file_path, file_bucket, name')
-        .eq('id', String(itemId))
-        .eq('active', true)
-        .maybeSingle();
+    const amount = session.amount_total ?? null
+    const status = session.payment_status ?? null
+    const sessionId = session.id
+    const itemId = session.metadata?.item_id ?? null
 
-      if (pErr) console.error('❌ products query error:', pErr);
-      if (data?.file_path)  filePath = data.file_path;
-      if (data?.file_bucket) bucket  = data.file_bucket;
-      prodRow = data || null;
-    }
+    // // Map produs -> fișier PDF din Storage (pentru început)
+    // // (Mai târziu: tabel "products" în DB)
+    // const itemToFile = new Map([
+    //   ['1', 'curs1.pdf'],
+    //   ['2', 'curs2.pdf'],
+    // ])
+    // const filePath = itemToFile.get(String(itemId)) || 'curs-1.pdf'
 
-    // 2) Salvăm achiziția
+
+    // Ia file_path din products
+  // ACUM: ia și file_bucket
+let bucket = 'product-files'
+let filePath = 'curs-1.pdf'
+
+if (itemId) {
+  const { data: prod, error: pErr } = await supa
+    .from('products')
+    .select('file_path, file_bucket')
+    .eq('id', String(itemId))
+    .eq('active', true)
+    .maybeSingle()
+
+  if (pErr) console.error('❌ products query error:', pErr)
+  if (prod?.file_path)  filePath = prod.file_path
+  if (prod?.file_bucket) bucket  = prod.file_bucket   // ← AICI decidem bucketul corect
+}
+
+
+
+
+
+
+
+
+    // 1) salvăm achiziția (inclusiv file_path)
     const { error: insErr } = await supa
       .from('purchases')
       .insert([{
@@ -293,48 +306,129 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
         amount: amount,
         item_id: String(itemId),
         file_path: filePath
-      }]);
-    if (insErr) console.error('❌ Supabase insert error:', insErr);
+      }])
 
-    // 3) Link semnat + email
+    if (insErr) {
+      console.error('❌ Supabase insert error:', insErr)
+    } else {
+      console.log('✅ Purchase salvată:', { sessionId, email, itemId, amount, status, filePath })
+    }
+
+    // 2) generăm un link semnat (expirabil) pentru PDF — pt. email
     try {
-      const ttlSeconds = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400);
-      const ttlHours   = Math.floor(ttlSeconds / 3600);
-
+      const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // default 24h
+      // ACUM:
       const { data: signed, error: signErr } = await supa
         .storage
         .from(bucket)
-        .createSignedUrl(filePath, ttlSeconds);
+        .createSignedUrl(filePath, ttl)
+            
 
       if (signErr) {
-        console.error('❌ Create signed URL error:', signErr);
-      } else if (email && signed?.signedUrl) {
-        const productName = prodRow?.name || 'Cursul tău';
+        console.error('❌ Create signed URL error:', signErr)
+      } else if (email) {
+        // 3) trimitem email cu linkul (pentru test: onboarding@resend.dev)
+        try {
+          if (email && signed?.signedUrl) {
+  const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+  const productName = prod?.name || 'Cursul tău';
+  await resend.emails.send({
+    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+    to: email,
+    subject: `Acces la ${productName} — link de descărcare`,
+    text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+    html: emailHtml({
+      productName,
+      link: signed.signedUrl,
+      ttlHours,
+      intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
+    })
+  });
+}
 
-        const sent = await resend.emails.send({
-          from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
-          to: email,
-          subject: `Acces la ${productName} — link de descărcare`,
-          text: emailText({ productName, link: signed.signedUrl, ttlHours }),
-          html: emailHtml({
-            productName,
-            link: signed.signedUrl,
-            ttlHours,
-            intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
-          })
-        });
-
-        console.log('📧 Resend OK:', sent?.id, '->', email);
+          console.log('📧 Email trimis către', email)
+        } catch (mailErr) {
+          console.error('❌ Email error:', mailErr)
+        }
       }
     } catch (e) {
-      console.error('❌ Signed URL/email catch:', e);
+      console.error('❌ Signed URL/email catch:', e)
     }
   }
 
-  res.sendStatus(200);
+  res.sendStatus(200)
+})
+
+// DUPĂ webhook putem folosi JSON global
+app.use(express.json())
+
+/* --------- Parolă temporară via email --------- */
+/* POST /api/auth/send-temp-password  { email }   */
+app.post('/api/auth/send-temp-password', sendTempPwdLimiter, async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: 'Email invalid.' });
+    }
+
+    // find user by email (GoTrue REST)
+    const findUrl = `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(email)}`;
+    const rFind = await fetch(findUrl, {
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+      },
+    });
+    const findText = await rFind.text();
+    if (!rFind.ok) {
+      console.error('findUser error:', rFind.status, findText);
+      return res.status(500).json({ message: `Nu am putut căuta utilizatorul (${rFind.status}).` });
+    }
+    const parsed = (() => { try { return JSON.parse(findText) } catch { return {} } })();
+    const user = Array.isArray(parsed?.users)
+      ? parsed.users.find(u => u.email?.toLowerCase() === email.toLowerCase())
+      : (Array.isArray(parsed) ? parsed.find(u => u.email?.toLowerCase() === email.toLowerCase()) : parsed);
+    if (!user?.id) return res.status(404).json({ message: 'Nu există cont cu acest email.' });
+
+    // set temp password via Admin SDK
+    const tempPwd = genTempPassword();
+    const upd = await supa.auth.admin.updateUserById(user.id, { password: tempPwd });
+    if (upd.error) {
+      console.error('updateUserById error:', upd.error);
+      return res.status(500).json({ message: upd.error.message || 'Nu am putut seta parola temporară.' });
+    }
+
+    // send email
+    const fromName  = process.env.SEND_FROM_NAME  || 'Education with Style';
+    const fromEmail = process.env.SEND_FROM_EMAIL || 'onboarding@resend.dev';
+    let mailError = null;
+    try {
+      await resend.emails.send({
+        from: `${fromName} <${fromEmail}>`,
+        to: email,
+        subject: 'Parola ta temporară',
+        html: `
+          <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif">
+            <h2>Salut!</h2>
+            <p>Parola ta temporară este:</p>
+            <p style="font-size:20px;font-weight:700;letter-spacing:.5px;background:#f7f7f9;padding:12px 16px;border-radius:10px;display:inline-block;">
+              ${tempPwd}
+            </p>
+            <p>Autentifică-te cu emailul și această parolă, apoi o poți schimba din Dashboard.</p>
+          </div>
+        `,
+      });
+    } catch (e) {
+      console.error('Resend send error:', e);
+      mailError = e?.message || 'Nu am putut trimite emailul.';
+    }
+
+    return res.json({ ok: true, mailError });
+  } catch (e) {
+    console.error('send-temp-password fatal:', e);
+    return res.status(500).json({ message: e?.message || 'Eroare internă.' });
+  }
 });
-
-
 
 
 
