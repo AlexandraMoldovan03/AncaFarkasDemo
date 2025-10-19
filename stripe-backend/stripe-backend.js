@@ -174,6 +174,22 @@ function escapeHtml(s=''){
   }[m])); 
 }
 
+// --- TTL helper: citește corect din ENV și limitează între 1 și 7 zile ---
+function getTtlFromEnv(defaultSeconds = 86400) {
+  const raw = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS);
+  // 1 ≤ expiresIn ≤ 604800 (max 7 zile, conform supabase)
+  if (Number.isFinite(raw) && raw >= 1) return Math.min(Math.floor(raw), 604800);
+  return defaultSeconds;
+}
+
+/////////////////////////// debug optional
+function logTtl(where, ttl){
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[TTL] ${where}:`, ttl);
+  }
+}
+
+////////////////////////////////
 /* -------------- Stripe webhook ---------------- */
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 
@@ -249,7 +265,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object
+    // const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)
+    const ttl = getTtlFromEnv(86400);
+    console.log('[TTL] webhook:', ttl); // temporar, ca să vezi în Render Logs
+
 
     // email din mai multe surse
     const email =
@@ -273,20 +292,22 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
     // Ia file_path din products
   // ACUM: ia și file_bucket
-let bucket = 'product-files'
-let filePath = 'curs-1.pdf'
+let prodRow = null;
+let bucket = 'product-files';
+let filePath = 'curs-1.pdf';
 
 if (itemId) {
-  const { data: prod, error: pErr } = await supa
+  const { data, error: pErr } = await supa
     .from('products')
-    .select('file_path, file_bucket')
+    .select('file_path, file_bucket, name')   // adaugă și name
     .eq('id', String(itemId))
     .eq('active', true)
-    .maybeSingle()
+    .maybeSingle();
 
-  if (pErr) console.error('❌ products query error:', pErr)
-  if (prod?.file_path)  filePath = prod.file_path
-  if (prod?.file_bucket) bucket  = prod.file_bucket   // ← AICI decidem bucketul corect
+  if (pErr) console.error('❌ products query error:', pErr);
+  prodRow = data || null;
+  if (prodRow?.file_path)   filePath = prodRow.file_path;
+  if (prodRow?.file_bucket) bucket  = prodRow.file_bucket;
 }
 
 
@@ -316,7 +337,11 @@ if (itemId) {
 
     // 2) generăm un link semnat (expirabil) pentru PDF — pt. email
     try {
-      const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // default 24h
+      //const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // default 24h
+      // const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)
+const ttl = getTtlFromEnv(86400);
+console.log('[TTL] resend-download:', ttl); // temporar, ca să vezi în Render Logs
+
       // ACUM:
       const { data: signed, error: signErr } = await supa
         .storage
@@ -330,8 +355,11 @@ if (itemId) {
         // 3) trimitem email cu linkul (pentru test: onboarding@resend.dev)
         try {
           if (email && signed?.signedUrl) {
-  const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
-  const productName = prod?.name || 'Cursul tău';
+  //const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+  //const productName = prod?.name || 'Cursul tău';
+  const ttlHours = Math.floor(ttl / 3600);
+const productName = prod?.name || 'Cursul tău';
+
   await resend.emails.send({
     from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
     to: email,
@@ -593,7 +621,10 @@ app.post('/resend-download', async (req, res) => {
     const bucket = prod?.file_bucket || 'product-files'
     const pathToSign = prod?.file_path || filePath
 
-    const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // 24h
+    //const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400) // 24h
+    const ttl = getTtlFromEnv(86400);
+logTtl?.('resend-download', ttl); // opțional, doar pt debug
+
     const { data: signed, error: sErr } = await supa
       .storage
       .from(bucket)
@@ -601,7 +632,9 @@ app.post('/resend-download', async (req, res) => {
 
     if (sErr) return res.status(500).json({ error: 'Sign error: ' + sErr.message })
 
-    const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+   // const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
+//const productName = prod?.name || 'materialul tău';
+const ttlHours = Math.floor(ttl / 3600);
 const productName = prod?.name || 'materialul tău';
 
 await resend.emails.send({
