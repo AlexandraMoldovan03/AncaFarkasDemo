@@ -266,6 +266,8 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
   if (event.type === 'checkout.session.completed') {
     // const ttl = Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)
+    const session = event.data.object; 
+
     const ttl = getTtlFromEnv(86400);
     console.log('[TTL] webhook:', ttl); // temporar, ca să vezi în Render Logs
 
@@ -292,6 +294,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
     // Ia file_path din products
   // ACUM: ia și file_bucket
+// --- produs + bucket ---
 let prodRow = null;
 let bucket = 'product-files';
 let filePath = 'curs-1.pdf';
@@ -299,14 +302,14 @@ let filePath = 'curs-1.pdf';
 if (itemId) {
   const { data, error: pErr } = await supa
     .from('products')
-    .select('file_path, file_bucket, name')   // adaugă și name
+    .select('file_path, file_bucket, name') // avem și name
     .eq('id', String(itemId))
     .eq('active', true)
     .maybeSingle();
 
   if (pErr) console.error('❌ products query error:', pErr);
   prodRow = data || null;
-  if (prodRow?.file_path)   filePath = prodRow.file_path;
+  if (prodRow?.file_path)  filePath = prodRow.file_path;
   if (prodRow?.file_bucket) bucket  = prodRow.file_bucket;
 }
 
@@ -355,24 +358,28 @@ console.log('[TTL] resend-download:', ttl); // temporar, ca să vezi în Render 
         // 3) trimitem email cu linkul (pentru test: onboarding@resend.dev)
         try {
           if (email && signed?.signedUrl) {
-  //const ttlHours = Math.floor((Number(process.env.DOWNLOAD_LINK_TTL_SECONDS || 86400)) / 3600);
-  //const productName = prod?.name || 'Cursul tău';
   const ttlHours = Math.floor(ttl / 3600);
-const productName = prod?.name || 'Cursul tău';
+  const productName = prodRow?.name || 'Cursul tău';
 
-  await resend.emails.send({
-    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
-    to: email,
-    subject: `Acces la ${productName} — link de descărcare`,
-    text: emailText({ productName, link: signed.signedUrl, ttlHours }),
-    html: emailHtml({
-      productName,
-      link: signed.signedUrl,
-      ttlHours,
-      intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
-    })
-  });
+  try {
+    const resp = await resend.emails.send({
+      from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+      to: email,
+      subject: `Acces la ${productName} — link de descărcare`,
+      text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+      html: emailHtml({
+        productName,
+        link: signed.signedUrl,
+        ttlHours,
+        intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
+      })
+    });
+    console.log('📧 Resend accepted (webhook):', resp?.id || resp);
+  } catch (err) {
+    console.error('❌ Resend error (webhook):', err?.statusCode, err?.message, err?.response?.body);
+  }
 }
+
 
           console.log('📧 Email trimis către', email)
         } catch (mailErr) {
@@ -637,18 +644,24 @@ logTtl?.('resend-download', ttl); // opțional, doar pt debug
 const ttlHours = Math.floor(ttl / 3600);
 const productName = prod?.name || 'materialul tău';
 
-await resend.emails.send({
-  from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
-  to: user.email,
-  subject: `Link de descărcare — ${productName}`,
-  text: emailText({ productName, link: signed.signedUrl, ttlHours }),
-  html: emailHtml({
-    productName,
-    link: signed.signedUrl,
-    ttlHours,
-    intro: 'Regenerez linkul tău de descărcare. Spor la studiu și inspirație!'
-  })
-});
+try {
+  const resp = await resend.emails.send({
+    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+    to: user.email,
+    subject: `Link de descărcare — ${productName}`,
+    text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+    html: emailHtml({
+      productName,
+      link: signed.signedUrl,
+      ttlHours,
+      intro: 'Regenerez linkul tău de descărcare. Spor la studiu și inspirație!'
+    })
+  });
+  console.log('📧 Resend accepted (/resend-download):', resp?.id || resp);
+} catch (err) {
+  console.error('❌ Resend error (/resend-download):', err?.statusCode, err?.message, err?.response?.body);
+  return res.status(500).json({ error: err?.message || 'Email send failed' });
+}
 
 
     return res.json({ ok: true })

@@ -1,280 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
 
+/* —— Tema (dark) —— */
 :root{
-  --bg: var(--background-color, #F8F1E7);
-  --accent: var(--accent-color, #E2B964);
-  --text: var(--primary-text, #2C3E50);
-  --btn: var(--button-color, #E67E22);
-  --white: var(--white, #FFF);
-  --shadow: var(--shadow-color, rgba(0,0,0,.15));
+  --bg: #0b0f0c;
+  --bg-grad-a: #20303a;
+  --card: #101417;
+  --txt: #f9fafb;
+  --muted: #9fb3c8;
+  --brand: #e2b964;
+  --pill: #1f2a33;
+  --white: #ffffff;
+  --shadow: rgba(0,0,0,.45);
+  --shadow-soft: rgba(0,0,0,.2);
+  --btn: #E2B964;
+  --btn-txt: #0c0f12;
 }
 
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:'Poppins',sans-serif;color:var(--text);background:var(--bg)}
-
-/* Header */
-.shop-header{
-  position:sticky;top:0;z-index:10;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 18px;background:var(--text);color:var(--white);
-  box-shadow:0 2px 12px rgba(0,0,0,.2);
-}
-.shop-header .brand{font-weight:700}
-.shop-nav a{color:var(--white);text-decoration:none;margin-left:14px}
-.shop-nav a:hover{color:var(--accent)}
-
-/* Container */
-.shop-container{max-width:1100px;margin:22px auto;padding:0 16px}
-
-/* Hero */
-.shop-hero{
-  background: var(--white);
-  border:1px solid rgba(0,0,0,.06);
-  border-radius:16px;padding:18px 16px;margin-bottom:18px;
-  box-shadow:0 10px 26px var(--shadow);
-}
-.shop-hero h1{margin:0 0 6px;font-size:24px}
-
-/* Auth bar */
-.shop-authbar{
-  display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px
-}
-#authStatus{background:var(--white);border:1px solid rgba(0,0,0,.06);border-radius:12px;padding:10px 12px}
-.guest-box{
-  background:var(--white);border:1px solid rgba(0,0,0,.06);border-radius:12px;
-  padding:10px 12px;display:flex;gap:10px;align-items:center
-}
-.guest-box input{
-  padding:10px 12px;border-radius:10px;border:1.5px solid #e7e7e7;outline:none;
-}
-.guest-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(226,185,100,.22)}
-
-/* Grid produse */
-.grid{
-  display:grid;gap:16px;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-}
-@media (max-width:900px){ .grid{ grid-template-columns: repeat(2,1fr); } }
-@media (max-width:560px){ .grid{ grid-template-columns: 1fr; } }
-
-
-
-
-
-
-
-
-.card{
-  background:var(--white);
-  border:1px solid rgba(0,0,0,.06);
-  border-radius:16px;padding:16px;
-  box-shadow:0 14px 32px var(--shadow);
-  display:flex;flex-direction:column;gap:10px
-}
-.card h3{margin:0;font-size:18px}
-.price{font-weight:700}
-
-.button{
-  align-self:flex-start;
-  padding:10px 14px;border:none;border-radius:12px;cursor:pointer;
-  background:var(--btn);color:var(--white);font-weight:600;
-  box-shadow:0 6px 20px rgba(230,126,34,.28);
-  transition:background .2s, transform .06s ease
-}
-.button:hover{background:#d66f13}
-.button:active{transform:translateY(1px)}
-.button[disabled]{opacity:.6;cursor:not-allowed}
-
-/* Footer */
-.shop-footer{
-  text-align:center;margin:30px 0 18px;color:#6b6b6b
-}
-/* IMAGINE: arată complet, cu letterbox dacă e alt raport */
-.card-img{
-  width: 100%;
-  aspect-ratio: 16/9;       /* va fi suprascris din JS cu raportul real */
-  object-fit: contain;       /* nu taie deloc */
-  background: #fff;          /* benzi albe când rapportul diferă */
-  border-radius: 12px;
-  box-shadow: 0 6px 16px var(--shadow);
+*{ box-sizing:border-box }
+html,body{ margin:0; padding:0 }
+body{
+  font-family:'Poppins',sans-serif;
+  color:var(--txt);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--bg-grad-a) 0, var(--bg) 55%),
+    var(--bg);
 }
 
-/* DESCRIERE: clamped implicit, cu buton „Mai mult” */
-.desc{
-  color:#4a4a4a;
-  margin: 6px 0 8px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;     /* câte rânduri vrei implicit */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* ——— NAVBAR ——— */
+.navbar{ box-shadow: 0 6px 22px var(--shadow-soft); }
+.navbar .container-fluid{ display:flex; align-items:center; }
+.navbar .navbar-brand{
+  display:flex; align-items:center; gap:10px;
+  flex:1 1 auto; min-width:0;
+  white-space: normal !important;
+  overflow-wrap:anywhere; line-height:1.2;
+  font-weight:700;
 }
+.navbar .navbar-brand img{ height:32px; width:auto }
+.navbar .navbar-toggler{ margin-left:.5rem; flex:0 0 auto }
 
-/* când e deschisă */
-.desc.expanded{
-  display: block;
-  -webkit-line-clamp: unset;
-  max-height: none;
-}
+/* ——— Container principal sub navbar ——— */
+.with-navbar{ padding-top:84px }
+.container{ max-width:1100px }
 
-/* buton text „Mai mult / Mai puțin” */
-.more{
-  appearance: none;
-  background: transparent;
-  border: none;
-  color: var(--button-color);
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-}
-.more:hover{ text-decoration: underline; }
-
-
-
-
-/* ——— Tighten default typography on all viewports ——— */
-.card h3{
-  font-size: clamp(1.05rem, 2.8vw, 1.35rem);
-  line-height: 1.25;
-  margin: 10px 0 6px;
-}
-.desc{
-  font-size: clamp(.95rem, 2.6vw, 1rem);
-}
-.price{
-  font-weight: 700;
-  font-size: clamp(1rem, 2.8vw, 1.1rem);
-  margin: 8px 0 12px;
-}
-.button{
-  padding: 12px 18px;
-  font-size: clamp(.95rem, 2.8vw, 1rem);
-  border-radius: 12px;
-}
-
-/* ——— Mobile: micșorăm imaginea și textul, 2 rânduri descriere ——— */
-@media (max-width: 768px){
-  .card{ padding: 16px; border-radius: 16px; }
-
-  /* suprascriem aspect-ratio setat din JS, ca să limităm înălțimea */
-  .card-img{
-    aspect-ratio: auto !important;
-    height: clamp(140px, 40vw, 220px);
-    width: 100%;
-    object-fit: contain;
-    background: #fff;
-    border-radius: 12px;
-  }
-
-  /* pe card, implicit doar 2 rânduri; „Mai mult” arată tot textul */
-  .desc{ -webkit-line-clamp: 2; }
-}
-
-@media (max-width: 420px){
-  .card-img{ height: clamp(120px, 44vw, 180px); }
-  .card h3{ font-size: 1rem; }
-  .button{ padding: 10px 14px; font-size: .95rem; }
-}
-
-
-
-/* ===== Mobile: card îngust, aspect vertical ===== */
-@media (max-width: 768px){
-  /* containerul listei */
-  .grid{
-    display: grid;
-    place-items: center;
-    gap: 16px;
-  }
-
-  /* cardul devine mai îngust și “pe coloană” */
-  .grid .card{
-    width: min(420px, 92vw);   /* ← fă-l 360px dacă vrei și mai îngust */
-    margin-inline: auto;
-    padding: 16px;
-    border-radius: 16px;
-  }
-
-  /* imaginea—mai mică, centrată, păstrată integral */
-  .grid .card .card-img{
-    width: clamp(180px, 70vw, 320px);
-    height: auto !important;             /* anulăm orice aspect-ratio fix */
-    max-height: clamp(160px, 48vw, 260px);
-    object-fit: contain;
-    margin: 6px auto 10px;
-    border-radius: 12px;
-    background: #fff;
-  }
-
-  /* titlu/descriere cu linii scurte */
-  .grid .card h3,
-  .grid .card .desc,
-  .grid .card .price,
-  .grid .card .more,
-  .grid .card .button{
-    max-width: 46ch;                      /* lungime plăcută de citit */
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .grid .card h3{
-    text-align: center;
-    text-wrap: balance;
-    font-size: 1.05rem;
-    line-height: 1.25;
-  }
-
-  .grid .card .desc{
-    -webkit-line-clamp: 3;                /* 3 rânduri implicit pe mobil */
-    font-size: .98rem;
-  }
-
-  .grid .card .more{
-    display: block;
-    text-align: center;
-    margin-top: 4px;
-  }
-
-  .grid .card .price{
-    text-align: left;
-    font-size: 1rem;
-    margin: 10px 0 12px;
-  }
-
-  .grid .card .button{
-    display: inline-block;
-    font-size: .97rem;
-    padding: 10px 16px;
-    border-radius: 12px;
-  }
-}
-
-/* opțional: și mai compact sub 420px */
-@media (max-width: 420px){
-  .grid .card{ width: min(360px, 92vw); }
-  .grid .card .card-img{ max-height: 220px; }
-  .grid .card h3{ font-size: 1rem; }
-}
-
-
-
-
-
-
+/* ——— HERO (folosește .hero-banner din HTML) ——— */
 .hero-banner{
   position:relative; height:clamp(260px, 36vw, 420px);
   border-radius:22px; overflow:hidden;
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  box-shadow:0 30px 80px var(--shadow);
+  isolation:isolate;
 }
-/* strat blurat pe tot fundalul */
 .hero-bg{
   position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; filter:blur(18px) brightness(.5) saturate(1.1);
+  object-fit:cover;
+  filter:blur(18px) brightness(.5) saturate(1.1);
   transform:scale(1.1);
 }
-/* gradient peste blur pentru lizibilitate */
 .hero-overlay{
   position:absolute; inset:0;
-  background:linear-gradient( to bottom, rgba(0,0,0,.25), rgba(0,0,0,.65) );
+  background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.65));
 }
 .hero-center{
   position:relative; z-index:1; height:100%;
@@ -287,124 +71,111 @@ html,body{margin:0;padding:0;font-family:'Poppins',sans-serif;color:var(--text);
   aspect-ratio: 3/4; object-fit: contain; background:#0c1216;
   border-radius: 16px; box-shadow:0 16px 40px rgba(0,0,0,.55);
 }
-.hero-text h1{ color:#fff; margin:0 0 6px; font-weight:800; font-size:clamp(1.6rem,3.2vw,2.4rem)}
-.hero-text p{ color:#dbe5ef; margin:0; max-width: 46ch }
+.hero-text h1{
+  color:#fff; margin:0 0 6px;
+  font-weight:800; font-size:clamp(1.6rem,3.2vw,2.4rem)
+}
+.hero-text p{ color:#dbe5ef; margin:0; max-width: 52ch }
 @media (max-width: 768px){
-  .hero-center{ justify-content:center; text-align:center; }
+  .hero-center{ justify-content:center; text-align:center }
   .hero-text p{ margin-inline:auto }
 }
 
+/* ——— GRID de categorii ——— */
+.grid{
+  display:grid; gap:22px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  margin-top:22px;
+}
+@media (max-width:900px){ .grid{ grid-template-columns:1fr } }
 
-
-
-
-
-
-/* === SHOP HEADER – FIX MOBILE WRAP === */
-.shop-header{
-  gap: 10px;                 /* puțin spațiu între brand și meniu */
+/* ——— Card categorie ——— */
+.card-cat{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.0));
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px; padding:22px;
+  box-shadow:0 16px 50px rgba(0,0,0,.35);
+  color:var(--txt);
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.card-cat:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.18);
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+.card-cat h3{ margin:0 0 6px; font-weight:700; line-height:1.25 }
+.card-cat p{ margin:0 0 12px; color:var(--muted) }
+.pill{
+  display:inline-block; padding:6px 10px; border-radius:999px;
+  background:var(--pill); font-size:.85rem; color:#dfe8f1; margin:0 6px 6px 0;
 }
 
-/* Brandul să se poată micșora și să se rupă pe 2 rânduri */
-.shop-header .brand{
-  display: flex; align-items: center; gap: 8px;
-  flex: 1 1 auto;            /* ia spațiul rămas, dar permite micșorare */
-  min-width: 0;              /* IMPORTANT: lasă textul să intre pe două rânduri */
-  white-space: normal;       /* permite wrap */
-  word-break: break-word;    /* rupe dacă e nevoie pe cratimă */
-  text-wrap: balance;        /* wrap mai frumos (unde e suportat) */
-  font-size: clamp(0.95rem, 3.6vw, 1.15rem);
-  line-height: 1.2;
+/* ——— Buton CTA ——— */
+.btn-cta{
+  background:var(--btn); color:var(--btn-txt);
+  border:none; font-weight:700;
+  padding:10px 16px; border-radius:12px;
+  box-shadow:0 10px 26px rgba(0,0,0,.25);
+}
+.btn-cta:hover{ filter:brightness(.95) }
+
+/* ——— Footer ——— */
+.footer{ color:#a4b3c2; text-align:center; padding:24px 0 }
+
+/* ——— Carduri de produs (dacă le listezi pe subpagini) ——— */
+.card{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px; padding:16px;
+  box-shadow:0 14px 32px rgba(0,0,0,.35);
+  display:flex; flex-direction:column; gap:10px;
+}
+.card h3{
+  font-size: clamp(1.05rem, 2.8vw, 1.35rem);
+  line-height: 1.25; margin: 10px 0 6px;
+}
+.desc{
+  color:#c9d6e2;
+  margin: 6px 0 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.desc.expanded{ display:block; -webkit-line-clamp:unset; max-height:none }
+.more{
+  appearance:none; background:transparent; border:none;
+  color:var(--btn); font-weight:600; cursor:pointer; padding:0;
+}
+.more:hover{ text-decoration:underline }
+.price{ font-weight:700; font-size:clamp(1rem, 2.8vw, 1.1rem); margin:8px 0 12px }
+.button{
+  align-self:flex-start; padding:12px 18px; border:none; border-radius:12px;
+  cursor:pointer; background:var(--btn); color:var(--btn-txt); font-weight:700;
+  box-shadow:0 6px 20px rgba(0,0,0,.28);
+  transition:transform .06s ease;
+}
+.button:active{ transform:translateY(1px) }
+.button[disabled]{ opacity:.6; cursor:not-allowed }
+
+/* ——— Imagini din card ——— */
+.card-img{
+  width:100%; aspect-ratio:16/9; object-fit:contain;
+  background:#0f1419; border-radius:12px;
+  box-shadow:0 6px 16px rgba(0,0,0,.35);
 }
 
-/* dacă ai logo în brand */
-.shop-header .brand img{
-  height: 26px; width: auto; flex: 0 0 auto;
+/* ——— Mobile tweaks ——— */
+@media (max-width:768px){
+  .grid{ gap:16px }
+  .card{ padding:16px; border-radius:16px }
+  .card-img{
+    aspect-ratio:auto !important;
+    height: clamp(140px, 40vw, 220px);
+  }
+  .desc{ -webkit-line-clamp:2 }
 }
-
-/* Meniul să nu forțeze îngustarea brandului */
-.shop-nav{
-  flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
-}
-
-/* Pe ecrane mici ascunde link-urile text din nav (păstrează doar hamburgerul) */
-@media (max-width: 420px){
-  .shop-nav a{ display: none; }
-}
-
-
-
-/* === SHOP HEADER – forțează wrap + shrink pe mobile === */
-
-/* container */
-.shop-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-/* acoperă toate variantele posibile de brand din markup */
-.shop-header .brand,
-.shop-header .navbar-brand,          /* dacă e link bootstrap */
-.shop-header [data-brand]{
-  display:flex; align-items:center; gap:8px;
-  flex: 1 1 auto;                   /* ia spațiul rămas, dar permite micșorare */
-  min-width: 0;                     /* IMPORTANT pt. flex: lasă conținutul să se strângă */
-  white-space: normal !important;   /* anulează nowrap-ul Bootstrap */
-  overflow-wrap: anywhere;          /* rupe liniile chiar și în cuvinte lungi */
-  word-break: break-word;           /* fallback */
-  line-height: 1.2;
-  font-size: clamp(.95rem, 3.6vw, 1.15rem);
-}
-
-/* logo din brand (dacă există) */
-.shop-header .brand img,
-.shop-header .navbar-brand img{
-  height:26px; width:auto; flex:0 0 auto;
-}
-
-/* navigația să nu împingă brandul */
-.shop-nav{ flex:0 0 auto; display:flex; align-items:center; gap:10px; }
-
-/* pe ecrane foarte mici, ascunde linkurile text din nav (păstrează burgerul) */
 @media (max-width:420px){
-  .shop-nav a{ display:none; }
+  .navbar .navbar-brand img{ height:28px }
+  .card-img{ height: clamp(120px, 44vw, 180px) }
 }
-
-
-
-
-
-/* Mobile */
-@media (max-width: 576px){
-  #testimonials .prev{ left: 6px; }
-  #testimonials .next{ right: 6px; }
-  #testimonials .testimonial p{ border-radius: 16px; font-size: 1rem; }
-}
-/* ——— Navbar brand: permite wrap + shrink pe mobile ——— */
-.navbar .container-fluid{
-  display: flex;                /* ca să funcționeze flex shrink corect */
-  align-items: center;
-}
-
-.navbar .navbar-brand{
-  flex: 1 1 auto;               /* ia spațiul rămas, dar poate să se micșoreze */
-  min-width: 0;                 /* IMPORTANT: permite conținutului să se strângă */
-  white-space: normal !important;/* anulează nowrap-ul Bootstrap */
-  overflow-wrap: anywhere;      /* rupe textul dacă e nevoie */
-  line-height: 1.2;
-}
-
-/* Toggler-ul rămâne compact pe dreapta */
-.navbar .navbar-toggler{
-  margin-left: .5rem;
-  flex: 0 0 auto;
-}
-
-/* Opțional: pe foarte mic, micșorează puțin logo-ul */
-@media (max-width: 420px){
-  .navbar .navbar-brand img{ height: 28px; width: auto; }
-}
-
-
-
