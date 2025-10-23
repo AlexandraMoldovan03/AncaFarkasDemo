@@ -33,8 +33,11 @@ const corsOptions = {
       const ok =
         origin === 'http://localhost:5173' ||
         host.endsWith('.vercel.app') ||
-        host === 'www.anca-farkas-rusu.com' ||
-        host === 'anca-farkas.ro' 
+        host === 'anca-farkas-rusu.com' ||     // ← apex
+        host === 'www.anca-farkas-rusu.com' || // ← www
+        host === 'api.anca-farkas-rusu.com' || // ← dacă vei pune backend pe subdomeniu
+        host === 'anca-farkas.ro';
+
       return cb(null, ok);
     } catch {
       return cb(null, false);
@@ -363,7 +366,7 @@ console.log('[TTL] resend-download:', ttl); // temporar, ca să vezi în Render 
 
   try {
     const resp = await resend.emails.send({
-      from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+      from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
       to: email,
       subject: `Acces la ${productName} — link de descărcare`,
       text: emailText({ productName, link: signed.signedUrl, ttlHours }),
@@ -646,7 +649,7 @@ const productName = prod?.name || 'materialul tău';
 
 try {
   const resp = await resend.emails.send({
-    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@mail.anca-farkas-rusu.com'}>`,
+    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
     to: user.email,
     subject: `Link de descărcare — ${productName}`,
     text: emailText({ productName, link: signed.signedUrl, ttlHours }),
