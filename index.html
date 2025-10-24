@@ -9,6 +9,8 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="/logo1.jpg" />
+<!-- Bootstrap JS (obligatoriu pentru collapse/accordion, modal, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -52,10 +54,10 @@
 
 
 <!-- Link „Schimbă setările cookie” în footer (sau oriunde vrei) -->
-<div class="text-center my-2">
+<!-- <div class="text-center my-2">
   <a href="#" id="openCookiePrefs" class="small">🔧 Schimbă setările cookie-urilor</a>
 </div>
-
+ -->
 
 
 
@@ -204,20 +206,21 @@
                 </a>
               </div>
                -->
-            <div class="d-flex flex-column flex-md-row gap-3">
-                <a href="https://calendly.com/anka-rusu26" target="_blank" class="cta-button">
-                <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i> Rezervă o întâlnire
-                </a>
-                <a href="https://wa.me/40767283598" target="_blank" class="cta-button" style="background-color: #25D366;">
-                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Scrie-mi pe WhatsApp
-                </a>
-                <a href="shop.html" class="cta-button" style="background-color: #343a40; color: white;">
-                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Shop
-                </a>
-                 <button id="btnVirtualTour" class="cta-button cta-ghost ripple" type="button">
-                 <i class="fa-solid fa-vr-cardboard" style="margin-right:8px;"></i> Vizită virtuală
-                 </button>
-            </div>
+           <div class="cta-row">
+  <a class="btn-solid ripple" href="https://calendly.com/anka-rusu26" target="_blank">
+    <i class="fas fa-calendar-alt"></i> Rezervă o întâlnire
+  </a>
+  <a class="btn-solid ripple" href="https://wa.me/40767283598" target="_blank">
+    <i class="fab fa-whatsapp"></i> Scrie-mi pe WhatsApp
+  </a>
+  <a class="btn-solid ripple" href="/shop.html">
+    <i class="fas fa-store"></i> Shop
+  </a>
+  <button id="btnVirtualTour" type="button" class="btn-ghost ripple">
+    <i class="fa-solid fa-vr-cardboard"></i> Vizită virtuală
+  </button>
+</div>
+
 
 
                 
@@ -423,43 +426,40 @@
 
 
 
-        <section class="faq reveal" data-reveal="slide-left" data-stagger>
+       <section id="faq" class="faq2 reveal" data-reveal="slide-left" data-stagger>
   <div class="container">
-    <h2 class="mb-3 text-center">Întrebări frecvente</h2>
+    <h2 class="section-title text-center mb-3">Întrebări frecvente</h2>
 
-    <div class="accordion" id="faqAcc">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="fq1">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fq1c">
-            Cum au loc sesiunile (online/fizic)?
-          </button>
-        </h2>
-        <div id="fq1c" class="accordion-collapse collapse show" data-bs-parent="#faqAcc">
-          <div class="accordion-body">Online (Zoom/WhatsApp) sau fizic, după preferințe.</div>
+    <div class="faq2-list">
+      <details class="faq2-item" open>
+        <summary>
+          <span>Cum au loc sesiunile (online/fizic)?</span>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="answer">
+          Online (Zoom/WhatsApp) sau fizic, după preferințe.
         </div>
-      </div>
+      </details>
 
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="fq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq2c">
-            Pentru cine este coachingul?
-          </button>
-        </h2>
-        <div id="fq2c" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
-          <div class="accordion-body">Părinți, profesori și copii care vor claritate, motivație și rezultate.</div>
+      <details class="faq2-item">
+        <summary>
+          <span>Pentru cine este coachingul?</span>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="answer">
+          Părinți, profesori și copii care vor claritate, motivație și rezultate.
         </div>
-      </div>
+      </details>
 
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="fq3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq3c">
-            Primesc materiale după sesiune?
-          </button>
-        </h2>
-        <div id="fq3c" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
-          <div class="accordion-body">Da—rezumat, exerciții, recomandări și follow-up unde e cazul.</div>
+      <details class="faq2-item">
+        <summary>
+          <span>Primesc materiale după sesiune?</span>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="answer">
+          Da — rezumat, exerciții, recomandări și follow-up unde e cazul.
         </div>
-      </div>
+      </details>
     </div>
   </div>
 </section>
@@ -559,49 +559,57 @@
 
 
     <!-- Contact Section -->
-    <section id="contact" class="contact reveal" data-reveal="slide-right">
-        <div class="container">
-            <h2>📞 Contact</h2>
-            <p><strong>Telefon:</strong> <a href="tel:+40 767 283 598">+40 767 283 598</a></p>
-            <p><strong>Email:</strong> <a href="mailto:anka.rusu26@yahoo.com">anka.rusu26@yahoo.com</a></p>
+   <section id="contact" class="contact">
+  <div class="container">
+    <div class="contact-card">
+      <div class="c-title">
+        <i class="fa-solid fa-phone-volume"></i> Contact
+      </div>
+      <p class="c-row"><strong>Telefon:</strong> <a href="tel:+40767283598">+40 767 283 598</a></p>
+      <p class="c-row"><strong>Email:</strong> <a href="mailto:anka.rusu26@yahoo.com">anka.rusu26@yahoo.com</a></p>
 
-            <div class="social-links">
-                <a href="https://www.facebook.com/profile.php?id=61566509236700&locale=ro_RO" target="_blank" class="social-button">
-                    <img src="facebook.jpg" alt="Facebook">
-                </a>
-                <a href="https://www.tiktok.com/@farkasrusuanca" target="_blank" class="social-button">
-                    <img src="tiktok.png" alt="Instagram">
-                </a>
-                <a href="https://www.youtube.com/@Educa%C8%9BieCuStil" target="_blank" class="social-button">
-                    <img src="yt.png" alt="Instagram">
-                </a>
-            </div>
-        </div>
-    </section>
+      <div class="c-social">
+        <a href="https://www.facebook.com/profile.php?id=61566509236700&locale=ro_RO" target="_blank" aria-label="Facebook">
+          <img src="facebook.jpg" alt="">
+        </a>
+        <a href="https://www.tiktok.com/@farkasrusuanca" target="_blank" aria-label="TikTok">
+          <img src="tiktok.png" alt="">
+        </a>
+        <a href="https://www.youtube.com/@Educa%C8%9BieCuStil" target="_blank" aria-label="YouTube">
+          <img src="yt.png" alt="">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer>
-  <p>&copy; 2025 Farkas Rusu Anca. Toate drepturile rezervate.</p>
-  <p>Website created by Moldovan Alexandra.</p>
-  <i>alemoldovan04@gmail.com</i>
 
-  <div class="mt-2">
-    <a href="termeni.html">Termeni și condiții</a> ·
-    <a href="retur.html">Politica de retur</a> ·
-    <a href="confidentialitate-cookie.html">Confidențialitate & Cookie-uri</a> ·
-    <a href="#" class="cookie-prefs-link small">🔧 Schimbă setările cookie-urilor</a> ·
-    <a href="#" class="cookie-reset-link small">↺ Resetează consimțământul</a>
+  <footer>
+  <div class="footer-inner">
+    <p>&copy; 2025 Farkas Rusu Anca. Toate drepturile rezervate.</p>
+    <p><em>Website created by Moldovan Alexandra.</em></p>
+    <i>alemoldovan04@gmail.com</i>
+
+    <div class="mt-2">
+      <a href="termeni.html">Termeni și condiții</a> ·
+      <a href="retur.html">Politica de retur</a> ·
+      <a href="confidentialitate-cookie.html">Confidențialitate & Cookie-uri</a> ·
+      <a href="#" class="cookie-prefs-link small">🔧 Schimbă setările cookie-urilor</a> ·
+      <a href="#" class="cookie-reset-link small">↺ Resetează consimțământul</a>
+    </div>
   </div>
 </footer>
 
+
 <!-- Buton WhatsApp flotant -->
-<a href="https://wa.me/40767283598" class="fab-whatsapp" aria-label="WhatsApp">
+<!-- <a href="https://wa.me/40767283598" class="fab-whatsapp" aria-label="WhatsApp">
   <i class="fa-brands fa-whatsapp"></i>
-</a>
+</a> -->
 
 <!-- Înapoi sus -->
-<button id="toTop" class="fab-top" aria-label="Înapoi sus">
+<!-- <button id="toTop" class="fab-top" aria-label="Înapoi sus">
   <i class="fa-solid fa-arrow-up"></i>
-</button>
+</button> -->
 
 <!-- toast minimal pentru confirmări (UN SINGUR element) -->
 <div id="toast" class="toast-min"></div>

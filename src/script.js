@@ -19,15 +19,15 @@ window.addEventListener("scroll", function() {
 
 
 
-const scrollToTop = document.getElementById("scrollToTop");
+// const scrollToTop = document.getElementById("scrollToTop");
 
-window.addEventListener("scroll", function() {
-    if (window.pageYOffset > 300) {
-        scrollToTop.style.display = "block";
-    } else {
-        scrollToTop.style.display = "none";
-    }
-});
+// window.addEventListener("scroll", function() {
+//     if (window.pageYOffset > 300) {
+//         scrollToTop.style.display = "block";
+//     } else {
+//         scrollToTop.style.display = "none";
+//     }
+// });
 
 
 

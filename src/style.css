@@ -1033,7 +1033,7 @@ footer {
 
 
 /* Secțiunea Contact */
-.contact .container {
+/* .contact .container {
   background: var(--white);
   padding: 30px;
   border-radius: 15px;
@@ -1042,7 +1042,7 @@ footer {
   margin: 30px auto;
   text-align: center;
   line-height: 1.8;
-}
+} */
 
 .contact h2 {
   color: var(--primary-text);
@@ -1466,7 +1466,7 @@ footer i {
 }
 .news-form input:focus{ border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(226,185,100,.22); }
 
-/* --- FABs --- */
+/* --- FABs ---
 .fab-whatsapp, .fab-top{
   position: fixed; right:18px; z-index: 1500; width:48px; height:48px; border-radius: 50%;
   display:grid; place-items:center; color:#fff; border:none; cursor:pointer;
@@ -1474,7 +1474,7 @@ footer i {
 }
 .fab-whatsapp{ bottom: 18px; background:#25D366; text-decoration:none; font-size:22px; }
 .fab-top{ bottom: 78px; background: var(--primary-text); display:none; }
-.fab-whatsapp:hover, .fab-top:hover{ transform: translateY(-2px); }
+.fab-whatsapp:hover, .fab-top:hover{ transform: translateY(-2px); } */
 
 /* --- TOAST --- */
 .toast-min{
@@ -1799,4 +1799,792 @@ footer i {
   padding:10px 14px;
   border-top:1px solid #eee;
   background:#fff;
+}
+
+
+
+/* ========= MOBILE CENTERING FIX ========= */
+
+/* 0) Normalize + evită ca regulile generice pe <nav> să strice Bootstrap */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* Dacă ai avut cândva "nav { ... }" generic,
+   ne asigurăm că navbarul Bootstrap rămâne în control: */
+header .navbar nav { all: unset; }         /* scoate stilările generice de pe <nav> din header */
+header .navbar nav { display: block; }     /* lăsăm Bootstrap să-și aplice propriile stiluri */
+
+/* 1) Containere — centrare „sigură” pe mobil */
+@media (max-width: 768px){
+  .container,
+  .about .container,
+  .concept .container,
+  .tarife-container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* 2) Grilele cu carduri/statistici — aliniere pe centru pe o singură coloană */
+@media (max-width: 768px){
+  .features-grid,
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    justify-items: center;   /* centrează fiecare item în coloană */
+  }
+  .feature-card,
+  .stat {
+    width: 100%;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+}
+
+/* 3) Service cards — evită „tragerea” în stânga datorită lățimii fixe */
+@media (max-width: 768px){
+  .service-cards {
+    justify-content: center !important;
+  }
+  .service-cards .card {
+    width: 100%;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+}
+
+/* 4) Secțiunile „split” (imagine + text) — centrează pe coloană */
+@media (max-width: 900px){
+  .about-personal,
+  .mama-content {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .about-image,
+  .mama-image {
+    justify-content: center !important;
+  }
+  .about-image img,
+  .mama-image img,
+  .profile-img,
+  .hero-image img {
+    display: block;
+    margin-inline: auto;   /* imagine centrată */
+  }
+  .about-text {
+    text-align: center !important;
+  }
+}
+
+/* 5) Hero — asigură centrare conținut pe mobil */
+@media (max-width: 768px){
+  .hero-section-custom .container {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .text-content {
+    margin: 20px auto !important;
+    text-align: center !important;
+  }
+}
+
+/* 6) Testimoniale — viewportul rămâne centrat */
+@media (max-width: 768px){
+  #testimonials .carousel-container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* 7) Evită „space-between”/„flex-end” rămase pe mobil care pot decala */
+@media (max-width: 768px){
+  .about-container,
+  .mama-content {
+    justify-content: center !important;
+    gap: 20px !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ==== ALIGN CONTACT + FAQ CU RESTUL SECȚIUNILOR ==== */
+
+/* Contact — card pe centru, aceeași lățime ca About/Concept */
+/* .contact {
+  padding: 40px 0;
+}
+.contact .container{
+  max-width: 900px;          
+  margin: 30px auto;         
+  padding: 30px 24px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 15px var(--shadow-color);
+  */
+
+/* FAQ — titlu + acordeon pe centru, aceeași lățime */
+.faq{
+  padding: 40px 0;
+  display: grid;
+  place-items: center;        /* centrează conținutul */
+}
+.faq h2,
+.faq .section-title{
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* dacă folosești Bootstrap Accordion sau un container propriu în FAQ */
+.faq .accordion,
+.faq .container{
+  width: 100%;
+  max-width: 900px;           /* ca restul secțiunilor */
+  margin: 0 auto;
+}
+
+/* polish vizual pentru itemii de FAQ (opțional) */
+.faq .accordion-item{
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* Responsivitate — păstrăm centrat + padding confortabil */
+/* @media (max-width: 768px){
+  .contact .container,
+  .faq .accordion,
+  .faq .container{
+    max-width: 680px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+} */
+
+/* —— Hard center pentru Contact + FAQ —— */
+/* .contact > .container,
+.faq > .container,
+.faq .accordion{
+  width: 100%;
+  max-width: 900px !important;     
+  margin-left: auto !important;
+  margin-right: auto !important;
+} */
+
+/* Neutralizează „tragerea” în stânga provocată de .row */
+/* .contact .row,
+.faq .row{
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+} */
+
+/* .contact .row > [class^="col"],
+.contact .row > [class*=" col"],
+.faq .row > [class^="col"],
+.faq .row > [class*=" col"]{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+} */
+
+
+
+/* — Contact: aliniere perfect pe centru — */
+/* .contact {
+  padding: 40px 0;
+} */
+/* 
+.contact .container{
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+} */
+
+/* Orice copil direct din .contact .container este centrat orizontal */
+/* .contact .container > *{
+  margin-left: auto !important;
+  margin-right: auto !important;
+} */
+
+/* Dacă „cardul” are clasă .card (sau .contact-card), limitează-i lățimea elegant */
+/* .contact .card,
+.contact .contact-card{
+  width: 100%;
+  max-width: 600px;
+} */
+
+/* Anulează tragerea în stânga produsă de .row */
+/* .contact .row{
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.contact .row > [class^="col"],
+.contact .row > [class*=" col"]{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+} */
+
+
+
+
+/* === CONTACT — bandă full-bleed + card, maschează orice mic decalaj === */
+.contact{
+  padding: 0;                                /* bandă curată */
+  position: relative;
+  isolation: isolate;
+}
+
+/* banda pe toată lățimea ecranului, indiferent de layout-ul paginii */
+.contact::before{
+  content:"";
+  position: absolute; inset: 0;
+  margin-inline: calc(50% - 50vw);           /* full-bleed */
+  background:
+    radial-gradient(900px 300px at 50% -80px, rgba(226,185,100,.18), transparent),
+    linear-gradient(180deg, #faf7f1, #f3efe7);
+  z-index: -1;
+}
+
+/* containerul păstrează lățimea “About/Concept” */
+.contact .container{
+  max-width: 920px;
+  margin-inline: auto;
+  padding: clamp(28px, 4vw, 40px) 16px;
+}
+
+/* cardul — centrare vizuală, umbre moi */
+.contact-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.08);
+  padding: clamp(22px, 3.5vw, 32px);
+  max-width: 680px;
+  margin: 0 auto;                            /* perfect pe centru */
+  text-align: center;
+}
+
+/* header mic în card */
+.contact-card .c-title{
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: clamp(22px, 2.8vw, 28px);
+  font-weight: 800; color: var(--primary-text);
+  margin-bottom: 12px;
+}
+.contact-card .c-title i{
+  font-size: 1.1em; color: var(--button-color);
+}
+
+/* rândurile de info: font clar și aliniere */
+.contact-card .c-row{
+  font-size: clamp(16px, 2vw, 18px);
+  color: var(--primary-text);
+  margin: 8px 0;
+}
+.contact-card .c-row a{
+  color: var(--button-color); font-weight: 700; text-decoration: none;
+}
+.contact-card .c-row a:hover{ text-decoration: underline; }
+
+/* social — iconuri egale, perfect centrate */
+.contact-card .c-social{
+  margin-top: 14px;
+  display: flex; justify-content: center; gap: 16px;
+}
+.contact-card .c-social a{
+  width: 64px; height: 64px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.contact-card .c-social a:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.12);
+}
+.contact-card .c-social img{
+  width: 32px; height: 32px; object-fit: contain;
+}
+
+
+
+
+
+/* Social links perfect pe centru, cu spațiere fluidă */
+.social-links{
+  justify-content: center !important;
+  gap: clamp(12px, 3vw, 22px);
+}
+
+/* Iconițe puțin mai „soft” ca să nu pară deplasate dacă nu sunt fix pe axă */
+.social-button img{
+  box-shadow: 0 6px 16px rgba(0,0,0,.10);
+}
+
+
+
+/* === FAQ: clean + centrat === */
+.faq{
+  padding: clamp(24px, 5vw, 48px) 0;
+  display: grid;
+  place-items: center;
+}
+.faq .container{
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+.faq .accordion-item{
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(0,0,0,.06);
+  margin-bottom: 14px;
+}
+.faq .accordion-button{
+  font-weight: 700;
+  letter-spacing: .2px;
+  background: #f0f4ff;            /* cap de card ușor colorat când e deschis */
+}
+.faq .accordion-button.collapsed{
+  background: #fff;                /* când e închis */
+}
+.faq .accordion-button:focus{
+  box-shadow: none;
+}
+.faq .accordion-body{
+  line-height: 1.7;
+  color: var(--primary-text);
+}
+
+/* chevron mai vizibil + rotație la deschidere */
+.faq .accordion-button::after{
+  transition: transform .25s ease;
+}
+.faq .accordion-button:not(.collapsed)::after{
+  transform: rotate(-180deg);
+}
+
+
+/* ——— Spacer sub navbar (evită să calce peste titluri) ——— */
+:root{ --nav-h: 68px; }
+@media (min-width: 992px){ :root{ --nav-h: 72px; } }
+body{ padding-top: var(--nav-h); }
+
+/* === FAQ corect centrat, aceeași lățime cu restul === */
+.faq{
+  padding: clamp(28px, 5vw, 56px) 0;
+}
+
+.faq .container{
+  /* centru “tare”, identic cu About/Concept */
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+
+  /* egalizăm “gurile” stânga/dreapta pe mobil */
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* ajută la centrare vizuală pe orice conținut intern */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.faq h2{
+  text-align: center;
+  margin: 0 0 16px 0;
+}
+
+/* Acordeonul stă fix pe axă și nu “fură” spațiu */
+.faq .accordion{
+  width: 100%;
+  max-width: 760px;            /* poți crește la 820 dacă vrei mai lat */
+  margin-left: auto;
+  margin-right: auto;
+
+  /* cosmetizare Bootstrap */
+  --bs-accordion-border-color: transparent;
+  --bs-accordion-bg: #fff;
+  --bs-accordion-btn-focus-box-shadow: none;
+}
+
+/* Cardurile + umbra constantă = aspect “centru curat” */
+.faq .accordion-item{
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(0,0,0,.06);
+  margin-bottom: 14px;
+}
+
+.faq .accordion-button{
+  font-weight: 700;
+  letter-spacing: .2px;
+  background: #eef3ff;         /* cap ușor colorat */
+}
+
+.faq .accordion-button.collapsed{
+  background: #fff;
+}
+
+.faq .accordion-button:focus{ box-shadow: none; }
+
+/* Chevron cu rotație – feedback clar de stare */
+.faq .accordion-button::after{ transition: transform .25s ease; }
+.faq .accordion-button:not(.collapsed)::after{ transform: rotate(-180deg); }
+
+.faq .accordion-body{
+  line-height: 1.7;
+  color: var(--primary-text);
+}
+
+/* Mic “respiro” sub FAQ ca să nu pară lipit de secțiunea următoare */
+.faq + .tarife-container{ margin-top: 16px; }
+
+
+
+
+
+/* === FOOTER FULL-BLEED === */
+footer{
+  /* întinde banda pe lățimea viewport-ului, indiferent de layout-ul de sus */
+  margin-inline: calc(50% - 50vw);
+  width: 100vw;
+
+  background: #2b3441;                /* poți lăsa var(--primary-text) dacă vrei */
+  color: var(--white);
+  text-align: center;
+
+  padding: clamp(18px, 3.5vw, 28px) 16px;
+  box-shadow: 0 -8px 30px rgba(0,0,0,.18);
+}
+
+/* conținutul rămâne elegant limitat la o lățime confortabilă */
+footer .footer-inner{
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+/* linkuri din footer — mai uniforme */
+footer a{
+  color: #a3c2ff; text-decoration: none;
+}
+footer a:hover{ text-decoration: underline; }
+
+/* subtitluri “soft” */
+footer p:last-of-type,
+footer i{
+  font-size: 12px;
+  color: rgba(255,255,255,.75);
+  font-style: italic;
+}
+
+
+
+
+
+
+
+
+/* ===== HARD CENTER pentru FAQ v2 ca să pice la fix cu Tarife/About ===== */
+.faq2{
+  padding: clamp(28px,5vw,56px) 0;
+  display: grid;
+  place-items: center;
+}
+
+/* secțiune = aceeași „gură” ca restul paginii */
+.faq2 .container{
+  /* aliniere pe mijloc indiferent de Bootstrap .container */
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* LISTA de itemi = IDENTICĂ cu .tarife-container (700px) */
+.faq2 .faq2-list{
+  width: 100%;
+  max-width: 700px !important;   /* <— match cu Tarife */
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  display: grid;
+  gap: 12px;
+}
+
+/* cardurile FAQ */
+.faq2 .faq2-item{
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 16px;
+  background: linear-gradient(180deg,#fff,#fafafa);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  overflow: clip;
+}
+
+/* summary + chevron + answer — rămân ca înainte */
+.faq2 .faq2-item > summary{
+  list-style: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  font-weight: 700; letter-spacing: .2px;
+  color: var(--primary-text);
+}
+.faq2 .faq2-item > summary::-webkit-details-marker{ display:none; }
+
+.faq2 .faq2-item .chev{
+  width: 22px; height: 22px; flex: 0 0 22px; position: relative;
+}
+.faq2 .faq2-item .chev::before,
+.faq2 .faq2-item .chev::after{
+  content:""; position:absolute; inset:0; margin:auto;
+  width:12px; height:2px; border-radius:2px; background:#7c8797;
+  transform-origin:center; transition:transform .25s ease, opacity .25s ease;
+}
+.faq2 .faq2-item .chev::before{ transform: rotate(45deg) translateY(4px); }
+.faq2 .faq2-item .chev::after { transform: rotate(-45deg) translateY(4px); }
+.faq2 .faq2-item[open] .chev::before{ transform: rotate(-45deg) translateY(-4px); }
+.faq2 .faq2-item[open] .chev::after { transform: rotate(45deg)  translateY(-4px); }
+
+.faq2 .faq2-item .answer{
+  padding: 14px 18px 18px;
+  line-height: 1.7; color: var(--primary-text);
+  border-top: 1px solid rgba(0,0,0,.06);
+  background:#fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* —— STOP horizontal overflow pe tot site-ul —— */
+html, body { overflow-x: clip; }      /* (mai sigur decât hidden) */
+img, video, iframe { max-width: 100%; height: auto; }
+
+/* —— Footer full-bleed fără să împingă pagina în lateral —— */
+/* pe mobil: lățime normală; pe ecrane mai mari aplicăm hackul full-bleed */
+footer{
+  margin-inline: 0 !important;
+  width: 100% !important;
+  overflow: hidden;                    /* previne „ieșirea” umbrelor */
+}
+@media (min-width: 768px){
+  footer{
+    margin-inline: calc(50% - 50vw) !important;
+    width: 100vw !important;
+  }
+}
+
+/* —— Mică gardă de siguranță pentru elemente care folosesc vw —— */
+#scrollProgress, .virtual-frame { max-width: 100%; }
+
+/* —— Containere centrate „tare” (evită mici decalaje pe mobil) —— */
+.hero-section-custom .container,
+.faq .container,
+.faq2 .container,
+.contact .container,
+.concept .container{
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 900px;                    /* aceeași gură ca celelalte secțiuni */
+}
+
+/* —— Lățimea cardurilor pentru aliniere identică cu Tarife —— */
+.faq .accordion,
+.faq2 .faq2-list,
+.tarife-container{
+  max-width: 700px;                    /* setează aceeași valoare pentru toate */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+
+
+
+
+/* ——— 1) Unifică alinierea pentru secțiunile de jos ——— */
+#services .container,
+#testimonials .container,
+.contact .container {
+  max-width: 900px !important;      /* la fel ca About/Concept */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+/* cardurile din Servicii să fie pe axă, indiferent de layout */
+#services .service-cards{
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;          /* deja, dar îl întărim */
+}
+#services .card{ margin-left: auto; margin-right: auto; }
+
+/* tarife deja au max-width:700px; îl păstrăm centrat „tare” */
+.tarife-container{
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ——— 2) Anulează regula globală care trage containerele la 95% pe mobil ——— */
+@media (max-width: 600px){
+  .container{
+    max-width: 100% !important;     /* elimină 95% */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+
+
+
+
+
+/* ===== HERO box mai aerisit ===== */
+.hero-section-custom .text-content{
+  /* background deja e semi-transparent; îl facem mai „sticlă” */
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  border-radius: 20px;
+  padding: clamp(18px, 3vw, 28px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.12);
+}
+
+/* titlu + subtitlu mai compacte */
+.hero-section-custom .text-content h1{
+  margin: 0 0 8px 0;
+  line-height: 1.15;
+}
+.hero-section-custom .text-content p{
+  margin: 0 0 14px 0;
+}
+
+/* ===== Butoane erou — grup frumos, responsive ===== */
+.cta-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* buton solid */
+.btn-solid{
+  --btn-r: 14px;
+  display:inline-flex; align-items:center; justify-content:center;
+  gap: .5rem;
+  padding: 12px 18px;
+  min-width: 200px;                 /* egalizează lățimile */
+  border-radius: var(--btn-r);
+  background: linear-gradient(135deg,#5560ff,#7a80ff);
+  color:#fff; text-decoration:none; font-weight:700;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  transition: transform .15s ease, box-shadow .15s ease, filter .18s ease;
+}
+.btn-solid:hover{ transform: translateY(-2px); box-shadow:0 16px 32px rgba(0,0,0,.16); }
+.btn-solid:active{ transform: translateY(0); }
+
+/* buton fantomă (pentru „Vizită virtuală”) */
+.btn-ghost{
+  --btn-r: 14px;
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:.5rem;
+  padding: 12px 18px;
+  min-width: 200px;
+  border-radius: var(--btn-r);
+  color:#2c3545; text-decoration:none; font-weight:700;
+  background: #fff;
+  border: 2px solid rgba(0,0,0,.12);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.btn-ghost:hover{ transform: translateY(-2px); box-shadow:0 14px 26px rgba(0,0,0,.12); border-color: rgba(0,0,0,.18); }
+
+/* pe mobil: butoanele pe toată lățimea */
+@media (max-width: 640px){
+  .cta-row a{ flex: 1 1 100%; min-width: 0; }
+}
+
+
+
+
+
+
+
+
+/* —— centrează conținutul casetei din hero —— */
+.hero-section-custom .text-content{
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* —— butoanele: grid centrat, 2 pe rând pe desktop, 1 pe mobil —— */
+.cta-row{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+  justify-items: center;   /* centrează fiecare buton */
+  align-items: center;
+  margin-top: 12px;
+}
+
+/* asigură aceeași lățime pentru toate butoanele */
+.cta-row a,
+.cta-row button{
+  width: 100%;
+  max-width: 280px;        /* ajustează după gust */
+}
+
+/* pe ecrane mici: un singur buton pe rând, full-width */
+@media (max-width: 640px){
+  .cta-row{
+    grid-template-columns: 1fr;
+  }
+  .cta-row a,
+  .cta-row button{
+    max-width: none;
+  }
 }
