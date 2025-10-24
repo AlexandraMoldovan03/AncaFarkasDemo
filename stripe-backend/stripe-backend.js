@@ -417,7 +417,7 @@ console.log('[TTL] resend-download:', ttl); // temporar, ca să vezi în Render 
     productName,
     link: signed.signedUrl,
     ttlHours,
-    intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.',
+    intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.<br><br><em>Factura/chitanța plății este emisă automat de Stripe și este trimisă pe emailul folosit la plată.</em>',
     useCidLogo: !!CID_LOGO_ATTACHMENT // 👈 folosim CID dacă avem fișierul
   }),
   attachments: CID_LOGO_ATTACHMENT // 👈 poate fi undefined dacă nu e logo; e ok
