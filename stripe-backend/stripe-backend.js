@@ -8,7 +8,25 @@ const { createClient } = require('@supabase/supabase-js')
 const rateLimit = require('express-rate-limit')
 const crypto = require('crypto')
 const app = express()
+const fs = require('fs'); 
+const path = require('path');
 
+// === Logo inline (CID) – se încarcă o singură dată ===
+const LOGO_FILE_PATH = process.env.BRAND_LOGO_FILE || path.join(__dirname, 'assets', 'logo1.jpg');
+
+let CID_LOGO_ATTACHMENT = undefined; // array sau undefined (dacă nu găsim logo)
+try {
+  const buf = fs.readFileSync(LOGO_FILE_PATH);
+  CID_LOGO_ATTACHMENT = [{
+    filename: 'logo1.jpg',
+    content: buf,
+    contentType: 'image/png',
+    cid: 'brand-logo' // <img src="cid:brand-logo">
+  }];
+  console.log('[email] CID logo loaded from', LOGO_FILE_PATH);
+} catch (e) {
+  console.warn('[email] CID logo not found. Set BRAND_LOGO_FILE or place assets/logo1.jpg', e?.message);
+}
 
 /* ---- Root & health ---- */
 app.get('/', (_req, res) => {
@@ -88,79 +106,102 @@ const supa = createClient(
 /* ----------------- Resend --------------------- */
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-/* ---------- Email templates (Anca Farkas-Rusu) ---------- */
-function emailText({ productName='materialul tău', link, ttlHours=24 }) {
+
+
+function emailText({ productName='materialul tău', link, ttlHours=24, intro='Îți trimit linkul de descărcare.' }) {
   return [
-    `Mulțumesc pentru încredere!`,
-    ``,
-    `Poți descărca ${productName} de aici (link valabil ${ttlHours}h):`,
+    intro,
+    '',
+    `Acces pentru ${productName}:`,
     link,
-    ``,
-    `Dacă linkul expiră, îl poți regenera oricând din contul tău, în Dashboard.`,
-    ``,
-    `Cu drag,`,
-    `Anca Farkas-Rusu`,
+    '',
+    `Linkul rămâne valabil ${ttlHours}h.`,
+    `Dacă expiră, îl poți obține din nou din contul tău (Dashboard).`,
+    '',
+    'Cu drag,',
+    'Anca Farkas-Rusu',
     (process.env.BRAND_SITE_URL || '')
   ].join('\n');
 }
+function emailHtml({
+  productName = 'materialul tău',
+  intro = 'Mulțumesc pentru achiziție! Îți trimit linkul de descărcare.',
+  link,
+  ttlHours = 24,
+  useCidLogo = false
+}) {
+  const fromName = process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu';
+  const siteUrl  = process.env.BRAND_SITE_URL || 'https://www.anca-farkas-rusu.com';
+  const support  = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
+  const logoUrl  = process.env.BRAND_LOGO_URL || ''; // pentru varianta cu URL public
+  const pre = `${intro} Link valabil ${ttlHours} ore.`;
 
-function emailHtml({ productName='materialul tău', intro='Mulțumesc pentru încredere!', link, ttlHours=24 }) {
-  const fromName  = process.env.SEND_FROM_NAME  || 'Anca Farkas-Rusu';
-  const siteUrl   = process.env.BRAND_SITE_URL  || 'https://www.anca-farkas-rusu.com';
-  const logoUrl   = process.env.BRAND_LOGO_URL  || 'https://anca-farkas-test-cty6.vercel.app/logo1.jpg';
-  const support   = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
+  // alege sursa logo-ului
+  const logoTag = useCidLogo
+    ? `<img src="cid:brand-logo" alt="${escapeHtml(fromName)}" width="140" style="display:block;border:0;height:auto;">`
+    : (logoUrl
+        ? `<img src="${logoUrl}" alt="${escapeHtml(fromName)}" width="140" style="display:block;border:0;height:auto;">`
+        : '');
 
   return `
   <!doctype html>
   <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>${escapeHtml(productName)}</title>
   </head>
-  <body style="margin:0;padding:0;background:#f6f7fb;">
-    <table width="100%" cellspacing="0" cellpadding="0">
+  <body style="margin:0;background:#0f1115;">
+    <span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;overflow:hidden;">
+      ${escapeHtml(pre)}
+    </span>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#0f1115;">
       <tr>
-        <td align="center" style="padding:28px 16px;">
-          <table width="100%" style="max-width:640px;background:#ffffff;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.08);overflow:hidden;">
+        <td align="center" style="padding:24px 12px;">
+          <table role="presentation" width="100%" style="max-width:640px;background:#1b1f24;border-radius:16px;overflow:hidden;">
             <tr>
-              <td align="center" style="background:#0b0f0c;padding:18px 20px;">
-                ${logoUrl ? `<img src="${logoUrl}" alt="${escapeHtml(fromName)}" width="52" height="52" style="display:block;border-radius:10px;">` : ''}
-                <div style="font:600 16px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#f1f5f9;margin-top:10px;">
+              <td style="padding:22px 22px 6px 22px;font:400 15px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#e5e7eb;">
+
+                ${logoTag ? `<div style="text-align:left;margin:0 0 12px 0;">${logoTag}</div>` : ''}
+
+                <div style="font:700 20px/1.3 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#f3f4f6;margin-bottom:6px;">
                   ${escapeHtml(fromName)}
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:28px 24px 6px 24px;font:400 15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#17202a;">
-                <h1 style="margin:0 0 10px 0;font:700 22px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0b0f0c;">
+                <div style="font:500 13px/1.4 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#9ca3af;margin-bottom:18px;">
+                  Education with Style
+                </div>
+
+                <h1 style="margin:0 0 10px 0;font:700 22px/1.3 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#f9fafb;">
                   ${escapeHtml(productName)}
                 </h1>
-                <p style="margin:0 0 18px 0;">${escapeHtml(intro)}</p>
-                <p style="margin:0 0 22px 0;">Apasă pe butonul de mai jos pentru a descărca materialul. Linkul rămâne activ <strong>${ttlHours} ore</strong>.</p>
-                <table cellspacing="0" cellpadding="0" border="0">
+                <p style="margin:0 0 14px 0;color:#d1d5db;">${escapeHtml(intro)}</p>
+                <p style="margin:0 0 18px 0;color:#d1d5db;">Apasă pe butonul de mai jos pentru a descărca materialul. Linkul rămâne activ <strong>${ttlHours} ore</strong>.</p>
+
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 8px 0;">
                   <tr>
-                    <td align="center" bgcolor="#1f7a4f" style="border-radius:10px;">
+                    <td bgcolor="#1f7a4f" style="border-radius:10px;">
                       <a href="${link}" target="_blank" rel="noopener"
-                         style="display:inline-block;padding:12px 20px;font:600 15px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#ffffff;text-decoration:none;">
+                         style="display:inline-block;padding:12px 20px;font:600 15px -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#ffffff;text-decoration:none;">
                         Descarcă acum
                       </a>
                     </td>
                   </tr>
                 </table>
-                <p style="margin:18px 0 0 0;font-size:13px;color:#6b7280;">
-                  Dacă butonul nu funcționează, copiază linkul în browser:<br>
-                  <a href="${link}" target="_blank" rel="noopener" style="color:#0ea5e9;word-break:break-all;">${link}</a>
+
+                <p style="margin:12px 0 0 0;font-size:13px;color:#9ca3af;">
+                  Dacă butonul nu funcționează, copiază linkul:<br>
+                  <a href="${link}" target="_blank" rel="noopener" style="color:#60a5fa;word-break:break-all;">${link}</a>
                 </p>
-                <hr style="border:none;border-top:1px solid #e9eef3;margin:24px 0;">
-                <p style="margin:0 0 8px 0;">Dacă linkul expiră, îl poți regenera din <a href="${siteUrl}" target="_blank" style="color:#0ea5e9;">Dashboard</a>.</p>
-                ${support ? `<p style="margin:0;color:#6b7280;font-size:13px;">Întrebări? Scrie-mi la <a href="mailto:${support}" style="color:#0ea5e9;">${support}</a>.</p>` : ''}
-                <p style="margin:18px 0 0 0;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
+
+                <hr style="border:none;border-top:1px solid #2a3138;margin:22px 0;">
+                <p style="margin:0 0 6px 0;color:#cbd5e1;">Poți obține oricând un nou link din <a href="${siteUrl}" target="_blank" style="color:#60a5fa;">Dashboard</a>.</p>
+                ${support ? `<p style="margin:0;color:#94a3b8;font-size:13px;">Întrebări? Scrie-mi la <a href="mailto:${support}" style="color:#60a5fa;">${support}</a>.</p>` : ''}
+                <p style="margin:16px 0 0 0;color:#e5e7eb;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
               </td>
             </tr>
             <tr>
-              <td align="center" style="background:#f3f5f8;padding:14px 20px;color:#6b7280;font:400 12px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
-                © ${new Date().getFullYear()} ${escapeHtml(fromName)} — Toate drepturile rezervate
+              <td align="center" style="background:#11161a;padding:12px 16px;color:#94a3b8;font:400 12px -apple-system,Segoe UI,Roboto,Arial,sans-serif;">
+                © ${new Date().getFullYear()} ${escapeHtml(fromName)}
               </td>
             </tr>
           </table>
@@ -170,6 +211,8 @@ function emailHtml({ productName='materialul tău', intro='Mulțumesc pentru în
   </body>
   </html>`;
 }
+
+
 
 function escapeHtml(s=''){ 
   return String(s).replace(/[&<>"']/g, m=>({ 
@@ -366,17 +409,20 @@ console.log('[TTL] resend-download:', ttl); // temporar, ca să vezi în Render 
 
   try {
     const resp = await resend.emails.send({
-      from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
-      to: email,
-      subject: `Acces la ${productName} — link de descărcare`,
-      text: emailText({ productName, link: signed.signedUrl, ttlHours }),
-      html: emailHtml({
-        productName,
-        link: signed.signedUrl,
-        ttlHours,
-        intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.'
-      })
-    });
+  from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
+  to: email,
+  subject: `Acces la ${productName} — link de descărcare`,
+  text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+  html: emailHtml({
+    productName,
+    link: signed.signedUrl,
+    ttlHours,
+    intro: 'Mulțumesc pentru încredere! Îți doresc o experiență plăcută și inspirație pe tot parcursul învățării.',
+    useCidLogo: !!CID_LOGO_ATTACHMENT // 👈 folosim CID dacă avem fișierul
+  }),
+  attachments: CID_LOGO_ATTACHMENT // 👈 poate fi undefined dacă nu e logo; e ok
+});
+
     console.log('📧 Resend accepted (webhook):', resp?.id || resp);
   } catch (err) {
     console.error('❌ Resend error (webhook):', err?.statusCode, err?.message, err?.response?.body);
@@ -648,18 +694,21 @@ const ttlHours = Math.floor(ttl / 3600);
 const productName = prod?.name || 'materialul tău';
 
 try {
-  const resp = await resend.emails.send({
-    from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
-    to: user.email,
-    subject: `Link de descărcare — ${productName}`,
-    text: emailText({ productName, link: signed.signedUrl, ttlHours }),
-    html: emailHtml({
-      productName,
-      link: signed.signedUrl,
-      ttlHours,
-      intro: 'Regenerez linkul tău de descărcare. Spor la studiu și inspirație!'
-    })
-  });
+ const resp = await resend.emails.send({
+  from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
+  to: user.email,
+  subject: `Link de descărcare — ${productName}`,
+  text: emailText({ productName, link: signed.signedUrl, ttlHours }),
+  html: emailHtml({
+    productName,
+    link: signed.signedUrl,
+    ttlHours,
+    intro: 'Mulțumesc pentru achiziție! Îți trimit linkul de descărcare.',
+    useCidLogo: !!CID_LOGO_ATTACHMENT
+  }),
+  attachments: CID_LOGO_ATTACHMENT
+});
+
   console.log('📧 Resend accepted (/resend-download):', resp?.id || resp);
 } catch (err) {
   console.error('❌ Resend error (/resend-download):', err?.statusCode, err?.message, err?.response?.body);
