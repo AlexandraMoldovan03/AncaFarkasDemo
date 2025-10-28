@@ -36,26 +36,37 @@
   <main class="container page with-navbar">
     <!-- HERO panoramic -->
      <p class="text-muted mb-0">Email: <strong id="userEmail">—</strong></p>
+<section class="dash-hero pro mb-4" aria-label="Cursurile mele">
+  <img class="dh-bg" src="shop.jpg" alt="" aria-hidden="true">
+  <div class="dh-vignette" aria-hidden="true"></div>
 
-    <section class="dash-hero mb-4">
-      <img class="bg" src="shop.jpg" alt="" aria-hidden="true">
-      <div class="shade" aria-hidden="true"></div>
-      <div class="inner">
-        <div class="cover">
-          <!-- folosește aceeași imagine, portret, ca în shop; schimbă calea la nevoie -->
-          <img src="shop.jpg" alt="Education with Style">
-        </div>
-        <div class="copy">
-          <h1>Salut! Aici sunt cursurile tale</h1>
-          <p id="dashLead">Accesează rapid materialele cumpărate, retrimite link-urile pe email sau descarcă direct.</p>
-          <div class="actions">
-            <a href="/shop.html" class="btn-cta">Cumpără alte cursuri</a>
-            <a href="/dashboard.html" class="btn-ghost">Actualizează lista</a>
-             <button class="btn-ghost" id="btnOpenPwd">Resetează parola</button>
-          </div>
-        </div>
+  <div class="dh-inner">
+    <!-- Media: nu taie, păstrează raport 3:4 -->
+    <div class="dh-media">
+      <img src="shop.jpg" alt="Education with Style">
+    </div>
+
+    <div class="dh-glass">
+      <p class="dh-eyebrow">Contul tău</p>
+      <h1>Salut! Aici sunt cursurile tale</h1>
+      <p id="dashLead" class="dh-sub">
+        Accesează rapid materialele cumpărate, retrimite link-urile pe email sau descarcă direct.
+      </p>
+
+      <div class="dh-cta">
+        <a href="/shop.html" class="btn-primary">Cumpără alte cursuri</a>
+        <a href="/dashboard.html" class="btn-ghost">Actualizează lista</a>
+        <button class="btn-ghost" id="btnOpenPwd">Resetează parola</button>
       </div>
-    </section>
+
+      <ul class="dh-badges">
+        <li>✅ Acces instant</li>
+        <li>🔒 Plăți Stripe</li>
+        <li>📧 Link pe email</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
     <!-- <section class="container mb-4">
   <div class="p-3 p-md-4 rounded-3 border bg-light d-flex flex-column flex-md-row align-items-md-center justify-content-between">

@@ -56,6 +56,13 @@ body{
 .navbar .nav-link:focus,
 .navbar .nav-link:hover{ color:#ffffff !important }
 
+
+
+
+
+
+
+
 /* =========================
    SPAȚIU SUB NAVBAR (fix)
    ========================= */
@@ -441,3 +448,306 @@ body{
 @media (max-width:420px){
   .navbar .navbar-brand img{ height:28px }
 }
+
+
+
+
+
+/* =========================
+   FONTS + GLOBAL
+   ========================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700&display=swap');
+
+:root{
+  --bg:#f4f6f8;
+  --bg-grad-a:#ffffff;
+  --card:#ffffff;
+  --txt:#1b2430;
+  --muted:#5b6b7a;
+  --brand:#e2b964;
+  --pill:#eef2f6;
+  --white:#ffffff;
+
+  --shadow: rgba(12,18,22,.18);
+  --shadow-soft: rgba(12,18,22,.12);
+
+  --btn:#e2b964;
+  --btn-txt:#0d1115;
+
+  --nav-safe: env(safe-area-inset-top, 0px);
+}
+
+*{ box-sizing:border-box }
+html,body{ margin:0; padding:0 }
+body{
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-weight:400;
+  letter-spacing:.1px;
+  color:var(--txt);
+  background:
+    radial-gradient(900px 450px at 14% -12%, var(--bg-grad-a) 0, var(--bg) 70%),
+    var(--bg);
+}
+
+/* =========================
+   NAVBAR (dark, premium, Inter)
+   ========================= */
+.navbar{
+  --nav-bg-1: rgba(12,21,30,.90);
+  --nav-bg-2: rgba(12,21,30,.86);
+  background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 22px var(--shadow-soft);
+  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
+  padding-block: .6rem;
+}
+.navbar.scrolled{
+  background: rgba(12,21,30,.96) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  padding-block: .5rem;
+}
+
+.navbar .container-fluid{ display:flex; align-items:center }
+.navbar .navbar-brand{
+  display:flex; align-items:center; gap:10px;
+  flex:1 1 auto; min-width:0;
+  white-space: normal !important;
+  overflow-wrap:anywhere; line-height:1.2;
+  color:#fff !important;
+  font-weight:600;                 /* mai subțire & lizibil */
+  letter-spacing:.2px;
+  font-size: clamp(16px,2vw,18px);
+}
+.navbar .navbar-brand img{ height:32px; width:auto; border-radius:12px }
+
+/* accent „ANCA” cu Sora */
+.navbar .navbar-brand b{
+  font-family:'Sora',sans-serif;
+  font-weight:700;
+  letter-spacing:.3px;
+  color:var(--brand);
+}
+
+.navbar .navbar-toggler{ margin-left:.5rem; flex:0 0 auto; border:0 }
+.navbar .navbar-toggler:focus{ box-shadow:none }
+
+/* Linkuri + underline animat fin */
+.navbar .nav-link{
+  color:#cfd8e3 !important;
+  font-weight:500;
+  letter-spacing:.15px;
+  padding:.6rem 1rem !important;
+  border-radius:12px;
+  position:relative;
+  opacity:.95;
+  transition: opacity .2s ease, transform .15s ease, background .25s ease;
+}
+.navbar .nav-link::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:8px;
+  height:1.5px; border-radius:999px;
+  background: linear-gradient(90deg, var(--brand), #e67e22);
+  transform: scaleX(0); transform-origin:left; transition: transform .22s ease;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus{ color:#ffffff !important; opacity:1; transform: translateY(-1px); }
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after{ transform: scaleX(1); }
+.navbar .nav-link.active{
+  color:#ffffff !important;
+  background: rgba(255,255,255,.07);
+  box-shadow: inset 0 6px 16px rgba(0,0,0,.10);
+}
+.navbar .nav-link.active::after{ transform: scaleX(1); }
+
+/* panel mobil „card-like” */
+@media (max-width:991.98px){
+  .navbar .collapse.show{
+    background: rgba(12,21,30,.96);
+    border-radius:14px;
+    margin-top:.6rem;
+    padding:.4rem .2rem;
+    box-shadow:0 14px 32px rgba(0,0,0,.25);
+  }
+  .navbar .navbar-nav .nav-link{
+    padding:.65rem 1rem !important;
+    border-radius:12px;
+  }
+}
+
+/* accesibilitate focus subtil */
+.navbar .nav-link:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(226,185,100,.35);
+}
+
+/* =========================
+   SPAȚIU SUB NAVBAR (fix)
+   ========================= */
+.with-navbar{ padding-top: calc(96px + var(--nav-safe)); }
+@media (max-width:1200px){ .with-navbar{ padding-top: calc(104px + var(--nav-safe)); } }
+@media (max-width:992px){  .with-navbar{ padding-top: calc(110px + var(--nav-safe)); } }
+@media (max-width:768px){  .with-navbar{ padding-top: calc(118px + var(--nav-safe)); } }
+@media (max-width:420px){  .with-navbar{ padding-top: calc(124px + var(--nav-safe)); } }
+
+/* container central */
+.container{ max-width:1100px }
+
+/* =========================
+   HERO BANNER — fonturi & contrast adjust (Inter)
+   ========================= */
+.hero-banner{
+  position:relative;
+  height:clamp(260px, 36vw, 420px);
+  margin-top:14px;
+  border-radius:22px; 
+  overflow:hidden;
+  background:radial-gradient(120% 80% at 10% -20%, #fff 0%, #f9fafb 40%, #eef1f4 100%);
+  border:1px solid rgba(16,20,23,.06);
+  box-shadow:0 20px 60px rgba(12,18,22,.12);
+  isolation:isolate;
+}
+.hero-bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover;
+  filter:blur(10px) brightness(0.95) saturate(1.05);
+  transform:scale(1.05);
+  opacity:0.88;
+}
+.hero-overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(245,245,245,0.85) 40%, rgba(235,235,235,0.78) 100%);
+  backdrop-filter: blur(2px) saturate(1.1);
+  pointer-events:none;
+}
+.hero-center{
+  position:relative; z-index:1; height:100%;
+  display:flex; align-items:center; justify-content:flex-start;
+  gap:clamp(14px, 2.6vw, 28px);
+  padding:clamp(18px, 3.2vw, 28px);
+  padding-bottom: clamp(24px, 3.6vw, 44px);
+}
+.hero-foreground{
+  height:100%;
+  max-height:clamp(200px, 30vw, 360px);
+  aspect-ratio:3/4;
+  object-fit:contain;
+  background:#0f1317;
+  border-radius:16px;
+  border:1px solid rgba(16,20,23,.06);
+  box-shadow:0 10px 28px rgba(0,0,0,.22);
+}
+.hero-text h1{
+  margin:0 0 8px;
+  font-family:'Inter',sans-serif;
+  font-weight:700;                 /* robust dar nu gros */
+  color:#0a0e12;
+  font-size:clamp(1.7rem,3.5vw,2.5rem);
+  text-shadow:0 1px 3px rgba(0,0,0,0.15);
+}
+.hero-text p{
+  margin:0; max-width:52ch;
+  color:#1a2734;
+  font-weight:400;
+  text-shadow:0 1px 2px rgba(0,0,0,0.1);
+  line-height:1.45;
+}
+
+@media (max-width:768px){
+  .hero-bg{ filter:blur(8px) brightness(0.9); opacity:0.92; }
+  .hero-overlay{
+    background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.88) 50%, rgba(225,225,225,0.8) 100%);
+  }
+  .hero-text h1{
+    font-size:clamp(1.4rem,4.5vw,1.7rem);
+    text-shadow:0 2px 5px rgba(0,0,0,0.15);
+  }
+  .hero-text p{
+    font-size:clamp(0.95rem,3.2vw,1rem);
+    color:#14202d;
+  }
+}
+@media (max-width:420px){
+  .hero-bg{ filter:blur(7px) brightness(0.88); }
+  .hero-overlay{
+    background:linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(240,240,240,0.9) 60%, rgba(225,225,225,0.82) 100%);
+  }
+  .hero-text h1{ font-size:1.2rem; }
+  .hero-text p{ font-size:.93rem; }
+}
+
+/* spacing sub HERO */
+.hero-banner{ position:relative; z-index:0; margin-bottom: clamp(22px, 4vw, 42px); }
+.hero-overlay{ pointer-events:none; }
+
+
+/* ===== Meniu mobil: footer + logout elegant ===== */
+.menu-footer{
+  margin: 8px 10px 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: grid;
+  gap: 10px;
+}
+
+/* Buton logout – ghost-danger, rotunjit, cu icon */
+.btn-logout{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: .55rem .9rem;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: .15px;
+  color: #ffd9d9;                          /* text roz-pal */
+  background: rgba(255, 77, 77, .10);      /* roșu foarte discret */
+  border: 1px solid rgba(255, 99, 99, .35);
+  box-shadow: 0 6px 16px rgba(0,0,0,.10);
+  transition: transform .12s ease, box-shadow .2s ease,
+              background .22s ease, color .22s ease, border-color .22s ease;
+  text-decoration: none;
+}
+.btn-logout i{ font-size: 0.95rem; line-height: 1; }
+
+/* Hover/focus – devine roșu cald, dar nu agresiv */
+.btn-logout:hover,
+.btn-logout:focus{
+  transform: translateY(-1px);
+  color: #fff;
+  background: linear-gradient(180deg, #ff6b6b 0%, #ff5252 100%);
+  border-color: rgba(255, 82, 82, .9);
+  box-shadow: 0 10px 24px rgba(255, 82, 82, .28);
+}
+
+/* Active – apăsat scurt */
+.btn-logout:active{
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(255, 82, 82, .22) inset;
+}
+
+/* Pastiluță pentru e-mail sub buton */
+.email-pill{
+  display: block;
+  text-align: center;
+  padding: .55rem .75rem;
+  border-radius: 12px;
+  color: #cbd5e1;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  font-weight: 500;
+  letter-spacing: .1px;
+}
+
+/* Mic polish când meniul e deschis pe mobil (se potrivește cu tema ta) */
+@media (max-width: 991.98px){
+  .navbar .collapse.show{
+    background: rgba(12,21,30,.96);
+    border-radius: 14px;
+    padding: .5rem .45rem .6rem;
+    box-shadow: 0 14px 32px rgba(0,0,0,.25);
+  }
+}
+
+
+

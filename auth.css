@@ -288,3 +288,140 @@ body{
   .auth-wrapper.with-navbar{ padding-top: 140px; }
 }
 */
+
+
+
+
+/* === NAVBAR PRO (Auth) — Inter + Sora, dark glass === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700&display=swap');
+
+/* culori preluate din paleta auth */
+.navbar{
+  --nav-bg-1: rgba(12,21,30,.90);
+  --nav-bg-2: rgba(12,21,30,.86);
+  --nav-accent: var(--auth-accent, #E2B964);
+  --nav-btn:    var(--auth-btn,    #E67E22);
+}
+
+/* bară */
+.navbar{
+  background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px var(--auth-shadow, rgba(0,0,0,.18));
+  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
+  padding-block: .6rem;
+}
+
+/* opțional: mai compact la scroll dacă adaugi .scrolled din JS */
+.navbar.scrolled{
+  background: rgba(12,21,30,.96) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  padding-block: .5rem;
+}
+
+/* brand */
+.navbar .navbar-brand{
+  display:flex; align-items:center; gap:10px;
+  flex:1 1 auto; min-width:0;
+  white-space:normal !important; overflow-wrap:anywhere;
+  line-height:1.2; color:#fff !important;
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-weight:600; letter-spacing:.2px;
+  font-size: clamp(16px,2vw,18px);
+}
+.navbar .navbar-brand img{ height:32px; width:auto; border-radius:12px }
+.navbar .navbar-brand b{
+  font-family:'Sora',sans-serif;
+  font-weight:700; letter-spacing:.3px;
+  color: var(--nav-accent);
+}
+
+/* toggler */
+.navbar .navbar-toggler{ border:0; margin-left:.5rem }
+.navbar .navbar-toggler:focus{ box-shadow:none }
+
+/* linkuri + underline animat */
+.navbar .nav-link{
+  color:#cfd8e3 !important;
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-weight:500; letter-spacing:.15px;
+  padding:.6rem 1rem !important;
+  border-radius:12px; position:relative; opacity:.95;
+  transition: opacity .2s ease, transform .15s ease, background .25s ease;
+}
+.navbar .nav-link::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:8px;
+  height:1.5px; border-radius:999px;
+  background: linear-gradient(90deg, var(--nav-accent), var(--nav-btn));
+  transform: scaleX(0); transform-origin:left; transition: transform .22s ease;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus{ color:#fff !important; opacity:1; transform: translateY(-1px); }
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after{ transform: scaleX(1); }
+
+.navbar .nav-link.active{
+  color:#fff !important;
+  background: rgba(255,255,255,.07);
+  box-shadow: inset 0 6px 16px rgba(0,0,0,.10);
+}
+.navbar .nav-link.active::after{ transform: scaleX(1); }
+
+/* focus accesibil */
+.navbar .nav-link:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(226,185,100,.35);
+}
+
+/* ===== mobil: edge-to-edge, fără chenar negru ===== */
+@media (max-width: 991.98px){
+  .navbar .collapse.show{
+    background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: .35rem 0 !important;
+  }
+  .navbar .navbar-nav{
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: .25rem .5rem !important;
+  }
+  .navbar .navbar-nav .nav-link{
+    padding:.65rem 1rem !important;
+    border-radius:12px; background: transparent !important;
+  }
+  .navbar .nav-link:hover,
+  .navbar .nav-link:focus{
+    background: rgba(255,255,255,.06) !important;
+  }
+}
+
+/* ===== (opțional) footer în meniu – logout + email, ca pe shop ===== */
+.menu-footer{
+  margin:8px 10px 6px; padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:grid; gap:10px;
+}
+.btn-logout{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; padding:.55rem .9rem; border-radius:12px; font-weight:600;
+  color:#ffd9d9; background:rgba(255,77,77,.10); border:1px solid rgba(255,99,99,.35);
+  box-shadow:0 6px 16px rgba(0,0,0,.10);
+  transition: transform .12s, box-shadow .2s, background .22s, color .22s, border-color .22s;
+  text-decoration:none;
+}
+.btn-logout:hover,.btn-logout:focus{
+  transform:translateY(-1px); color:#fff;
+  background:linear-gradient(180deg,#ff6b6b 0%,#ff5252 100%);
+  border-color:rgba(255,82,82,.9);
+  box-shadow:0 10px 24px rgba(255,82,82,.28);
+}
+.email-pill{
+  display:block; text-align:center; padding:.55rem .75rem; border-radius:12px;
+  color:#cbd5e1; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10);
+  font-weight:500; letter-spacing:.1px;
+}
+

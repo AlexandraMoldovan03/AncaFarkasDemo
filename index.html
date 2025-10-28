@@ -16,6 +16,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css">
   <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkfP2TA6LzZq2M9R4CemIWNmexG99a9+J9+JrC2u1JY9b6+Y5q9+7x0jQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -135,46 +139,44 @@
 
     <!-- Header cu Bootstrap -->
      <div id="scrollProgress"></div>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <div class="container-fluid">
-                <!-- Logo -->
-                <a class="navbar-brand d-flex align-items-center" href="#">
-                    <img src="logo1.jpg" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
-                    <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
-                  </a>
-                  
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
 
-                <!-- Buton Hamburger -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <!-- Capul navbar: brand SUS, toggler DEDESUBT și STÂNGA pe mobil -->
+    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center w-100">
+      <!-- Brand -->
+      <a class="navbar-brand d-flex align-items-center mb-2 mb-lg-0 me-lg-3" href="#">
+        <img src="logo1.jpg" alt="Logo" style="height:40px;width:auto;margin-right:10px;">
+        <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
+      </a>
 
-                <!-- Meniu Navbar -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/#about">Despre Mine</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/#services">Servicii</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/#contact">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/auth.html">Login</a>
-                        </li>
-                                                
-                        <li class="nav-item">
-                          <a class="nav-link" href="/galerie.html">Galerie</a>
-                        </li>
+      <!-- Hamburger (sub brand, stânga pe mobil) -->
+      <button class="navbar-toggler d-lg-none align-self-start ms-0"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
+    <!-- Meniu: se deschide sub tot header-ul (standard Bootstrap) -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/#about">Despre Mine</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#services">Servicii</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="/auth.html">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="/galerie.html">Galerie</a></li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+    </button>    
     </header>
 
     <section class="hero-section-custom">
@@ -253,25 +255,56 @@
 </section>
 
 <!-- FEATURES (carduri cu tilt) -->
+<!-- FEATURES (carduri cu tilt) -->
 <section class="features reveal" data-reveal="slide-up" data-stagger>
   <div class="container features-grid">
+
     <article class="feature-card tilt">
-      <i class="fa-solid fa-seedling feature-ico"></i>
+      <span class="ico-wrap" aria-hidden="true">
+        <!-- Frunză -->
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M21 3C12 3 6 7.5 3 12c2.5 2.5 7 3 9.5.5l2.5-2.5M21 3c0 9-4.5 12-9 12"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
       <h3>Creștere autentică</h3>
       <p>Instrumente clare și blânde pentru evoluția ta și a copilului.</p>
     </article>
+
     <article class="feature-card tilt">
-      <i class="fa-solid fa-chalkboard-user feature-ico"></i>
+      <span class="ico-wrap" aria-hidden="true">
+        <!-- Tocă -->
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M3 8l9-4 9 4-9 4-9-4zm3 5v3c0 1.1 2.7 2 6 2s6-.9 6-2v-3"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 10v6" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round"/>
+        </svg>
+      </span>
       <h3>Educație cu stil</h3>
       <p>Materiale moderne și metode care economisesc timp.</p>
     </article>
+
     <article class="feature-card tilt">
-      <i class="fa-solid fa-heart feature-ico"></i>
+      <span class="ico-wrap" aria-hidden="true">
+        <!-- Inimă -->
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 21s-7-4.35-9.33-7.2C.7 11.4 1.2 8.3 3.6 6.9 5.2 5.9 7.3 6 8.8 7.2L12 9.8l3.2-2.6c1.5-1.2 3.6-1.3 5.2-.3 2.4 1.4 2.9 4.5.93 6.9C19 16.65 12 21 12 21z"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
       <h3>Abordare umană</h3>
       <p>Fără presiune. Cu ritm, empatie și rezultate reale.</p>
     </article>
+
   </div>
 </section>
+
+
+
 
       
 
@@ -402,6 +435,7 @@
 
     <!-- Services Section -->
    <section id="services" class="services reveal" data-reveal="slide-left" data-stagger>
+     <div class="wrap">
         <h2>Serviciile Mele</h2>
         <div class="service-cards">
             <div class="card">
@@ -423,7 +457,7 @@
                 <p>Ateliere online – Sesiuni interactive pentru dezvoltare personală și educațională.</p>
             </div>
         </div>
-
+</div>
 
 
        <section id="faq" class="faq2 reveal" data-reveal="slide-left" data-stagger>
@@ -489,73 +523,268 @@
 
 
     <!-- Testimonials Section (premium) -->
-<section id="testimonials" class="testimonials reveal" data-reveal="zoom">
+<!-- =========================================
+     TESTIMONIALS — secțiune completă
+     ========================================= -->
+<section id="testimonials" class="t2">
   <div class="container">
-    <h2 class="text-center mb-2">🌟 Ce spun clienții mei</h2>
-    <p class="text-center text-muted mb-4">Feedback real de la oameni cu care am lucrat</p>
+    <h2 class="t2-title">🌟 Ce spun clienții mei</h2>
+    <p class="t2-sub">Feedback real de la oameni cu care am lucrat</p>
 
-    <div class="carousel-container">
-      <div class="carousel-viewport" tabindex="0" aria-roledescription="carousel" aria-label="Testimoniale" aria-live="polite" id="tsCarousel">
-        <div class="carousel">
-          <div class="testimonial">
-            <article class="t-card">
-              <i class="fa-solid fa-quote-left t-quote"></i>
-              <p class="t-text">„O recomand pe Anca cu drag; un profesionist, dar mai ales un OM implicat și dedicat în realizarea obiectivelor personale ale celor care apelează la ea.”</p>
-              <div class="t-meta">
-                <div class="t-stars" aria-label="5 din 5 stele">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                </div>
-                <span class="t-author">— Client</span>
+    <div class="t2-viewport" tabindex="0" aria-roledescription="carousel" aria-label="Testimoniale" aria-live="polite">
+      <div class="t2-track">
+
+
+
+
+
+
+
+
+ <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="1 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Recomand cu încredere ședințele alături de Anca! Un profesionist dedicat, care știe să te ajute să cauți răspunsul la întrebări pe care nu ști să ți le pui, sau care nu le iei în calcul la momentul potrivit.”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">AP</span>
+                <span><b>Adina P.</b> · Client</span>
               </div>
-            </article>
-          </div>
-
-          <div class="testimonial">
-            <article class="t-card">
-              <i class="fa-solid fa-quote-left t-quote"></i>
-              <p class="t-text">„Omul potrivit la locul potrivit.”</p>
-              <div class="t-meta">
-                <div class="t-stars" aria-label="5 din 5 stele">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                </div>
-                <span class="t-author">— Client</span>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
               </div>
-            </article>
+            </div>
           </div>
+        </article>
 
-          <div class="testimonial">
-            <article class="t-card">
-              <i class="fa-solid fa-quote-left t-quote"></i>
-              <p class="t-text">„Anca este un om de încredere, profesionistă, veselă, are un nivel de pozitivism care se molipsește. Recomand cu mare drag.”</p>
-              <div class="t-meta">
-                <div class="t-stars" aria-label="5 din 5 stele">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                </div>
-                <span class="t-author">— Client</span>
+
+
+
+
+
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="1 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Recomand cu încredere!
+Profesionalism și încredere și totodata Anca m-a ajutat sa descopăr singura ceea ce am nevoie și ceea ce-mi doresc și cum sa muncesc la asta!
+Mulțumesc cu recunoștință Anca!🙏
+Mult succes in tot ceea ce faci!😘”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">C</span>
+                <span><b> </b> · Client</span>
               </div>
-            </article>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
           </div>
+        </article>
 
-          <!-- …păstrează restul testimonialelor tale, doar în același format de mai sus … -->
-        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Slide 1 -->
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="1 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„O recomand pe Anca cu drag; un profesionist, dar mai ales un OM implicat și dedicat...”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">OS</span>
+                <span><b>Oana S.</b> · Părinte</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 2 -->
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="2 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Omul potrivit la locul potrivit.”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">CC</span>
+                <span><b>Client</b> · Colegă</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 3 -->
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="3 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Anca este un om de încredere, profesionistă, veselă, cu un pozitivism care, de-a dreptul, se molipsește. Recomand cu mare drag”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">MT</span>
+                <span><b>Mihaiela T.</b> · Client</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 4 -->
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="4 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Explică pe înțelesul tuturor, cu multă răbdare. Rezultate reale în câteva săptămâni.”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">DT</span>
+                <span><b>Dana T.</b> · Părinte</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+
+
+         <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="4 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Anca este un om de încredere, profesionista, vesela, are un nivel de pozitivism care, de-a dreptul, se molipsește. Recomand cu mare drag ❤”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">P</span>
+                <span><b></b>.  Părinte</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+
+        <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="4 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Pot să spun faptul că recomand cu mare plăcere ședințele de coaching împreuna cu Anca, este de un real ajutor și o profesionistă în ceea ce face.”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">P</span>
+                <span><b>Bogdan G.</b> · Client</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+
+
+
+
+         <article class="t2-slide" role="group" aria-roledescription="slide" aria-label="2 din 4">
+          <div class="t2-card">
+            <i class="fa-solid fa-quote-left t2-quote" aria-hidden="true"></i>
+            <p class="t2-text">„Recomand cu mare încredere!!!! Anca este un om de excepție care da dovada de profesionalism în orice situație. Cu ajutorul și sfaturile ei, fetita mea a reușit sa gestioneze emoțiile și sa devina un copil care are încredere în forțele proprii. Este cea mai implicata persoana pe care o cunosc!❤❤❤”</p>
+            <div class="t2-meta">
+              <div class="t2-author">
+                <span class="t2-avatar">P</span>
+                <span><b> </b> · Părinte</span>
+              </div>
+              <div class="t2-stars" aria-label="5 din 5 stele">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </article>
+
+
       </div>
 
-      <!-- Butoane pentru control manual (păstrăm ID-urile pentru JS-ul tău) -->
-      <button id="prevBtn" class="ts-nav prev" aria-label="Anterior">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <button id="nextBtn" class="ts-nav next" aria-label="Următor">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
+      <!-- Controls -->
+      <button class="t2-nav t2-prev" aria-label="Anterior"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+      <button class="t2-nav t2-next" aria-label="Următor"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
     </div>
+
+    <!-- Dots -->
+    <div class="t2-dots" aria-hidden="true"></div>
   </div>
 </section>
+
+
+<!-- Dots hook (se leagă de caruselul tău existent) -->
+<script>
+(() => {
+  const wrap   = document.querySelector('#testimonials');
+  if (!wrap) return;
+  const track  = wrap.querySelector('.carousel');
+  const slides = [...wrap.querySelectorAll('.testimonial')];
+  const dotsC  = wrap.querySelector('#tsDots');
+  if (!track || !slides.length || !dotsC) return;
+
+  let idx = 0;
+  const update = () => {
+    dots.forEach((d,i)=> d.classList.toggle('is-active', i===idx));
+    track.style.transform = `translateX(-${idx*100}%)`;
+  };
+
+  // prev/next
+  wrap.querySelector('#prevBtn')?.addEventListener('click', ()=>{ idx=(idx-1+slides.length)%slides.length; update(); });
+  wrap.querySelector('#nextBtn')?.addEventListener('click', ()=>{ idx=(idx+1)%slides.length; update(); });
+
+  // dots
+  const dots = slides.map((_,i)=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='ts-dot'+(i===0?' is-active':'');
+    b.addEventListener('click', ()=>{ idx=i; update(); });
+    dotsC.appendChild(b);
+    return b;
+  });
+
+  // autoplay simplu (pausă la hover)
+  let timer;
+  const play = () => { stop(); timer=setInterval(()=>{ idx=(idx+1)%slides.length; update(); }, 5000); };
+  const stop = () => timer && clearInterval(timer);
+  wrap.querySelector('.carousel-viewport')?.addEventListener('mouseenter', stop);
+  wrap.querySelector('.carousel-viewport')?.addEventListener('mouseleave', play);
+
+  update(); play();
+})();
+</script>
+
 
 
     <!-- Contact Section -->
@@ -958,6 +1187,104 @@
     </div>
   </div>
 </div>
+
+
+
+<script>
+(() => {
+  const root   = document.querySelector('#testimonials.t2');
+  if (!root) return;
+
+  const viewport = root.querySelector('.t2-viewport');
+  const track    = root.querySelector('.t2-track');
+  const slides   = [...root.querySelectorAll('.t2-slide')];
+  const prevBtn  = root.querySelector('.t2-prev');
+  const nextBtn  = root.querySelector('.t2-next');
+  const dotsWrap = root.querySelector('.t2-dots');
+
+  let idx = 0, timer = null, perView = 1, pages = 0;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function computePerView(){
+    perView = window.innerWidth >= 992 ? 2 : 1;
+    pages   = Math.ceil(slides.length / perView);
+    buildDots();
+    go(idx, true);
+  }
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    for (let i=0; i<pages; i++){
+      const b = document.createElement('button');
+      b.type = 'button';
+      if (i === Math.floor(idx/perView)) b.classList.add('is-active');
+      b.addEventListener('click', () => { go(i*perView); });
+      dotsWrap.appendChild(b);
+    }
+  }
+
+  function highlightDots(){
+    const page = Math.floor(idx/perView);
+    [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('is-active', i===page));
+  }
+
+  function go(n, instant=false){
+    idx = Math.max(0, Math.min(n, slides.length-1));
+    const page = Math.floor(idx / perView);
+    const x = page * (100);                // 100% per „pagină”
+    track.style.transitionDuration = instant ? '0ms' : '';
+    track.style.transform = `translateX(-${x}%)`;
+    highlightDots();
+  }
+
+  function next(){ go(Math.min(idx + perView, slides.length-1)); }
+  function prev(){ go(Math.max(idx - perView, 0)); }
+
+  function play(){
+    if (prefersReduced) return;
+    stop();
+    timer = setInterval(() => {
+      const onLastPage = Math.floor(idx/perView) >= pages-1;
+      if (onLastPage) go(0); else next();
+    }, 5000);
+  }
+  function stop(){ if (timer) { clearInterval(timer); timer=null; } }
+
+  // săgeți
+  prevBtn?.addEventListener('click', ()=>{ stop(); prev(); play(); });
+  nextBtn?.addEventListener('click', ()=>{ stop(); next(); play(); });
+
+  // pauză la hover
+  viewport.addEventListener('mouseenter', stop);
+  viewport.addEventListener('mouseleave', play);
+
+  // keyboard
+  root.addEventListener('keydown', (e)=>{
+    if (e.key === 'ArrowLeft') { e.preventDefault(); stop(); prev(); play(); }
+    if (e.key === 'ArrowRight'){ e.preventDefault(); stop(); next(); play(); }
+  });
+
+  // swipe
+  let startX=0, dx=0, swiping=false;
+  viewport.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; dx=0; swiping=true; stop(); }, {passive:true});
+  viewport.addEventListener('touchmove',  (e)=>{ if(!swiping) return; dx = e.touches[0].clientX - startX; }, {passive:true});
+  viewport.addEventListener('touchend',   ()=>{
+    if(!swiping) return; swiping=false;
+    if (Math.abs(dx) > 40){ dx<0 ? next() : prev(); }
+    play();
+  }, {passive:true});
+
+  // resize / init
+  window.addEventListener('resize', computePerView);
+  computePerView();
+  play();
+
+  // focus vizibil: viewport devine focusabil pentru a prinde tastele
+  viewport.setAttribute('tabindex', '0');
+})();
+</script>
+
 
 
 </body>

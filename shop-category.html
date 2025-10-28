@@ -55,29 +55,120 @@
     /* =========================================================
        NAVBAR (Bootstrap dark)
        ========================================================= */
-    .navbar{
-      background:#0f1317 !important;
-      box-shadow:0 6px 22px var(--shadow-soft);
-    }
-    .navbar .container-fluid{ display:flex; align-items:center }
-    .navbar .navbar-brand{
-      display:flex; align-items:center; gap:10px;
-      flex:1 1 auto; min-width:0;
-      white-space: normal !important; overflow-wrap:anywhere;
-      line-height:1.2; font-weight:700; color:#fff !important;
-    }
-    .navbar .navbar-brand img{ height:32px; width:auto }
-    .navbar .nav-link{ color:#cfd8e3 !important }
-    .navbar .nav-link.active,
-    .navbar .nav-link:hover,
-    .navbar .nav-link:focus{ color:#fff !important }
+    /* ==== NAVBAR — font + theme (Inter + Sora) ==== */
+/* adaugă importul ăsta deasupra, lângă Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700&display=swap');
 
-    /* corectăm spațiul sub navbar fix */
-    .with-navbar{ padding-top:96px }
-    @media (max-width:1200px){ .with-navbar{ padding-top:104px } }
-    @media (max-width:992px){ .with-navbar{ padding-top:110px } }
-    @media (max-width:768px){ .with-navbar{ padding-top:118px } }
-    @media (max-width:420px){ .with-navbar{ padding-top:124px } }
+/* paletă pentru navbar */
+.navbar{
+  --nav-bg-1: rgba(12,21,30,.90);
+  --nav-bg-2: rgba(12,21,30,.86);
+}
+
+/* bară + efect blur */
+.navbar{
+  background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 22px var(--shadow-soft);
+  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
+  padding-block: .6rem;
+}
+
+/* stare compactată la scroll (opțional – dacă adaugi clasa .scrolled din JS) */
+.navbar.scrolled{
+  background: rgba(12,21,30,.96) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  padding-block: .5rem;
+}
+
+.navbar .container-fluid{ display:flex; align-items:center }
+
+/* brand cu Inter + accent Sora pe ANCA */
+.navbar .navbar-brand{
+  display:flex; align-items:center; gap:10px;
+  flex:1 1 auto; min-width:0;
+  white-space: normal !important; overflow-wrap:anywhere;
+  line-height:1.2;
+  color:#fff !important;
+  font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:600;                           /* mai subțire & lizibil */
+  letter-spacing:.2px;
+  font-size: clamp(16px,2vw,18px);
+}
+.navbar .navbar-brand img{ height:32px; width:auto; border-radius:12px }
+.navbar .navbar-brand b{
+  font-family:'Sora',sans-serif;
+  font-weight:700;
+  letter-spacing:.3px;
+  color: var(--brand);                        /* #e2b964 din :root */
+}
+
+/* toggler */
+.navbar .navbar-toggler{ margin-left:.5rem; flex:0 0 auto; border:0 }
+.navbar .navbar-toggler:focus{ box-shadow:none }
+
+/* linkuri + underline animat */
+.navbar .nav-link{
+  color:#cfd8e3 !important;
+  font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:500;
+  letter-spacing:.15px;
+  padding:.6rem 1rem !important;
+  border-radius:12px;
+  position:relative;
+  opacity:.95;
+  transition: opacity .2s ease, transform .15s ease, background .25s ease;
+}
+.navbar .nav-link::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:8px;
+  height:1.5px; border-radius:999px;
+  background: linear-gradient(90deg, var(--brand), #e67e22);
+  transform: scaleX(0); transform-origin:left; transition: transform .22s ease;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus{ color:#fff !important; opacity:1; transform: translateY(-1px); }
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after{ transform: scaleX(1); }
+
+.navbar .nav-link.active{
+  color:#fff !important;
+  background: rgba(255,255,255,.07);
+  box-shadow: inset 0 6px 16px rgba(0,0,0,.10);
+}
+.navbar .nav-link.active::after{ transform: scaleX(1); }
+
+/* accesibilitate focus subtil */
+.navbar .nav-link:focus-visible{
+  outline:0;
+  box-shadow:0 0 0 3px rgba(226,185,100,.35);
+}
+
+/* ===== meniu mobil: edge-to-edge, fără chenar negru ===== */
+@media (max-width: 991.98px){
+  .navbar .collapse.show{
+    background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: .35rem 0 !important;
+  }
+  .navbar .navbar-nav{
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: .25rem .5rem !important;
+  }
+  .navbar .navbar-nav .nav-link{
+    padding:.65rem 1rem !important;
+    border-radius:12px;
+    background: transparent !important;
+  }
+  .navbar .nav-link:hover,
+  .navbar .nav-link:focus{
+    background: rgba(255,255,255,.06) !important;  /* highlight discret */
+  }
+}
 
     /* container Bootstrap, dar limităm lățimea “blând” */
     .container{ max-width:1100px }
@@ -620,5 +711,6 @@
       }
     });
   </script>
+  
 </body>
 </html>
