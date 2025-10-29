@@ -2128,3 +2128,173 @@ body{
   .navbar .navbar-toggler{ margin-left:0; }            /* hamburger lipit de stânga */
   .navbar .navbar-collapse{ width:100%; }              /* meniul ocupă toată lățimea când e deschis */
 }
+
+
+
+
+/* ====== VIRTUAL TOUR MODAL – FIX MOBILE OVERLAP ====== */
+#virtualTourModal .modal-dialog{
+  max-width: min(420px, 96vw);
+  margin: 1rem auto;
+}
+
+#virtualTourModal .modal-content.virtual-content{
+  border-radius: 16px;
+  overflow: hidden;          /* ține butoanele înăuntru */
+}
+
+#virtualTourModal .virtual-shell{ padding: 0; }
+#virtualTourModal .virtual-frame{
+  position: relative;
+  overflow: hidden;
+}
+
+#virtualTourModal video{
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* X-ul: mereu deasupra, cu safe-area */
+#virtualTourModal .btn-close{
+  z-index: 5;
+  top: calc(8px + env(safe-area-inset-top));
+  right: calc(8px + env(safe-area-inset-right));
+}
+
+/* Butonul SUNET: jos-dreapta, sub X, nu iese din video */
+#virtualTourModal .unmute-btn{
+  position: absolute;
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 2;                     /* X-ul are z-index mai mare */
+  padding: .45rem .65rem;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+/* Micșorări pe telefoane foarte înguste */
+@media (max-width: 420px){
+  #virtualTourModal .unmute-btn{
+    padding: .35rem .55rem;
+    font-size: .85rem;
+  }
+  #virtualTourModal .btn-close{
+    top: calc(6px + env(safe-area-inset-top));
+    right: calc(6px + env(safe-area-inset-right));
+    transform: scale(.95);
+  }
+}
+
+/* În caz că apare bara de controale a playerului, păstrăm spațiu */
+@media (pointer: coarse){
+  #virtualTourModal .unmute-btn{
+    bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+}
+
+
+/* ===================== COOKIE BANNER — RESPONSIVE ===================== */
+.ck-banner{
+  position: fixed;
+  inset: auto 0 0 0;              /* bottom sheet */
+  z-index: 2147483000;            /* peste tot */
+  background: rgba(0,0,0,.35);    /* ușor overlay în jurul foii */
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: end center;
+  padding: 8px;
+}
+
+.ck-banner[hidden]{ display:none !important; }
+
+.ck-banner .ck-inner{
+  width: min(680px, 98vw);
+  background: #fff;
+  color: #222;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -12px 40px rgba(0,0,0,.25);
+  padding: 14px;
+  max-height: calc(100svh - 24px);   /* să nu iasă din ecran */
+  overflow: auto;
+}
+
+.ck-banner .ck-text h5{ 
+  font-size: clamp(16px, 2.5vw, 18px);
+  margin: 0 0 6px;
+}
+.ck-banner .ck-text p{ 
+  font-size: clamp(13px, 2.4vw, 15px);
+  line-height: 1.35; 
+}
+
+.ck-banner .ck-actions{
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Butoane mari, full-width pe mobil */
+.ck-banner .ck-actions .btn{
+  width: 100%;
+  padding: .7rem .9rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Layout pe ecrane medii/mari: butoanele pe un rând */
+@media (min-width: 576px){
+  .ck-banner .ck-inner{ padding: 16px 18px; }
+  .ck-banner .ck-actions{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Dark mode prietenos (opțional) */
+@media (prefers-color-scheme: dark){
+  .ck-banner .ck-inner{ background:#121417; color:#e8eaed; }
+  .ck-banner a{ color:#9ecbff; }
+}
+
+/* iPhone safe areas */
+@supports (padding: max(0px)){
+  .ck-banner{ padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .ck-banner .ck-inner{ border-radius: 16px 16px 0 0; }
+}
+
+/* ===================== COOKIE MODAL — RESPONSIVE ===================== */
+#cookieModal .modal-dialog{
+  width: 100%;
+  max-width: min(520px, 96vw);
+  margin: 1rem auto;
+}
+
+#cookieModal .modal-content{
+  border-radius: 14px;
+  max-height: 90svh;           /* ca să nu depășească ecranul */
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header / body scroll / footer */
+}
+
+#cookieModal .modal-body{
+  overflow: auto;
+}
+
+#cookieModal .ck-row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+#cookieModal .form-check-input{
+  transform: scale(1.15);
+}
