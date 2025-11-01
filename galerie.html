@@ -221,6 +221,160 @@
       </div>
     </div>
   </div>
+<!-- FONTURI pentru navbar -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700&display=swap" rel="stylesheet">
+
+<style>
+/* ===== NAVBAR DARK – Inter + Sora (match cu tema ta) ===== */
+:root{ --brand:#e2b964; --nav-safe: env(safe-area-inset-top,0px); }
+
+body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+
+/* bară: gradient subtil + blur, umbră, tranziții */
+.navbar{
+  --nav-bg-1: rgba(12,21,30,.90);
+  --nav-bg-2: rgba(12,21,30,.86);
+  background: linear-gradient(180deg, var(--nav-bg-1), var(--nav-bg-2)) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 22px rgba(12,18,22,.12);
+  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
+  padding-block: .6rem;
+}
+.navbar.scrolled{
+  background: rgba(12,21,30,.96) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  padding-block: .5rem;
+}
+
+/* brand: text alb, „ANCA” cu accent Sora + gold */
+.navbar .container-fluid{ display:flex; align-items:center }
+.navbar .navbar-brand{
+  display:flex; align-items:center; gap:10px;
+  flex:1 1 auto; min-width:0;
+  color:#fff !important;
+  font-weight:600; letter-spacing:.2px;
+  font-size: clamp(16px,2vw,18px);
+  line-height:1.2;
+  white-space: normal !important; overflow-wrap:anywhere;
+}
+.navbar .navbar-brand img{ height:32px; width:auto; border-radius:12px }
+.navbar .navbar-brand b{
+  font-family:'Sora',sans-serif; font-weight:700; letter-spacing:.3px; color:var(--brand);
+}
+
+/* hamburger */
+.navbar .navbar-toggler{ margin-left:.5rem; border:0 }
+.navbar .navbar-toggler:focus{ box-shadow:none }
+
+/* linkuri + underline animat */
+.navbar .nav-link{
+  color:#cfd8e3 !important;
+  font-weight:500; letter-spacing:.15px;
+  padding:.6rem 1rem !important;
+  border-radius:12px; position:relative; opacity:.95;
+  transition: opacity .2s ease, transform .15s ease, background .25s ease;
+}
+.navbar .nav-link::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:8px;
+  height:1.5px; border-radius:999px;
+  background: linear-gradient(90deg, var(--brand), #e67e22);
+  transform: scaleX(0); transform-origin:left; transition: transform .22s ease;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus{ color:#fff !important; opacity:1; transform:translateY(-1px); }
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after{ transform:scaleX(1); }
+.navbar .nav-link.active{
+  color:#fff !important; background:rgba(255,255,255,.07);
+  box-shadow: inset 0 6px 16px rgba(0,0,0,.10);
+}
+.navbar .nav-link.active::after{ transform:scaleX(1); }
+
+/* panel mobil „card-like” */
+@media (max-width:991.98px){
+  .navbar .collapse.show{
+    background: rgba(12,21,30,.96);
+    border-radius:14px; margin-top:.6rem; padding:.4rem .2rem;
+    box-shadow:0 14px 32px rgba(0,0,0,.25);
+  }
+}
+
+/* focus accesibil */
+.navbar .nav-link:focus-visible{
+  outline:0; box-shadow:0 0 0 3px rgba(226,185,100,.35);
+}
+
+/* spațiu sub navbar fix */
+.with-navbar{ padding-top: calc(104px + var(--nav-safe)); }
+@media (max-width:992px){ .with-navbar{ padding-top: calc(112px + var(--nav-safe)); } }
+@media (max-width:768px){ .with-navbar{ padding-top: calc(118px + var(--nav-safe)); } }
+@media (max-width:420px){ .with-navbar{ padding-top: calc(124px + var(--nav-safe)); } }
+
+
+
+
+
+/* ===== Masonry Pinterest – thumbs mai mici pe mobil ===== */
+.masonry{
+  padding: 6px;
+  column-gap: 10px;
+  column-width: 180px;           /* bază: 2–3 coloane */
+}
+
+.g-item{
+  display:block;
+  break-inside: avoid;
+  margin: 0 0 10px;
+  border-radius: 12px;
+  overflow:hidden;
+  background:#0b0f0c;
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+  transition: box-shadow .18s ease, transform .12s ease;
+  cursor:pointer;
+}
+.g-item:hover{ box-shadow:0 14px 32px rgba(0,0,0,.32); transform: translateY(-1px); }
+
+.g-item img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:cover;
+}
+
+/* ——— Tighter pe telefoane mici ——— */
+@media (max-width:576px){
+  .masonry{ column-width: 150px; column-gap: 8px; padding: 4px; }
+  .g-item{ border-radius: 10px; margin-bottom: 8px; box-shadow:0 6px 16px rgba(0,0,0,.2); }
+}
+
+/* ——— Foarte mic (iPhone SE, Android compact) ——— */
+@media (max-width:380px){
+  .masonry{ column-width: 130px; column-gap: 6px; }
+  .g-item{ margin-bottom: 6px; border-radius: 10px; }
+}
+
+/* ——— Tablete & desktop: mai multe coloane ——— */
+@media (min-width:768px){
+  .masonry{ column-width: 220px; column-gap: 12px; }
+}
+@media (min-width:992px){
+  .masonry{ column-width: 260px; column-gap: 14px; }
+}
+@media (min-width:1200px){
+  .masonry{ column-width: 300px; column-gap: 16px; }
+}
+
+</style>
+
+<script>
+/* shrink on scroll – adaugă/șterge .scrolled pe navbar */
+document.addEventListener('scroll', () => {
+  const nav = document.querySelector('.navbar');
+  if (!nav) return;
+  if (window.scrollY > 10) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+}, { passive:true });
+</script>
 
   <script type="module">
     // (opțional) dacă ai <span id="year"> în footer
