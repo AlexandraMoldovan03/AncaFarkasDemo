@@ -56,6 +56,25 @@ const showPopup = (title='Mesaj', message='', variant='primary') => {
     if (!user) { location.href = '/auth.html'; return }
     document.getElementById('userEmail').textContent = user.email
 
+    // --- admin gate ---
+try {
+  const { data: adminRows, error: adminErr } = await supabase
+    .from('admins')
+    .select('user_id')
+    .eq('user_id', user.id)
+    .limit(1);
+
+  if (!adminErr && adminRows?.length) {
+    // e admin -> arată butonul
+    document.getElementById('nav-admin')?.classList.remove('d-none');
+  }
+} catch (e) {
+  console.warn('admin check failed:', e);
+}
+
+
+
+
     const list = document.getElementById('courses')
     list.innerHTML = '' // curățăm skeleton-urile
 
