@@ -1,3 +1,17 @@
+/* ══ MODAL — previne layout shift + aspect elegant mobil ══ */
+html { scrollbar-gutter: stable; }
+body.modal-open { padding-right: 0 !important; overflow: hidden; }
+.modal-dialog {
+  margin: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: calc(100% - 2rem) !important;
+}
+@media (max-width: 576px) {
+  .modal-dialog { margin: 1rem !important; }
+  .modal-content { border-radius: 16px !important; box-shadow: 0 20px 60px rgba(0,0,0,.25) !important; }
+}
+
 /* Paleta existentă (fallback) */
 :root{
   --bg: var(--background-color, #F8F1E7);
@@ -272,8 +286,7 @@ body{ background: var(--bg); color: var(--text); font-family: system-ui, -apple-
 
 
 /* === NAVBAR PRO (Dashboard) — Inter + Sora, dark glass === */
-/* Fonts (adaugă o singură dată în fișier) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700&display=swap');
+/* Fonts încărcate în <head> din dashboard.html */
 
 /* Variabile pentru fundal nav (folosește paleta ta existentă) */
 .navbar{

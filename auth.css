@@ -20,6 +20,44 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; }
 
+/* ══ MODAL — previne layout shift când se deschide ══ */
+html { scrollbar-gutter: stable; }
+body.modal-open { padding-right: 0 !important; overflow: hidden; }
+
+/* ══ MODAL — aspect elegant, centrat perfect pe mobil ══ */
+.modal-dialog {
+  margin: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: calc(100% - 2rem) !important;
+}
+@media (max-width: 576px) {
+  .modal-dialog {
+    margin: 1rem !important;
+    min-height: calc(100% - 2rem) !important;
+  }
+  .modal-content {
+    border-radius: 16px !important;
+    border: 1.5px solid rgba(201,168,76,.2) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25) !important;
+  }
+  .modal-header {
+    border-bottom-color: rgba(26,60,46,.1) !important;
+    padding: 1.1rem 1.25rem .9rem !important;
+  }
+  .modal-footer {
+    border-top-color: rgba(26,60,46,.1) !important;
+    padding: .9rem 1.25rem !important;
+  }
+  .modal-footer .btn-primary {
+    background: linear-gradient(135deg, #C9A84C, #a8782e) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: .6rem 1.8rem !important;
+    font-weight: 600 !important;
+  }
+}
+
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background:

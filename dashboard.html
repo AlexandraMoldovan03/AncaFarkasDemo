@@ -180,7 +180,6 @@
   <!-- CONȚINUT -->
   <main class="container page with-navbar">
     <!-- HERO panoramic -->
-     <p class="text-muted mb-0">Email: <strong id="userEmail">—</strong></p>
 <section class="dash-hero pro mb-4" aria-label="Cursurile mele">
   <img class="dh-bg" src="shop.jpg" alt="" aria-hidden="true">
   <div class="dh-vignette" aria-hidden="true"></div>
@@ -371,14 +370,7 @@
   // 3) UI – anul curent
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // 4) Afișează emailul în „Email: —“ (navbar e gestionat de navbar-auth.js)
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    const elUserEmail = document.getElementById('userEmail');
-    if (user?.email && elUserEmail) elUserEmail.textContent = user.email;
-  } catch (e) {
-    console.warn('auth.getUser failed:', e);
-  }
+  // 4) Email afișat în navbar de navbar-auth.js
 
   // 5) Modal „Resetează parola”
   const modalEl = document.getElementById('pwdModal');

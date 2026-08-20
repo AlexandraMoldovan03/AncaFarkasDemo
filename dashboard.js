@@ -54,7 +54,7 @@ const showPopup = (title='Mesaj', message='', variant='primary') => {
     // --- auth ---
     const { data:{ user } } = await supabase.auth.getUser()
     if (!user) { location.href = '/auth.html'; return }
-    document.getElementById('userEmail').textContent = user.email
+    const elUE = document.getElementById('userEmail'); if (elUE) elUE.textContent = user.email
 
     // --- admin gate ---
 try {
