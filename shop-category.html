@@ -9,454 +9,383 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Font Awesome (pentru iconița WA din navbar) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <!-- Stiluri globale ale shop-ului (tema light + navbar dark) -->
-  <link rel="stylesheet" href="/shop.css?v=9" />
+  <link rel="stylesheet" href="/shop.css?v=14" />
 
-  <!-- Mic styling local specific paginii (sticky subnav + spațiu sub navbar + blurb) -->
+  <!-- Google Fonts via @import (evită parse5 error cu & în href) -->
+  <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap');</style>
+
   <style>
-    /* =========================================================
-       SHOP THEME — LIGHT + GOLD, NAVBAR DARK
-       ========================================================= */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
-
-    :root{
-      /* culori */
-      --bg: #f4f6f8;
-      --bg-grad: #ffffff;
-      --card: #ffffff;
-      --txt: #0f1722;
-      --muted: #5b6b7a;
-      --brand: #e2b964;
-      --pill: #eef2f6;
-      --white: #ffffff;
-
-      /* umbre */
-      --shadow: rgba(12,18,22,.18);
-      --shadow-soft: rgba(12,18,22,.12);
-
-      /* butoane */
-      --btn: #e2b964;
-      --btn-txt: #0d1115;
-
-      /* dimensiuni */
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
+    /* ══════════════════════════════════════════
+       VARIABILE
+    ══════════════════════════════════════════ */
+    :root {
+      --sc-green:      #1A3C2E;
+      --sc-green-deep: #0B1A10;
+      --sc-green-mid:  #2D5A3D;
+      --sc-gold:       #C9A84C;
+      --sc-gold-light: #EDD998;
+      --sc-cream:      #FAF7F2;
+      --sc-white:      #ffffff;
+      --sc-border:     rgba(26,60,46,.09);
+      --sc-muted:      #6B7D72;
+      --sc-shadow-sm:  0 4px 20px rgba(26,60,46,.07);
+      --sc-shadow:     0 10px 36px rgba(26,60,46,.13);
+      /* compatibilitate cu JS */
+      --btn: #C9A84C; --btn-txt: #1A3C2E; --brand: #C9A84C;
     }
 
-    *{ box-sizing: border-box }
-    html,body{ margin:0; padding:0 }
-    body{
-      font-family:'Poppins',sans-serif;
-      color:var(--txt);
-      background: radial-gradient(900px 450px at 14% -12%, var(--bg-grad) 0, var(--bg) 70%), var(--bg);
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--sc-cream);
+      color: #1a2e20;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* =========================================================
-       NAVBAR (Bootstrap dark)
-       ========================================================= */
-    /* ==== NAVBAR — font + theme (Inter + Sora) ==== */
-/* adaugă importul ăsta deasupra, lângă Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700&display=swap');
-
-/* paletă pentru navbar */
-.navbar{
-  --nav-bg-1: rgba(12,21,30,.90);
-  --nav-bg-2: rgba(12,21,30,.86);
-}
-
-/* bară + efect blur */
-.navbar{
-  background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 22px var(--shadow-soft);
-  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
-  padding-block: .6rem;
-}
-
-/* stare compactată la scroll (opțional – dacă adaugi clasa .scrolled din JS) */
-.navbar.scrolled{
-  background: rgba(12,21,30,.96) !important;
-  box-shadow: 0 10px 28px rgba(0,0,0,.18);
-  padding-block: .5rem;
-}
-
-.navbar .container-fluid{ display:flex; align-items:center }
-
-/* brand cu Inter + accent Sora pe ANCA */
-.navbar .navbar-brand{
-  display:flex; align-items:center; gap:10px;
-  flex:1 1 auto; min-width:0;
-  white-space: normal !important; overflow-wrap:anywhere;
-  line-height:1.2;
-  color:#fff !important;
-  font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight:600;                           /* mai subțire & lizibil */
-  letter-spacing:.2px;
-  font-size: clamp(16px,2vw,18px);
-}
-.navbar .navbar-brand img{ height:32px; width:auto; border-radius:12px }
-.navbar .navbar-brand b{
-  font-family:'Sora',sans-serif;
-  font-weight:700;
-  letter-spacing:.3px;
-  color: var(--brand);                        /* #e2b964 din :root */
-}
-
-/* toggler */
-.navbar .navbar-toggler{ margin-left:.5rem; flex:0 0 auto; border:0 }
-.navbar .navbar-toggler:focus{ box-shadow:none }
-
-/* linkuri + underline animat */
-.navbar .nav-link{
-  color:#cfd8e3 !important;
-  font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight:500;
-  letter-spacing:.15px;
-  padding:.6rem 1rem !important;
-  border-radius:12px;
-  position:relative;
-  opacity:.95;
-  transition: opacity .2s ease, transform .15s ease, background .25s ease;
-}
-.navbar .nav-link::after{
-  content:""; position:absolute; left:14px; right:14px; bottom:8px;
-  height:1.5px; border-radius:999px;
-  background: linear-gradient(90deg, var(--brand), #e67e22);
-  transform: scaleX(0); transform-origin:left; transition: transform .22s ease;
-}
-.navbar .nav-link:hover,
-.navbar .nav-link:focus{ color:#fff !important; opacity:1; transform: translateY(-1px); }
-.navbar .nav-link:hover::after,
-.navbar .nav-link:focus::after{ transform: scaleX(1); }
-
-.navbar .nav-link.active{
-  color:#fff !important;
-  background: rgba(255,255,255,.07);
-  box-shadow: inset 0 6px 16px rgba(0,0,0,.10);
-}
-.navbar .nav-link.active::after{ transform: scaleX(1); }
-
-/* accesibilitate focus subtil */
-.navbar .nav-link:focus-visible{
-  outline:0;
-  box-shadow:0 0 0 3px rgba(226,185,100,.35);
-}
-
-/* ===== meniu mobil: edge-to-edge, fără chenar negru ===== */
-@media (max-width: 991.98px){
-  .navbar .collapse.show{
-    background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: .35rem 0 !important;
-  }
-  .navbar .navbar-nav{
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: .25rem .5rem !important;
-  }
-  .navbar .navbar-nav .nav-link{
-    padding:.65rem 1rem !important;
-    border-radius:12px;
-    background: transparent !important;
-  }
-  .navbar .nav-link:hover,
-  .navbar .nav-link:focus{
-    background: rgba(255,255,255,.06) !important;  /* highlight discret */
-  }
-}
-
-    /* container Bootstrap, dar limităm lățimea “blând” */
-    .container{ max-width:1100px }
-
-    /* ========================= HERO — lizibil pe orice ecran ========================= */
-    .hero-banner{
-      position: relative; overflow: hidden; border-radius: 22px; isolation: isolate;
-      min-height: clamp(280px, 36vw, 440px);
-      border: 1px solid rgba(16,20,23,.08);
-      box-shadow: 0 24px 70px rgba(12,18,22,.12);
-      background: #fff;
+    /* ══════════════════════════════════════════
+       HERO — split: text stânga + imagine dreapta
+    ══════════════════════════════════════════ */
+    .sc-hero {
+      background: linear-gradient(135deg, var(--sc-green-deep) 0%, var(--sc-green) 60%, var(--sc-green-mid) 100%);
+      padding-top: 68px; /* navbar height */
+      position: relative;
+      overflow: hidden;
     }
-    .hero-bg{
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover;
-      filter: blur(12px) brightness(1.02) saturate(.98);
-      transform: scale(1.05); opacity: .68;
+    .sc-hero::before {
+      content: “”;
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(201,168,76,.08) 0%, transparent 60%);
+      pointer-events: none;
     }
-    .hero-overlay{
-      position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(
-        90deg,
-        rgba(255,255,255,.96) 0%,
-        rgba(255,255,255,.88) 46%,
-        rgba(255,255,255,.70) 68%,
-        rgba(255,255,255,0) 100%
-      );
+    .sc-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin-inline: auto;
+      padding-inline: clamp(20px, 5vw, 56px);
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      align-items: center;
+      gap: clamp(20px, 4vw, 44px);
     }
-    .hero-center{
-      position: relative; z-index: 1; height: 100%;
-      display: flex; align-items: center; justify-content: flex-start;
-      gap: clamp(16px, 3vw, 32px);
-      padding: clamp(16px, 3vw, 28px);
+    .sc-hero-text {
+      padding: clamp(32px, 5vw, 56px) 0;
     }
-    .hero-foreground{
-      height: 100%;
-      max-height: clamp(180px, 30vw, 360px);
-      aspect-ratio: 3 / 4;
+    .sc-hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--sc-gold); margin-bottom: 14px;
+    }
+    .sc-hero-label::before, .sc-hero-label::after {
+      content: “”; display: block; width: 20px; height: 1.5px;
+      background: var(--sc-gold); border-radius: 99px;
+    }
+    .sc-hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(20px, 3.5vw, 36px);
+      font-weight: 700; color: #fff;
+      margin: 0 0 12px; line-height: 1.2;
+    }
+    .sc-hero p {
+      font-size: clamp(13px, 1.6vw, 15px);
+      color: rgba(255,255,255,.65);
+      margin: 0; line-height: 1.7;
+    }
+    /* Imagine dreapta — mai mică, cu border-radius elegant */
+    .sc-hero-img-wrap {
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px 0;
+    }
+    .sc-hero-img-wrap {
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px 0;
+    }
+    .sc-hero-img {
+      width: 220px;
+      height: auto;
       object-fit: contain;
-      background: #101417;
-      border: 1px solid rgba(16,20,23,.06);
-      border-radius: 16px;
-      box-shadow: 0 12px 34px rgba(0,0,0,.18);
+      border-radius: 20px;
+      display: block;
+      box-shadow: 0 12px 40px rgba(0,0,0,.35), 0 0 0 3px rgba(201,168,76,.25);
     }
-    .hero-text{
-      display: inline-block;
-      max-width: min(62ch, 100%);
-      background: rgba(255,255,255,.92);
-      backdrop-filter: saturate(1.05) blur(3px);
-      -webkit-backdrop-filter: saturate(1.05) blur(3px);
-      padding: clamp(10px, 2.2vw, 18px) clamp(12px, 2.6vw, 22px);
-      border-radius: 14px;
-      box-shadow: 0 8px 28px rgba(12,18,22,.10);
+    /* Tabletă */
+    @media (max-width: 860px) {
+      .sc-hero-inner { grid-template-columns: 1fr 170px; }
+      .sc-hero-img { width: 160px; }
     }
-    .hero-text h1{
-      margin: 0 0 6px;
-      font-weight: 800; color: #0b1220;
-      font-size: clamp(1.45rem, 3.3vw, 2.25rem);
-      line-height: 1.22;
-      text-wrap: balance;
-    }
-
-    /* ========== Tabletă ========== */
-    @media (max-width: 992px){
-      .hero-overlay{
-        background: linear-gradient(
-          90deg,
-          rgba(255,255,255,.98) 0%,
-          rgba(255,255,255,.92) 55%,
-          rgba(255,255,255,.78) 80%,
-          rgba(255,255,255,0) 100%
-        );
+    /* Mobil */
+    @media (max-width: 600px) {
+      .sc-hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 20px;
       }
-      .hero-text{ background: rgba(255,255,255,.95); }
+      .sc-hero-text { padding: clamp(24px, 7vw, 36px) 0 0; }
+      .sc-hero-label { justify-content: center; }
+      .sc-hero-img-wrap { padding: 0 0 24px; }
+      .sc-hero-img { width: 140px; border-radius: 16px; }
     }
 
-    /* ========== Mobil ========== */
-    @media (max-width: 768px){
-      .hero-banner{ min-height: unset; padding-block: 14px; }
-      .hero-center{ flex-direction: column; align-items: center; text-align: center; gap: 12px; }
-      .hero-overlay{ background: rgba(255,255,255,.98); }
-      .hero-bg{ opacity: .35; filter: blur(10px) brightness(1); transform: scale(1.02); }
-      .hero-foreground{ max-height: 140px; border-radius: 14px; }
-      .hero-text{ background: transparent; box-shadow: none; padding: 0; max-width: 92%; }
-      .hero-text h1{ font-size: clamp(1.06rem, 4.6vw, 1.28rem); line-height: 1.26; margin: 0; }
-    }
-    @media (max-width: 380px){
-      .hero-foreground{ max-height: 120px; }
-      .hero-text h1{ font-size: clamp(.98rem, 4.8vw, 1.12rem); }
-    }
-
-    /* =========================================================
-       BLURB (descriere) – secțiune sub hero, lizibilă pe orice ecran
-       ========================================================= */
-    .blurb-section{ margin: 14px 0 18px; }
-    .blurb-inner{
-      background: var(--white);
-      border: 1px solid rgba(16,20,23,.08);
-      border-radius: 16px;
-      padding: clamp(12px, 2.4vw, 18px) clamp(14px, 3vw, 22px);
-      box-shadow: 0 12px 28px var(--shadow-soft);
-      color: #203244;
-      line-height: 1.55;
-      font-size: clamp(.98rem, 2.2vw, 1.06rem);
-      text-align: center;
-      max-width: 900px;
+    /* ══════════════════════════════════════════
+       CONȚINUT PRINCIPAL
+    ══════════════════════════════════════════ */
+    .sc-main {
+      max-width: 1100px;
       margin-inline: auto;
-    }
-    @media (max-width: 768px){
-      .blurb-section{ margin: 12px 0 16px; }
-      .blurb-inner{
-        border-radius: 14px;
-        padding: 12px 14px;
-        box-shadow: 0 10px 22px var(--shadow-soft);
-      }
+      padding: 40px clamp(16px, 5vw, 48px) 80px;
     }
 
-    /* =========================================================
-       SUBNAV (chips) – sticky, discret
-       ========================================================= */
-    .subnav{
-      display:flex; flex-wrap:wrap; gap:10px;
-      padding:12px 6px; margin:12px 0 16px;
+    /* ══════════════════════════════════════════
+       SUBNAV — chips filtrare
+    ══════════════════════════════════════════ */
+    .subnav {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 14px 16px;
+      margin: 0 0 32px;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(201,168,76,.15);
+      border-radius: 16px;
+      box-shadow: var(--sc-shadow-sm);
     }
-    .subnav.sticky{
-      position:sticky; top:96px; z-index:5;
-      backdrop-filter:saturate(1.15) blur(6px);
-      background:rgba(255,255,255,.75);
-      border:1px solid rgba(16,20,23,.08);
-      border-radius:14px;
+    .subnav.sticky { position: sticky; top: 72px; z-index: 10; }
+    .subnav .chip {
+      display: inline-block; text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      color: var(--sc-green);
+      background: #fff;
+      border: 1.5px solid rgba(26,60,46,.12);
+      padding: 7px 16px; border-radius: 99px;
+      transition: all .18s ease;
+      white-space: nowrap;
     }
-    .subnav .chip{
-      display:inline-block; text-decoration:none; font-weight:700; color:#0f1317;
-      background:#f2f4f7; border:1px solid rgba(16,20,23,.08);
-      padding:8px 14px; border-radius:999px;
-      transition:background .15s ease, transform .05s ease;
+    .subnav .chip:hover { background: #EAF2EC; border-color: rgba(26,60,46,.22); }
+    .subnav .chip.active {
+      background: var(--sc-green); color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(26,60,46,.22);
+      transform: translateY(-1px);
     }
-    .subnav .chip:hover{ background:#e9edf2 }
-    .subnav .chip.active{
-      background:var(--brand); color:var(--btn-txt); border-color:transparent;
-      box-shadow:0 6px 18px rgba(226,185,100,.28); transform:translateY(-1px);
-    }
-    @media (max-width:768px){
-      .subnav{ justify-content:center; gap:8px }
-      .subnav .chip{ padding:7px 12px; font-size:.95rem }
-    }
-    @media (max-width:420px){
-      .subnav .chip{ padding:6px 10px; font-size:.9rem }
-    }
-
-    /* =========================================================
-       AUTH / INVITAT BARĂ
-       ========================================================= */
-    .shop-authbar{
-      display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:8px 0 18px
-    }
-    #authStatus{
-      background:var(--white); border:1px solid rgba(16,20,23,.08);
-      border-radius:12px; padding:10px 12px; box-shadow:0 6px 18px var(--shadow-soft);
-    }
-    .invite-box{
-      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-      background:var(--white); border:1px solid rgba(16,20,23,.08);
-      border-radius:12px; padding:10px 12px; box-shadow:0 6px 18px var(--shadow-soft);
-    }
-    .invite-box input{
-      padding:10px 12px; border-radius:10px; border:1.5px solid #e6e9ee;
-      outline:none; min-width:260px; flex:1 1 260px;
-    }
-    .invite-box input:focus{ border-color:#c9b06a; box-shadow:0 0 0 4px rgba(226,185,100,.22); }
-    @media (max-width:768px){
-      .invite-box{ padding:10px; gap:8px }
-      .invite-box input{ min-width:220px; padding:8px 10px }
+    @media (max-width: 600px) {
+      .subnav { gap: 6px; padding: 10px 12px; }
+      .subnav .chip { font-size: 12px; padding: 6px 12px; }
     }
 
-    /* =========================================================
-       GRID & PRODUS
-       ========================================================= */
-    .grid{ display:grid; gap:22px; grid-template-columns:repeat(2,minmax(0,1fr)); }
-    @media (max-width:900px){ .grid{ grid-template-columns:1fr } }
-
-    .grid.products{
-      grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
-      justify-content: center; justify-items: stretch; gap: 24px;
+    /* ══════════════════════════════════════════
+       AUTH BAR
+    ══════════════════════════════════════════ */
+    .shop-authbar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+      margin: 0 0 32px;
     }
-    .card{
-      background:var(--card); border:1px solid rgba(16,20,23,.08);
-      border-radius:var(--radius-md); padding:16px; box-shadow:0 12px 28px var(--shadow-soft);
-      display:flex; flex-direction:column; gap:10px; width:100%; max-width:380px; margin:0 auto;
+    #authStatus {
+      background: #fff; border: 1px solid var(--sc-border);
+      border-radius: 10px; padding: 10px 18px;
+      font-size: 13.5px; color: var(--sc-muted);
+      box-shadow: var(--sc-shadow-sm);
     }
-    .card-img{
-      width:100%; aspect-ratio: 16/9; object-fit:contain; background:#f7f9fb; border-radius:12px;
+    .invite-box {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--sc-border);
+      border-radius: 10px; padding: 10px 14px;
+      box-shadow: var(--sc-shadow-sm); font-size: 14px;
     }
-    .card h3{ font-size: clamp(1.02rem, 2.6vw, 1.2rem); line-height:1.25; margin:10px 0 6px; }
-    .desc{
-      color:#425466; margin:6px 0 8px; display:-webkit-box; -webkit-box-orient:vertical;
-      -webkit-line-clamp:3; overflow:hidden;
+    .invite-box input {
+      padding: 9px 13px; border-radius: 8px;
+      border: 1.5px solid #d6e2d8;
+      outline: none; min-width: 0; flex: 1 1 200px;
+      font-family: inherit; font-size: 14px;
+      height: 40px; /* fix: împiedică input-ul să se întindă pe toată înălțimea */
+      resize: none;
     }
-    .more{ appearance:none; background:transparent; border:none; padding:0; color:var(--btn); font-weight:700; cursor:pointer; }
-    .more:hover{ text-decoration:underline }
-    .price{ color:#0f1317; font-weight:800; font-size:clamp(1rem, 2.6vw, 1.06rem); margin:8px 0 12px; }
-    .button{
-      align-self:flex-start; padding:12px 18px; border:none; border-radius:12px; cursor:pointer;
-      background:var(--btn); color:var(--btn-txt); font-weight:800;
-      box-shadow:0 8px 20px rgba(226,185,100,.25); transition:transform .06s ease, filter .08s ease;
+    .invite-box input:focus {
+      border-color: var(--sc-gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,.16);
     }
-    .button:hover{ filter:brightness(.96) }
-    .button:active{ transform:translateY(1px) }
-    .button[disabled]{ opacity:.6; cursor:not-allowed }
-
-    @media (max-width:768px){
-      .grid.products{ grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap:16px }
-      .card{ max-width:320px; padding:14px; border-radius:16px }
-      .card-img{ aspect-ratio:4/3; max-height:180px }
-      .desc{ -webkit-line-clamp:2; font-size:.95rem; color:#4b5a6a }
-      .price{ margin:6px 0 10px; font-size:1rem }
-      .button{ padding:10px 14px; font-size:.95rem; border-radius:10px }
-    }
-    @media (max-width:420px){
-      .grid.products{ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px }
-      .card{ max-width:300px; padding:12px; border-radius:14px }
-      .card-img{ max-height:160px; border-radius:12px }
-      .button{ padding:9px 12px; font-size:.93rem }
+    @media (max-width: 600px) {
+      .shop-authbar { flex-direction: column; align-items: stretch; }
+      #authStatus, .invite-box { width: 100%; }
+      .invite-box { flex-direction: column; align-items: stretch; }
+      .invite-box input { width: 100%; flex: none; }
     }
 
-    /* =========================================================
-       FOOTER – perfect centrat
-       ========================================================= */
-    .footer{
-      width:100%; display:flex; justify-content:center; align-items:center; text-align:center;
-      color:#64758b; padding:28px 0 40px; margin-top:28px;
+    /* ══════════════════════════════════════════
+       GRID PRODUSE
+    ══════════════════════════════════════════ */
+    .grid { display: grid; gap: 24px; }
+    .grid.products {
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     }
-    .footer > *{ margin:0 }
-    .footer .container{ display:flex; justify-content:center; align-items:center; text-align:center; }
+    @media (min-width: 900px) {
+      .grid.products { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 600px) and (max-width: 899px) {
+      .grid.products { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 599px) {
+      .grid.products { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    /* ══════════════════════════════════════════
+       CARD PRODUS
+    ══════════════════════════════════════════ */
+    .card {
+      background: var(--sc-white);
+      border: 1px solid var(--sc-border);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: var(--sc-shadow-sm);
+      display: flex; flex-direction: column;
+      width: 100%; margin: 0;
+      position: relative; overflow: hidden;
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+    .card::before {
+      content: “”;
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--sc-gold), var(--sc-gold-light));
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sc-shadow);
+    }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: #EAF2EC;
+      display: block;
+    }
+    /* conținut card */
+    .card > *:not(.card-img) { padding-inline: 20px; }
+    .card > *:first-child:not(.card-img) { padding-top: 22px; }
+    .card > *:last-child { padding-bottom: 22px; }
+    .card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(15px, 2vw, 17px);
+      font-weight: 700; color: var(--sc-green);
+      line-height: 1.3; margin: 16px 0 6px;
+    }
+    .card-img + h3 { margin-top: 18px; }
+    .desc {
+      color: var(--sc-muted); font-size: 13.5px; line-height: 1.65;
+      margin: 0 0 6px;
+      display: -webkit-box; -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3; overflow: hidden;
+      padding-inline: 20px;
+    }
+    .desc.expanded { -webkit-line-clamp: unset; }
+    .more {
+      appearance: none; background: transparent; border: none;
+      padding: 0 20px 4px; color: var(--sc-gold);
+      font-weight: 700; font-size: 13px; cursor: pointer;
+      display: block;
+    }
+    .more:hover { text-decoration: underline; }
+    .price {
+      color: var(--sc-green); font-weight: 800;
+      font-size: clamp(15px, 2.2vw, 17px);
+      margin: 8px 0 0; padding-inline: 20px;
+    }
+    .button {
+      margin: 12px 20px 22px;
+      align-self: flex-start;
+      padding: 11px 22px; border: none; border-radius: 10px; cursor: pointer;
+      background: var(--sc-green); color: #fff;
+      font-weight: 700; font-size: 14px; font-family: inherit;
+      box-shadow: 0 5px 18px rgba(26,60,46,.18);
+      transition: background .2s, transform .12s;
+    }
+    .button:hover { background: var(--sc-green-mid); transform: translateY(-1px); }
+    .button:active { transform: translateY(0); }
+    .button[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    .sc-footer {
+      background: var(--sc-green-deep);
+      border-top: 1px solid rgba(201,168,76,.12);
+      color: rgba(255,255,255,.38);
+      text-align: center;
+      padding: 24px 20px 32px;
+      font-size: 12px;
+    }
+    .sc-footer a { color: rgba(255,255,255,.45); }
+    .sc-footer a:hover { color: var(--sc-gold); }
+
+    /* ── loading / empty state ── */
+    #productsGrid > p {
+      grid-column: 1 / -1;
+      color: var(--sc-muted); font-size: 15px; text-align: center; padding: 20px 0;
+    }
   </style>
 </head>
 
 <body>
-  <!-- NAV -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="/index.html">
-        <img src="/logo1.jpg" alt="Logo" style="height:40px;width:auto;margin-right:10px;">
-        <span>Prof&Coach FARKAS-RUSU <b>ANCA</b></span>
+  <!-- NAV — consistent cu index.html & galerie.html & shop.html -->
+  <nav class="navbar navbar-expand-lg fixed-top" aria-label="Navigație principală">
+    <div class="container-fluid px-3 px-lg-4">
+
+      <a class="navbar-brand" href="/index.html">
+        <img src="/logo1.jpg" alt="Education with Style logo" width="36" height="36">
+        <span>Prof &amp; Coach <b>ANCA</b></span>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
+      <button class="h-nav-toggler navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Deschide meniu">
+        <span class="h-burger"><span></span><span></span><span></span></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="/shop.html">Shop</a></li>
-          <li class="nav-item"><a class="nav-link" href="/auth.html" id="nav-auth">Login / Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="/galerie.html">Galerie</a></li>
+          <li class="nav-item"><a class="nav-link" href="/index.html#contact">Contact</a></li>
 
-          <!-- vizibile doar când ești logat(ă) -->
-          <li class="nav-item d-none"><a class="nav-link" href="/dashboard.html" id="nav-dash">Dashboard</a></li>
-          <li class="nav-item d-none"><button class="btn btn-sm btn-outline-light ms-lg-2" id="btnLogout">Logout</button></li>
-          <li class="nav-item d-none"><span class="nav-link disabled" id="navEmail" style="opacity:.8;"></span></li>
+          <!-- Auth — gestionat de /navbar-auth.js -->
+          <li class="nav-item d-none"><a class="nav-link" href="/admin.html" id="nav-admin">Admin</a></li>
+          <li class="nav-item d-none"><a class="nav-link" href="/dashboard.html" id="nav-dash">Contul meu</a></li>
+          <li class="nav-item d-none"><span class="nav-link" id="navEmail" style="opacity:.65;font-size:13px;pointer-events:none;"></span></li>
+          <li class="nav-item d-none"><button class="btn btn-sm btn-outline-light ms-lg-1" id="btnLogout">Logout</button></li>
+          <li class="nav-item"><a class="nav-link" href="/auth.html" id="nav-auth">Login</a></li>
+
+          <!-- CTA -->
+          <li class="nav-item h-nav-cta-wrap">
+            <a class="h-nav-cta" href="https://wa.me/40767283598" target="_blank" rel="noopener">
+              <i class="fab fa-whatsapp"></i>
+              <span>Rezervă</span>
+            </a>
+          </li>
         </ul>
       </div>
+
     </div>
   </nav>
 
-  <main class="container with-navbar">
-    <!-- HERO -->
-    <section class="hero-banner" aria-label="Categoria">
-      <img class="hero-bg" src="/banner.jpg" alt="" aria-hidden="true">
-      <div class="hero-overlay"></div>
-      <div class="hero-center">
-        <img class="hero-foreground" src="/logo1.jpg" alt="Education with Style">
-        <div class="hero-text">
-          <h1 id="catTitle" class="mb-2">
-            Experiențele mele, lecțiile tale – Când viața întâlnește Stilul
-          </h1>
-          <!-- descrierea a fost mutată în secțiunea blurb de mai jos -->
-        </div>
+  <!-- HERO -->
+  <section class="sc-hero">
+    <div class="sc-hero-inner">
+      <!-- Text stânga -->
+      <div class="sc-hero-text">
+        <div class="sc-hero-label">Education with Style®</div>
+        <h1 id="catTitle">Dezvoltare personală</h1>
+        <p id="catDesc">Ghiduri, reflecții și resurse practice inspirate din experiențele mele.</p>
       </div>
-    </section>
+      <!-- Imagine dreapta -->
+      <div class="sc-hero-img-wrap">
+        <img class="sc-hero-img" src="/shop1.png" alt="Shop Education with Style">
+      </div>
+    </div>
+  </section>
 
-    <!-- DESCRIERE CATEGORIE (mutată sub hero) -->
-    <section class="blurb-section" aria-label="Descriere categorie">
-      <div class="blurb-inner">
-        <p id="catDesc" class="mb-0">
-          Ghiduri și reflecții pentru inspirație personală. Acest material este destinat exclusiv cumpărătorului.
-        </p>
-      </div>
-    </section>
+  <main class="sc-main">
 
     <!-- SUBCAPITOLE – apar doar la “school” -->
     <nav id="subnav" class="subnav sticky" hidden>
@@ -483,8 +412,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <small>&copy; <span id="year"></span> — Toate drepturile rezervate.</small>
+  <footer class="sc-footer">
+    <small>&copy; <span id="year"></span> Anca Farkas-Rusu — Toate drepturile rezervate.</small>
   </footer>
 
   <script type="module">
@@ -529,31 +458,8 @@
       currentSub = '';
     }
 
-    /* ——— auth nav sus ——— */
-    const navAuth = document.getElementById('nav-auth');
-    const navDash = document.getElementById('nav-dash')?.parentElement;
-    const btnLogoutWrap = document.getElementById('btnLogout')?.parentElement;
-    const navEmailWrap = document.getElementById('navEmail')?.parentElement;
-
-    const setNav = (email)=>{
-      const logged = !!email;
-      navAuth?.classList.toggle('d-none', logged);
-      navDash?.classList.toggle('d-none', !logged);
-      btnLogoutWrap?.classList.toggle('d-none', !logged);
-      navEmailWrap?.classList.toggle('d-none', !logged);
-      if (logged) document.getElementById('navEmail').textContent = email || '';
-    };
-
+    /* ——— auth bar (invitat/logat) — navbar gestionat de navbar-auth.js ——— */
     const { data:{ user } } = await supabase.auth.getUser();
-    setNav(user?.email || null);
-    supabase.auth.onAuthStateChange((_e,s)=>setNav(s?.user?.email||null));
-
-    document.getElementById('btnLogout')?.addEventListener('click', async()=>{
-      await supabase.auth.signOut();
-      location.href='/auth.html';
-    });
-
-    /* ——— auth bar (invitat/logat) ——— */
     const authStatus = document.getElementById('authStatus');
     const guestBox = document.getElementById('guestBox');
     const guestEmail = document.getElementById('guestEmail');
@@ -598,8 +504,8 @@
             ${img}
             <h3>${p.name}</h3>
             ${desc}
-            <div class="price">${money(p.amount_cents)}</div>
-            <button class="button buy" data-id="${p.id}">Cumpără</button>
+            <div class="price">${p.amount_cents === 0 ? '<span style="color:#1A3C2E;font-weight:700;">Gratuit</span>' : money(p.amount_cents)}</div>
+            <button class="button buy" data-id="${p.id}" data-price="${p.amount_cents}">${p.amount_cents === 0 ? 'Obține gratuit' : 'Cumpără'}</button>
           </article>
         `;
       }).join('');
@@ -687,30 +593,38 @@
         return;
       }
 
+      const isFree = btn.getAttribute('data-price') === '0';
       try{
         btn.disabled = true;
-        btn.textContent = 'Se deschide...';
-        const resp = await fetch(`${API_BASE}/create-checkout-session`,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ itemId, userEmail: email })
-        });
-        const js = await resp.json().catch(()=>({}));
-        if (!resp.ok || !js?.url){
-          console.error(js);
-          alert(js?.error || 'Eroare la checkout');
-          return;
+        btn.textContent = 'Se procesează...';
+        if (isFree) {
+          const resp = await fetch(`${API_BASE}/claim-free`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemId, userEmail: email })
+          });
+          const js = await resp.json().catch(()=>({}));
+          if (!resp.ok || !js?.ok) { alert(js?.error || 'Eroare la revendicare'); return; }
+          location.href = '/success.html';
+        } else {
+          const resp = await fetch(`${API_BASE}/create-checkout-session`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ itemId, userEmail: email })
+          });
+          const js = await resp.json().catch(()=>({}));
+          if (!resp.ok || !js?.url){ console.error(js); alert(js?.error || 'Eroare la checkout'); return; }
+          location.href = js.url;
         }
-        location.href = js.url;
       }catch(err){
         console.error(err);
         alert('Eroare rețea.');
       } finally{
         btn.disabled=false;
-        btn.textContent='Cumpără';
+        btn.textContent = isFree ? 'Obține gratuit' : 'Cumpără';
       }
     });
   </script>
-  
+  <script type="module" src="/navbar-auth.js"></script>
 </body>
 </html>

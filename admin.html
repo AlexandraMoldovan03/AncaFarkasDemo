@@ -2,43 +2,213 @@
 <html lang="ro">
 <head>
   <meta charset="utf-8" />
-  <title>Admin — Produse</title>
+  <title>Admin — Education with Style</title>
   <link rel="icon" type="image/jpeg" href="/logo1.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
   <style>
-    body{background:#f6f7fb}
-    .with-navbar{padding-top:84px}
-    .card{box-shadow:0 12px 30px rgba(0,0,0,.08); border:0; border-radius:14px}
-    .form-label{font-weight:600}
-    .badge-muted{background:#e9eef7; color:#355}
-    .table thead th{font-weight:700}
-    .status{font-weight:700}
-    .status.active{color:#198754}
-    .status.inactive{color:#6c757d}
-    .thumb{width:60px; height:60px; object-fit:cover; border-radius:10px}
-    .hint{font-size:.9rem; color:#6c757d}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+      --green:  #1A3C2E;
+      --green2: #0B1A10;
+      --gold:   #C9A84C;
+      --cream:  #FAF7F2;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: #1a2a1f;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAVBAR ── */
+    .a-navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1030;
+      background: rgba(16,42,28,.97);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(201,168,76,.18);
+      padding: .65rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .a-brand {
+      display: flex; align-items: center; gap: .7rem;
+      color: #fff; text-decoration: none; font-weight: 600;
+      font-size: clamp(13px, 1.8vw, 15px);
+    }
+    .a-brand img { height: 34px; width: 34px; border-radius: 9px; border: 1.5px solid rgba(201,168,76,.4); object-fit: cover; }
+    .a-brand b { color: var(--gold); }
+    .a-badge {
+      background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.3);
+      color: var(--gold); font-size: 11px; font-weight: 600;
+      padding: 2px 10px; border-radius: 20px; letter-spacing: .5px; text-transform: uppercase;
+    }
+    .a-who { color: rgba(255,255,255,.55); font-size: 13px; }
+    .a-home {
+      color: rgba(255,255,255,.7); font-size: 13px; text-decoration: none;
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 8px; transition: background .2s, color .2s;
+    }
+    .a-home:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+    /* ── LAYOUT ── */
+    .with-navbar { padding-top: 76px; }
+    .a-page { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+
+    /* ── TABS ── */
+    .nav-tabs { border-bottom: 2px solid rgba(26,60,46,.12); gap: 4px; }
+    .nav-tabs .nav-link {
+      color: #556; font-weight: 500; font-size: 14px;
+      border: none; border-bottom: 2px solid transparent;
+      padding: .6rem 1.2rem; border-radius: 8px 8px 0 0;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s, background .2s;
+      margin-bottom: -2px;
+    }
+    .nav-tabs .nav-link:hover { color: var(--green); background: rgba(26,60,46,.06); }
+    .nav-tabs .nav-link.active {
+      color: var(--green); font-weight: 600;
+      border-bottom-color: var(--gold);
+      background: rgba(201,168,76,.07);
+    }
+
+    /* ── CARDS ── */
+    .a-card {
+      background: #fff;
+      border: 1px solid rgba(26,60,46,.1);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(26,60,46,.06);
+      margin-top: 20px;
+    }
+    .a-card-head {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(26,60,46,.08);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .a-card-head h5 {
+      margin: 0; font-family: 'Playfair Display', serif;
+      color: var(--green); font-size: 1.1rem;
+    }
+    .a-card-body { padding: 20px 24px; }
+
+    /* ── FORM ── */
+    .form-label { font-weight: 600; font-size: .875rem; color: #334; margin-bottom: 5px; }
+    .form-control, .form-select {
+      border: 1.5px solid rgba(26,60,46,.18);
+      border-radius: 10px; font-size: .9rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(201,168,76,.12);
+    }
+    .hint { font-size: .82rem; color: #7a8a7e; margin-top: 4px; }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #a8782e 100%);
+      border: none; border-radius: 10px; font-weight: 600;
+      padding: .5rem 1.4rem; color: #fff; font-size: .9rem;
+      transition: transform .15s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,.4); background: linear-gradient(135deg, #d4ae5a 0%, #b8882e 100%); }
+    .btn-outline-secondary { border-radius: 10px; font-size: .9rem; border-color: rgba(26,60,46,.25); color: #445; }
+    .btn-outline-secondary:hover { background: rgba(26,60,46,.06); border-color: var(--green); color: var(--green); }
+    .btn-outline-primary { border-radius: 8px; font-size: .82rem; border-color: var(--green); color: var(--green); }
+    .btn-outline-primary:hover { background: var(--green); color: #fff; }
+    .btn-outline-danger { border-radius: 8px; font-size: .82rem; }
+
+    /* ── ALERTS ── */
+    .alert-danger { border-radius: 12px; font-weight: 500; }
+
+    /* ── TABLE ── */
+    .table { font-size: .875rem; }
+    .table thead th {
+      font-weight: 700; font-size: .78rem; text-transform: uppercase;
+      letter-spacing: .5px; color: #667; background: rgba(26,60,46,.04);
+      padding: 10px 12px;
+    }
+    .table td { padding: 10px 12px; vertical-align: middle; }
+    .table tbody tr:hover { background: rgba(201,168,76,.04); }
+    .thumb { width: 52px; height: 52px; object-fit: cover; border-radius: 9px; border: 1.5px solid rgba(26,60,46,.1); }
+    .status { font-weight: 700; font-size: .82rem; }
+    .status.active  { color: #1a7a40; }
+    .status.inactive{ color: #9aa; }
+    .badge-muted { background: rgba(26,60,46,.08); color: var(--green); font-weight: 500; font-size: .78rem; }
+
+    /* ── SEARCH ── */
+    .a-search { max-width: 280px; }
+    .a-search .form-control { border-radius: 20px; font-size: .85rem; padding-left: 1rem; }
+
+    /* ── GALLERY GRID ── */
+    .g-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    .g-admin-item { position: relative; border-radius: 12px; overflow: hidden; background: rgba(26,60,46,.05); border: 1px solid rgba(26,60,46,.1); transition: box-shadow .2s; }
+    .g-admin-item:hover { box-shadow: 0 4px 18px rgba(26,60,46,.14); }
+    .g-admin-item img { width: 100%; height: 145px; object-fit: cover; display: block; }
+    .g-admin-item .g-item-title { font-size: .78rem; padding: 6px 10px; color: #445; background: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .g-admin-item .g-del { position: absolute; top: 7px; right: 7px; background: rgba(220,53,69,.88); color: #fff; border: none; border-radius: 7px; width: 28px; height: 28px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background .15s, transform .15s; }
+    .g-admin-item .g-del:hover { background: #dc3545; transform: scale(1.1); }
+    .g-count { font-size: .83rem; color: #7a8a7e; }
+
+    /* ── GATE (access denied) ── */
+    #gate { border-radius: 14px; border: none; background: #fff0f0; color: #8b0000; border-left: 4px solid #dc3545; font-weight: 500; }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/index.html">Admin — Education with Style</a>
-    <span id="who" class="navbar-text"></span>
+
+<nav class="a-navbar" aria-label="Admin navigație">
+  <a class="a-brand" href="/index.html">
+    <img src="/logo1.jpg" alt="logo">
+    <span>Prof &amp; Coach <b>ANCA</b></span>
+    <span class="a-badge">Admin</span>
+  </a>
+  <div class="d-flex align-items-center gap-3">
+    <a class="a-home" href="/index.html">
+      <i class="fa-solid fa-house"></i> Site
+    </a>
+    <span class="a-who" id="who"></span>
   </div>
 </nav>
 
-<main class="container with-navbar">
+<div class="with-navbar">
+<main class="a-page">
   <!-- alert admin check -->
   <div id="gate" class="alert alert-danger d-none mt-3">
     Acces restricționat. Trebuie să fii administrator.
   </div>
 
+  <!-- TABS -->
+  <ul class="nav nav-tabs mt-3" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabProduse" role="tab">
+        <i class="fa-solid fa-box-open"></i> Produse
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tabGalerieBtn" data-bs-toggle="tab" data-bs-target="#tabGalerie" role="tab">
+        <i class="fa-solid fa-images"></i> Galerie foto
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+  <!-- ═══════════════════════ TAB PRODUSE ═══════════════════════ -->
+  <div class="tab-pane fade show active" id="tabProduse" role="tabpanel">
+
   <!-- FORM ADD/EDIT -->
-  <section class="card mt-3">
-    <div class="card-body">
-      <h5 class="card-title mb-3">Adaugă / editează produs</h5>
+  <section class="a-card">
+    <div class="a-card-head">
+      <h5><i class="fa-solid fa-pen-to-square me-2" style="color:var(--gold)"></i>Adaugă / editează produs</h5>
+    </div>
+    <div class="a-card-body">
       <form id="frm" class="row g-3">
         <input type="hidden" id="id" />
 
@@ -107,18 +277,14 @@
   </section>
 
   <!-- LIST -->
-  <section class="card mt-4 mb-5">
-    <div class="card-body">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <h5 class="card-title mb-0">Produse existente</h5>
-        <div class="input-group" style="max-width:340px">
-          <span class="input-group-text">Căutare</span>
-          <input id="q" class="form-control" placeholder="Titlu / categorie…">
-        </div>
-      </div>
-
+  <section class="a-card mt-3 mb-4">
+    <div class="a-card-head">
+      <h5><i class="fa-solid fa-list me-2" style="color:var(--gold)"></i>Produse existente</h5>
+      <input id="q" class="form-control a-search" placeholder="Caută după titlu / categorie…">
+    </div>
+    <div class="a-card-body p-0">
       <div class="table-responsive">
-        <table class="table align-middle" id="tbl">
+        <table class="table align-middle mb-0" id="tbl">
           <thead>
             <tr>
               <th>#</th>
@@ -128,7 +294,7 @@
               <th>Categorie</th>
               <th>Preț</th>
               <th>Status</th>
-              <th style="width:160px">Acțiuni</th>
+              <th style="width:180px">Acțiuni</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
@@ -136,7 +302,54 @@
       </div>
     </div>
   </section>
+
+  </div><!-- /tabProduse -->
+
+  <!-- ═══════════════════════ TAB GALERIE ═══════════════════════ -->
+  <div class="tab-pane fade" id="tabGalerie" role="tabpanel">
+
+    <!-- Upload formular -->
+    <section class="a-card">
+      <div class="a-card-head">
+        <h5><i class="fa-solid fa-cloud-arrow-up me-2" style="color:var(--gold)"></i>Adaugă fotografii</h5>
+      </div>
+      <div class="a-card-body">
+        <form id="frmGallery" class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">Imagini (JPG, PNG, WEBP — poți selecta mai multe)</label>
+            <input id="gImg" type="file" class="form-control" accept="image/*" multiple required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Titlu (opțional)</label>
+            <input id="gTitle" class="form-control" placeholder="Ex: Atelier vară 2026">
+            <div class="hint mt-1">Se aplică la toate pozele din această selecție.</div>
+          </div>
+          <div class="col-12 d-flex align-items-center gap-3">
+            <button id="btnGSave" class="btn btn-primary"><i class="fa-solid fa-upload me-1"></i>Încarcă</button>
+            <span id="gProgress" class="text-muted small"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Grid fotografii existente -->
+    <section class="a-card mt-3 mb-4">
+      <div class="a-card-head">
+        <h5><i class="fa-solid fa-images me-2" style="color:var(--gold)"></i>Fotografii în galerie</h5>
+        <span id="gCount" class="g-count"></span>
+      </div>
+      <div class="a-card-body">
+        <div id="gGrid" class="g-admin-grid">
+          <p class="text-muted">Deschide tab-ul pentru a vedea fotografiile.</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /tabGalerie -->
+
+  </div><!-- /tab-content -->
 </main>
+</div><!-- /with-navbar -->
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -326,6 +539,103 @@ frm.addEventListener('submit', async (e)=>{
 
 /* initial load */
 await load()
+
+/* ================== GALLERY ================== */
+const frmGallery = document.getElementById('frmGallery')
+const gImg       = document.getElementById('gImg')
+const gTitle     = document.getElementById('gTitle')
+const btnGSave   = document.getElementById('btnGSave')
+const gProgress  = document.getElementById('gProgress')
+const gGrid      = document.getElementById('gGrid')
+const gCount     = document.getElementById('gCount')
+
+async function loadGallery(){
+  gGrid.innerHTML = '<p class="text-muted">Se încarcă…</p>'
+  const { data, error } = await supabase
+    .from('gallery_images')
+    .select('id,image_url,image_path,title,created_at')
+    .order('created_at', { ascending: false })
+  if (error){
+    gGrid.innerHTML = `<p class="text-danger">Eroare: ${error.message}</p>`
+    return
+  }
+  const items = data || []
+  gCount.textContent = `${items.length} fotografi${items.length === 1 ? 'e' : 'i'}`
+  if (!items.length){
+    gGrid.innerHTML = '<p class="text-muted">Nicio fotografie. Încarcă prima!</p>'
+    return
+  }
+  gGrid.innerHTML = items.map(img => `
+    <div class="g-admin-item" data-id="${img.id}" data-path="${img.image_path || ''}">
+      <img src="${img.image_url}" alt="${img.title || 'Galerie'}" loading="lazy">
+      ${img.title ? `<div class="g-item-title" title="${img.title}">${img.title}</div>` : ''}
+      <button class="g-del" title="Șterge fotografia" aria-label="Șterge fotografia">✕</button>
+    </div>
+  `).join('')
+}
+
+gGrid.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.g-del')
+  if (!btn) return
+  const item = btn.closest('.g-admin-item')
+  if (!confirm('Sigur ștergi această fotografie din galerie?')) return
+  const id   = item.dataset.id
+  const path = item.dataset.path
+  btn.disabled = true
+  try {
+    if (path) await supabase.storage.from('gallery').remove([path]).catch(() => {})
+    const { error } = await supabase.from('gallery_images').delete().eq('id', id)
+    if (error) throw error
+    item.remove()
+    const remaining = gGrid.querySelectorAll('.g-admin-item').length
+    gCount.textContent = `${remaining} fotografi${remaining === 1 ? 'e' : 'i'}`
+    if (!remaining) gGrid.innerHTML = '<p class="text-muted">Nicio fotografie.</p>'
+  } catch(err) {
+    alert(err.message || 'Eroare la ștergere')
+    btn.disabled = false
+  }
+})
+
+frmGallery.addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const files = Array.from(gImg.files)
+  if (!files.length) return
+  const title = gTitle.value.trim() || null
+  btnGSave.disabled = true
+  let ok = 0, fail = 0, lastErr = ''
+  for (const file of files) {
+    gProgress.textContent = `Se încarcă ${ok + fail + 1} / ${files.length}…`
+    try {
+      const ext  = (file.name.split('.').pop() || 'jpg').toLowerCase()
+      const path = `${USER.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+      const { error: upErr } = await supabase.storage
+        .from('gallery')
+        .upload(path, file, { cacheControl: '3600', upsert: false })
+      if (upErr) throw new Error(`Storage: ${upErr.message}`)
+      const { data: pub } = supabase.storage.from('gallery').getPublicUrl(path)
+      const { error: dbErr } = await supabase.from('gallery_images').insert({
+        image_url:  pub.publicUrl,
+        image_path: path,
+        title
+      })
+      if (dbErr) throw new Error(`DB: ${dbErr.message}`)
+      ok++
+    } catch(err) {
+      console.error(err)
+      lastErr = err.message
+      fail++
+    }
+  }
+  gProgress.textContent = ok
+    ? `✓ ${ok} încărcate${fail ? ` · ${fail} eșuate` : ''}.`
+    : `❌ Eșuat: ${lastErr || 'eroare necunoscută'}`
+  frmGallery.reset()
+  await loadGallery()
+  btnGSave.disabled = false
+})
+
+// Lazy load galerie când se deschide tab-ul
+document.getElementById('tabGalerieBtn')?.addEventListener('show.bs.tab', loadGallery)
 </script>
 </body>
 </html>

@@ -131,8 +131,8 @@ if (error) {
       <p class="desc" id="desc-${p.id}">${p.description}</p>
       <button class="more" data-target="desc-${p.id}" aria-expanded="false">Mai mult</button>
     ` : ''}
-    <div class="price">${money(p.amount_cents)}</div>
-    <button class="button buy" data-id="${p.id}">Cumpără</button>
+    <div class="price">${p.amount_cents === 0 ? '<span style="color:#1A3C2E;font-weight:700;">Gratuit</span>' : money(p.amount_cents)}</div>
+    <button class="button buy" data-id="${p.id}" data-price="${p.amount_cents}">${p.amount_cents === 0 ? 'Obține gratuit' : 'Cumpără'}</button>
   </article>
 `).join('')
 
@@ -175,22 +175,32 @@ wrap.addEventListener('click', async (e) => {
   let email = user?.email ?? (guestEmail.value || '').trim()
   if (!email) { alert('Introdu un email pentru livrarea PDF-ului.'); return }
 
+  const isFree = btn.getAttribute('data-price') === '0'
   try {
-    btn.disabled = true; btn.textContent = 'Se deschide...'
-    const resp = await fetch(`${API_BASE}/create-checkout-session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ itemId, userEmail: email })
-    })
-    const js = await resp.json().catch(() => ({}))
-    if (!resp.ok || !js?.url) {
-      console.error(js); alert(js?.error || 'Eroare la checkout'); return
+    btn.disabled = true; btn.textContent = 'Se procesează...'
+    if (isFree) {
+      const resp = await fetch(`${API_BASE}/claim-free`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, userEmail: email })
+      })
+      const js = await resp.json().catch(() => ({}))
+      if (!resp.ok || !js?.ok) { alert(js?.error || 'Eroare la revendicare'); return }
+      location.href = '/success.html'
+    } else {
+      const resp = await fetch(`${API_BASE}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, userEmail: email })
+      })
+      const js = await resp.json().catch(() => ({}))
+      if (!resp.ok || !js?.url) { console.error(js); alert(js?.error || 'Eroare la checkout'); return }
+      location.href = js.url
     }
-    location.href = js.url
   } catch (e2) {
     console.error(e2); alert('Eroare rețea.')
   } finally {
-    btn.disabled = false; btn.textContent = 'Cumpără'
+    btn.disabled = false; btn.textContent = isFree ? 'Obține gratuit' : 'Cumpără'
   }
 })
 
@@ -230,21 +240,31 @@ wrap.addEventListener('click', async (e) => {
   let email = user?.email ?? (guestEmail.value || '').trim()
   if (!email) { alert('Introdu un email pentru livrarea PDF-ului.'); return }
 
+  const isFree2 = btn.getAttribute('data-price') === '0'
   try {
-    btn.disabled = true; btn.textContent = 'Se deschide...'
-    const resp = await fetch(`${API_BASE}/create-checkout-session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ itemId, userEmail: email })
-    })
-    const js = await resp.json().catch(() => ({}))
-    if (!resp.ok || !js?.url) {
-      console.error(js); alert(js?.error || 'Eroare la checkout'); return
+    btn.disabled = true; btn.textContent = 'Se procesează...'
+    if (isFree2) {
+      const resp = await fetch(`${API_BASE}/claim-free`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, userEmail: email })
+      })
+      const js = await resp.json().catch(() => ({}))
+      if (!resp.ok || !js?.ok) { alert(js?.error || 'Eroare la revendicare'); return }
+      location.href = '/success.html'
+    } else {
+      const resp = await fetch(`${API_BASE}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, userEmail: email })
+      })
+      const js = await resp.json().catch(() => ({}))
+      if (!resp.ok || !js?.url) { console.error(js); alert(js?.error || 'Eroare la checkout'); return }
+      location.href = js.url
     }
-    location.href = js.url
   } catch (e2) {
     console.error(e2); alert('Eroare rețea.')
   } finally {
-    btn.disabled = false; btn.textContent = 'Cumpără'
+    btn.disabled = false; btn.textContent = isFree2 ? 'Obține gratuit' : 'Cumpără'
   }
 })

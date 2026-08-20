@@ -749,5 +749,118 @@ body{
   }
 }
 
+/* ══════════════════════════════════════════
+   NAVBAR — identic cu src/style.css (Home)
+══════════════════════════════════════════ */
+.navbar {
+  background: rgba(16,42,28,.96) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(201,168,76,.12);
+  transition: box-shadow .3s ease, padding .3s ease, background .3s ease;
+  padding-block: .7rem;
+}
+.navbar.scrolled {
+  background: rgba(13,34,22,.98) !important;
+  box-shadow: 0 4px 28px rgba(0,0,0,.22);
+  padding-block: .5rem;
+}
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 1.8vw, 16px);
+  display: flex; align-items: center;
+  gap: .65rem; letter-spacing: .2px;
+}
+.navbar .navbar-brand img {
+  height: 36px; width: 36px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(201,168,76,.35);
+  object-fit: cover; transition: border-color .2s;
+}
+.navbar .navbar-brand:hover img { border-color: #C9A84C; }
+.navbar .navbar-brand b { color: #C9A84C; font-weight: 700; }
+.navbar .nav-link {
+  color: rgba(255,255,255,.88) !important;
+  font-weight: 500; font-size: 14px;
+  padding: .45rem .85rem !important;
+  border-radius: 8px;
+  transition: background .2s ease, color .2s ease;
+  position: relative; letter-spacing: .1px;
+}
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%; right: 50%; bottom: 5px;
+  height: 1.5px; border-radius: 99px;
+  background: #C9A84C;
+  transition: left .22s ease, right .22s ease;
+}
+.navbar .nav-link:hover, .navbar .nav-link.active {
+  color: #fff !important;
+  background: rgba(255,255,255,.07);
+}
+.navbar .nav-link:hover::after, .navbar .nav-link.active::after { left: 14px; right: 14px; }
 
+/* Hamburger */
+.h-nav-toggler {
+  border: 0 !important;
+  background: rgba(255,255,255,.07) !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+  outline: none !important;
+  transition: background .2s ease;
+}
+.h-nav-toggler:focus { box-shadow: none !important; }
+.h-nav-toggler:hover { background: rgba(255,255,255,.14) !important; }
+.h-burger {
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 5px;
+  width: 22px; height: 18px;
+}
+.h-burger span {
+  display: block; height: 2px; width: 100%;
+  background: #fff; border-radius: 99px;
+  transition: transform .3s cubic-bezier(.4,0,.2,1), opacity .25s ease, width .3s ease;
+  transform-origin: center;
+}
+.h-nav-toggler[aria-expanded="true"] .h-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.h-nav-toggler[aria-expanded="true"] .h-burger span:nth-child(2) { opacity: 0; width: 0; }
+.h-nav-toggler[aria-expanded="true"] .h-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* CTA */
+.h-nav-cta-wrap { margin-left: .5rem; }
+.h-nav-cta {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: .48rem 1.1rem;
+  background: linear-gradient(135deg, #C9A84C 0%, #a8782e 100%);
+  color: #fff !important;
+  border-radius: 8px; font-weight: 600; font-size: 14px;
+  letter-spacing: .2px;
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+  white-space: nowrap; text-decoration: none;
+}
+.h-nav-cta i { font-size: 17px; line-height: 1; }
+.h-nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(201,168,76,.45);
+  filter: brightness(1.08);
+  color: #fff !important;
+}
+
+/* Mobil */
+@media (max-width: 991.98px) {
+  .navbar .collapse.show, .navbar .collapsing {
+    background: rgba(11,30,19,.98) !important;
+    border-radius: 16px; margin-top: .6rem;
+    padding: .8rem .6rem 1rem;
+    box-shadow: 0 16px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(201,168,76,.12);
+    backdrop-filter: blur(10px);
+  }
+  .navbar .nav-link { padding: .7rem 1rem !important; border-radius: 10px; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .navbar .nav-link::after { display: none; }
+  .navbar .nav-item:last-child .nav-link { border-bottom: none; }
+  .h-nav-cta-wrap { margin-left: 0; margin-top: .6rem; padding: 0 .4rem; }
+  .h-nav-cta { width: 100%; justify-content: center; padding: .75rem 1rem; border-radius: 12px; font-size: 15px; }
+}

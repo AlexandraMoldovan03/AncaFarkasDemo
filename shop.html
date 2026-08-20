@@ -1,185 +1,383 @@
 <!doctype html>
 <html lang="ro">
 <head>
-  <meta charset="utf-8" />
-  <title>Shop — Alege categoria</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="icon" type="image/jpeg" href="/logo1.jpg" />
-  <!-- Bootstrap -->
+  <meta charset="utf-8">
+  <title>Shop — Education with Style®</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/jpeg" href="/logo1.jpg">
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-
-  <!-- Fonts -->
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  <!-- Shop CSS (stiluri produs, grid etc. — neschimbate) -->
+  <link href="/shop.css?v=14" rel="stylesheet">
 
-  <!-- Styles -->
-  <link href="/shop.css?v=12" rel="stylesheet">
+  <style>
+  /* ══════════════════════════════════════════
+     VARIABILE & RESET
+  ══════════════════════════════════════════ */
+  :root {
+    --s-green:      #1A3C2E;
+    --s-green-deep: #0B1A10;
+    --s-green-mid:  #2D5A3D;
+    --s-gold:       #C9A84C;
+    --s-gold-light: #EDD998;
+    --s-gold-pale:  #FAF3DC;
+    --s-cream:      #FAF7F2;
+    --s-border:     rgba(26,60,46,.10);
+    --s-shadow-sm:  0 4px 18px rgba(26,60,46,.09);
+    --s-shadow:     0 8px 32px rgba(26,60,46,.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--s-cream);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ══════════════════════════════════════════
+     SCROLL PROGRESS
+  ══════════════════════════════════════════ */
+  #scrollProgress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--s-gold), #e8b84b);
+    z-index: 1200; transition: width .1s linear;
+  }
+
+  /* ══════════════════════════════════════════
+     HERO
+  ══════════════════════════════════════════ */
+  .s-hero {
+    position: relative;
+    min-height: 420px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 120px 0 70px;
+  }
+  .s-hero-bg {
+    position: absolute; inset: 0;
+    background: url('/shop.jpg') center center / cover no-repeat;
+    filter: blur(3px) brightness(.45);
+    transform: scale(1.06);
+  }
+  .s-hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(11,26,16,.55) 0%, rgba(11,26,16,.72) 100%);
+    pointer-events: none;
+  }
+  .s-hero-inner {
+    position: relative; z-index: 1;
+    max-width: 680px; margin-inline: auto; padding: 0 24px;
+  }
+  .s-hero-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--s-gold); margin-bottom: 18px;
+  }
+  .s-hero-label::before, .s-hero-label::after {
+    content: ""; display: block; width: 28px; height: 1.5px;
+    background: var(--s-gold); border-radius: 99px;
+  }
+  .s-hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(30px,5vw,52px);
+    font-weight: 700; color: #fff;
+    margin: 0 0 16px; line-height: 1.1;
+  }
+  .s-hero h1 em { font-style: italic; color: var(--s-gold); }
+  .s-hero p {
+    font-size: 16px; color: rgba(255,255,255,.7);
+    margin: 0 auto 32px; line-height: 1.7; max-width: 52ch;
+  }
+  .s-hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(201,168,76,.3);
+    border-radius: 99px;
+    padding: 8px 18px;
+    font-size: 13px; color: rgba(255,255,255,.75);
+  }
+  .s-hero-badge i { color: var(--s-gold); }
+
+  /* ══════════════════════════════════════════
+     CATEGORII
+  ══════════════════════════════════════════ */
+  .s-cats {
+    background: var(--s-cream);
+    padding: 64px 0 80px;
+  }
+  .s-cats-wrap {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding: 0 clamp(16px,4vw,40px);
+  }
+  .s-cats-header {
+    text-align: center;
+    margin-bottom: 44px;
+  }
+  .s-section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--s-green); margin-bottom: 10px;
+  }
+  .s-section-label::before, .s-section-label::after {
+    content: ""; display: block; width: 24px; height: 1.5px;
+    background: var(--s-gold); border-radius: 99px;
+  }
+  .s-cats-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px,4vw,38px);
+    font-weight: 700; color: var(--s-green);
+    margin: 0; line-height: 1.2;
+  }
+
+  .s-cats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 680px) { .s-cats-grid { grid-template-columns: 1fr; } }
+
+  .s-cat-card {
+    background: #fff;
+    border: 1px solid var(--s-border);
+    border-radius: 18px;
+    padding: 36px 32px 32px;
+    box-shadow: var(--s-shadow-sm);
+    display: flex; flex-direction: column; gap: 14px;
+    transition: transform .22s ease, box-shadow .22s ease;
+    position: relative; overflow: hidden;
+  }
+  .s-cat-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--s-gold), var(--s-gold-light));
+  }
+  .s-cat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--s-shadow);
+  }
+  .s-cat-card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(18px,2.4vw,22px);
+    font-weight: 700; color: var(--s-green);
+    margin: 0; line-height: 1.25;
+  }
+  .s-cat-card p {
+    font-size: 15px; color: #6B7D72;
+    line-height: 1.7; margin: 0; flex: 1;
+  }
+  .s-cat-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 11px 22px;
+    background: var(--s-green);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600; font-size: 14px;
+    transition: background .2s, transform .15s, box-shadow .2s;
+    text-decoration: none;
+  }
+  .s-cat-btn:hover {
+    background: var(--s-green-mid);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(26,60,46,.2);
+  }
+  .s-cat-btn i { font-size: 12px; transition: transform .2s ease; }
+  .s-cat-btn:hover i { transform: translateX(3px); }
+
+  /* ══════════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════════ */
+  .s-footer {
+    background: var(--s-green-deep);
+    border-top: 1px solid rgba(201,168,76,.12);
+    color: rgba(255,255,255,.38);
+    text-align: center;
+    padding: 24px 20px 32px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+  }
+  .s-footer a { color: rgba(255,255,255,.45); transition: color .15s; }
+  .s-footer a:hover { color: var(--s-gold); }
+  </style>
 </head>
+
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="/index.html">
-        <img src="/logo1.jpg" alt="Logo Education with Style" style="height:40px;width:auto;margin-right:10px;">
-        <span>Prof&Coach FARKAS–RUSU <b>ANCA</b></span>
-      </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<div id="scrollProgress" aria-hidden="true"></div>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/shop.html">Shop</a></li>
-          <li class="nav-item"><a class="nav-link" href="/auth.html" id="nav-auth">Login / Register</a></li>
+<!-- ══════════════════════════════════════════
+     NAVBAR — consistent cu index.html & galerie.html
+══════════════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg fixed-top" aria-label="Navigație principală">
+  <div class="container-fluid px-3 px-lg-4">
 
-          <!-- Afișate doar când ești logat(ă) -->
-          <li class="nav-item d-none"><a class="nav-link" href="/dashboard.html" id="nav-dash">Dashboard</a></li>
-          <li class="nav-item d-none"><button class="btn btn-sm btn-outline-light ms-lg-2" id="btnLogout">Logout</button></li>
-          <li class="nav-item d-none"><span class="nav-link disabled" id="navEmail" style="opacity:.8;"></span></li>
-        </ul>
-      </div>
+    <a class="navbar-brand" href="/index.html">
+      <img src="/logo1.jpg" alt="Education with Style logo" width="36" height="36">
+      <span>Prof &amp; Coach <b>ANCA</b></span>
+    </a>
+
+    <button class="h-nav-toggler navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Deschide meniu">
+      <span class="h-burger"><span></span><span></span><span></span></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/shop.html">Shop</a></li>
+        <li class="nav-item"><a class="nav-link" href="/galerie.html">Galerie</a></li>
+        <li class="nav-item"><a class="nav-link" href="/index.html#contact">Contact</a></li>
+
+        <!-- Auth — gestionat de /navbar-auth.js -->
+        <li class="nav-item d-none"><a class="nav-link" href="/admin.html" id="nav-admin">Admin</a></li>
+        <li class="nav-item d-none"><a class="nav-link" href="/dashboard.html" id="nav-dash">Contul meu</a></li>
+        <li class="nav-item d-none"><span class="nav-link" id="navEmail" style="opacity:.65;font-size:13px;pointer-events:none;"></span></li>
+        <li class="nav-item d-none"><button class="btn btn-sm btn-outline-light ms-lg-1" id="btnLogout">Logout</button></li>
+        <li class="nav-item"><a class="nav-link" href="/auth.html" id="nav-auth">Login</a></li>
+
+        <!-- CTA -->
+        <li class="nav-item h-nav-cta-wrap">
+          <a class="h-nav-cta" href="https://wa.me/40767283598" target="_blank" rel="noopener">
+            <i class="fab fa-whatsapp"></i>
+            <span>Rezervă</span>
+          </a>
+        </li>
+      </ul>
     </div>
-  </nav>
 
-  <main class="container with-navbar">
-    <!-- HERO -->
-    <section class="hero-banner" aria-label="Education with Style">
-      <img class="hero-bg" src="/shop.jpg" alt="" aria-hidden="true">
-      <div class="hero-overlay"></div>
+  </div>
+</nav>
 
-      <div class="hero-center">
-        <img class="hero-foreground" src="/shop.jpg" alt="Coperta Education with Style">
-        <div class="hero-text">
-          <h1>Education with Style</h1>
-          <p>Mai puțin haos, mai multă claritate. Aici începe transformarea ta — cu ritm, eleganță și rezultate.</p>
-        </div>
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="s-hero">
+  <div class="s-hero-bg" aria-hidden="true"></div>
+  <div class="s-hero-inner">
+    <div class="s-hero-label">Education with Style®</div>
+    <h1>Shop <em>online</em></h1>
+    <p>Ghiduri, fișe educative, workshopuri și resurse practice pentru copii, părinți și profesori.</p>
+    <div class="s-hero-badge">
+      <i class="fa-solid fa-lock-open"></i>
+      Acces imediat după achiziție
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CATEGORII
+══════════════════════════════════════════ -->
+<main class="s-cats">
+  <div class="s-cats-wrap">
+
+    <div class="s-cats-header">
+      <div class="s-section-label">Alege categoria</div>
+      <h2 class="s-cats-title">Ce te interesează?</h2>
+    </div>
+
+    <section class="s-cats-grid" aria-label="Categorii shop">
+
+      <!-- Categorie 1 — Dezvoltare personală -->
+      <article class="s-cat-card">
+        <h3>Dezvoltare personală</h3>
+        <p>Ghiduri, reflecții și resurse practice inspirate din experiențele mele, dedicate părinților, profesorilor și adulților.</p>
+        <a class="s-cat-btn" href="/shop-category.html?cat=exp">
+          Intră în categorie <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </article>
+
+      <!-- Categorie 2 — Materiale educaționale -->
+      <article class="s-cat-card">
+        <h3>Materiale educaționale</h3>
+        <p>Fișe, ghiduri și resurse digitale pentru copii, părinți și profesori — Clasa pregătitoare și Clasele I–IV.</p>
+        <a class="s-cat-btn" href="/shop-category.html?cat=school">
+          Vezi materialele <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </article>
+
+    </section>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="s-footer">
+  <small>&copy; <span id="year"></span> Anca Farkas-Rusu — Toate drepturile rezervate.</small>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS — NEMODIFICATE (Supabase auth intact)
+══════════════════════════════════════════ -->
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script type="module" src="/navbar-auth.js"></script>
+
+<!-- Modal vizită virtuală (păstrat funcțional) -->
+<div class="modal fade" id="virtualTourModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content virtual-content">
+      <button type="button" class="btn-close position-absolute end-0 top-0 m-2" data-bs-dismiss="modal" aria-label="Închide"></button>
+      <div class="virtual-frame">
+        <video id="virtualVideo" preload="metadata" playsinline webkit-playsinline controls muted poster="/shop.jpg">
+          <source src="/vizitaVirtuala.mp4" type="video/mp4">
+          Browserul tău nu suportă redarea video.
+        </video>
+        <button id="unmuteBtn" type="button" class="unmute-btn" aria-label="Activează sunetul" style="display:none">Sunet</button>
       </div>
-    </section>
-
-    <!-- CATEGORII -->
-    <section class="grid categories" aria-label="Categorii shop">
-      <!-- 1) Experiențele mele... -->
-      <article class="card-cat">
-        <h3>Experiențele mele, lecțiile tale – Când viața întâlnește Stilul</h3>
-        <p>Descoperă cum am depășit provocări și ce m-a susținut pe drum. La final, găsești întrebări de reflecție — tu îți creezi stilul.</p>
-        <div class="mb-2">
-          <span class="pill">Ghiduri PDF</span>
-          <span class="pill">Reflecții</span>
-          <span class="pill">Inspirație</span>
-        </div>
-        <a class="btn btn-cta" href="/shop-category.html?cat=exp">Intră în categorie</a>
-      </article>
-
-      <!-- 2) Școala cu Stil Online -->
-      <article class="card-cat">
-        <h3>Școala cu Stil Online — by Prof &amp; Coach Anca</h3>
-        <p>Fișe educative, mini-ghiduri interactive și videouri explicative pentru ciclul primar, plus sfaturi pentru părinți.</p>
-        <div class="mb-2">
-          <span class="pill">Clasa pregătitoare</span>
-          <span class="pill">Clasa I–IV</span>
-          <span class="pill">Sfaturi pentru părinți</span>
-        </div>
-        <a class="btn btn-cta" href="/shop-category.html?cat=school">Vezi materialele</a>
-      </article>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <small>&copy; <span id="year"></span> — Toate drepturile rezervate.</small>
-  </footer>
-
-  <!-- Script helper: an, auth nav -->
-  <script type="module">
-    // anul din footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // auth mini-logic
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-    const supabase = createClient(
-      'https://gxavdytkcukxnvonasur.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8'
-    );
-
-    const navAuth = document.getElementById('nav-auth');
-    const navDash = document.getElementById('nav-dash')?.parentElement;
-    const btnLogoutWrap = document.getElementById('btnLogout')?.parentElement;
-    const navEmailWrap = document.getElementById('navEmail')?.parentElement;
-
-    const setNav = (email) => {
-      const logged = !!email;
-      navAuth?.classList.toggle('d-none', logged);
-      navDash?.classList.toggle('d-none', !logged);
-      btnLogoutWrap?.classList.toggle('d-none', !logged);
-      navEmailWrap?.classList.toggle('d-none', !logged);
-      if (logged) document.getElementById('navEmail').textContent = email;
-    };
-
-    const { data:{ user } } = await supabase.auth.getUser();
-    setNav(user?.email || null);
-    supabase.auth.onAuthStateChange((_e, s) => setNav(s?.user?.email || null));
-    document.getElementById('btnLogout')?.addEventListener('click', async () => {
-      await supabase.auth.signOut(); location.href='/auth.html';
-    });
-  </script>
-
-  <!-- (Opțional) Modal vizită virtuală — dacă folosești secțiunea asta -->
-  <div class="modal fade" id="virtualTourModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content virtual-content">
-        <button type="button" class="btn-close position-absolute end-0 top-0 m-2" data-bs-dismiss="modal" aria-label="Închide"></button>
-
-        <div class="virtual-frame">
-          <video id="virtualVideo" preload="metadata" playsinline webkit-playsinline controls muted poster="/shop.jpg">
-            <source src="/vizitaVirtuala.mp4" type="video/mp4">
-            Browserul tău nu suportă redarea video.
-          </video>
-
-          <button id="unmuteBtn" type="button" class="unmute-btn" aria-label="Activează sunetul" style="display:none">
-            Sunet
-          </button>
-        </div>
-
-        <div class="p-2 small text-muted d-flex justify-content-end">
-          <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Închide</button>
-        </div>
+      <div class="p-2 small text-muted d-flex justify-content-end">
+        <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Închide</button>
       </div>
     </div>
   </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-  <script>
-    // helper pt. modal video (doar dacă există în pagină)
-    (() => {
-      const btnVirtual = document.getElementById('btnVirtualTour');
-      const modalEl    = document.getElementById('virtualTourModal');
-      const videoEl    = document.getElementById('virtualVideo');
-      const unmuteBtn  = document.getElementById('unmuteBtn');
-      if (!modalEl || !videoEl) return;
+</div>
 
-      const modal = new bootstrap.Modal(modalEl, { backdrop: true, focus: true });
-      btnVirtual?.addEventListener('click', () => modal.show());
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script>
+  /* Scroll progress + navbar shrink */
+  const nav  = document.querySelector('.navbar');
+  const prog = document.getElementById('scrollProgress');
+  const tot  = () => document.documentElement.scrollHeight - window.innerHeight;
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) nav?.classList.add('scrolled');
+    else nav?.classList.remove('scrolled');
+    if (prog) prog.style.width = (window.scrollY / (tot() || 1) * 100) + '%';
+  }, { passive: true });
 
-      modalEl.addEventListener('shown.bs.modal', async () => {
-        try { videoEl.muted = true; await videoEl.play(); } catch {}
-        if (unmuteBtn) unmuteBtn.style.display = 'inline-flex';
-      });
+  /* Modal video */
+  (() => {
+    const btnVirtual = document.getElementById('btnVirtualTour');
+    const modalEl   = document.getElementById('virtualTourModal');
+    const videoEl   = document.getElementById('virtualVideo');
+    const unmuteBtn = document.getElementById('unmuteBtn');
+    if (!modalEl || !videoEl) return;
+    const modal = new bootstrap.Modal(modalEl, { backdrop: true, focus: true });
+    btnVirtual?.addEventListener('click', () => modal.show());
+    modalEl.addEventListener('shown.bs.modal', async () => {
+      try { videoEl.muted = true; await videoEl.play(); } catch {}
+      if (unmuteBtn) unmuteBtn.style.display = 'inline-flex';
+    });
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      videoEl.pause(); videoEl.currentTime = 0; videoEl.muted = true;
+      if (unmuteBtn) unmuteBtn.style.display = 'none';
+    });
+    unmuteBtn?.addEventListener('click', async () => {
+      try { videoEl.muted = false; videoEl.volume = 1; await videoEl.play(); unmuteBtn.style.display = 'none'; } catch {}
+    });
+    if (new URL(location.href).searchParams.get('virtual') === '1') btnVirtual?.click();
+  })();
+</script>
 
-      modalEl.addEventListener('hidden.bs.modal', () => {
-        videoEl.pause(); videoEl.currentTime = 0; videoEl.muted = true;
-        if (unmuteBtn) unmuteBtn.style.display = 'none';
-      });
-
-      unmuteBtn?.addEventListener('click', async () => {
-        try { videoEl.muted = false; videoEl.volume = 1; await videoEl.play(); unmuteBtn.style.display = 'none'; } catch {}
-      });
-
-      if (new URL(location.href).searchParams.get('virtual') === '1') btnVirtual?.click();
-    })();
-  </script>
 </body>
 </html>

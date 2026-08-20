@@ -133,6 +133,112 @@ function emailHtml({
   const fromName = process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu';
   const siteUrl  = process.env.BRAND_SITE_URL || 'https://www.anca-farkas-rusu.com';
   const support  = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
+  const logoUrl  = process.env.BRAND_LOGO_URL || '';
+  const pre = `${intro} Link valabil ${ttlHours} ore.`;
+
+  // Logo: CID (dacă serverul are fișierul) → URL env → URL public site
+  const publicLogoUrl = logoUrl || `${siteUrl}/logo1.jpg`;
+  const logoTag = useCidLogo
+    ? `<img src="cid:brand-logo" alt="${escapeHtml(fromName)}" width="48" height="48" style="display:block;border:0;border-radius:10px;">`
+    : `<img src="${publicLogoUrl}" alt="${escapeHtml(fromName)}" width="48" height="48" style="display:block;border:0;border-radius:10px;">`;
+
+  return `<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${escapeHtml(productName)}</title>
+</head>
+<body style="margin:0;padding:0;background:#F0EDE8;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
+  <span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;max-height:0;overflow:hidden;mso-hide:all;">${escapeHtml(pre)}</span>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F0EDE8;">
+    <tr>
+      <td align="center" style="padding:32px 12px 40px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+               style="max-width:600px;background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,168,76,.2);box-shadow:0 8px 40px rgba(26,60,46,.1);">
+
+          <!-- Header verde -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#0B1A10 0%,#1A3C2E 60%,#2D5A3D 100%);padding:28px 32px 22px;">
+              ${logoTag ? `<div style="margin-bottom:14px;">${logoTag}</div>` : ''}
+              <div style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;">&#8212;&nbsp;Education with Style&#174;&nbsp;&#8212;</div>
+              <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.25;margin-bottom:8px;">${escapeHtml(productName)}</div>
+              <div style="font-size:14px;color:rgba(255,255,255,.72);line-height:1.55;">${escapeHtml(intro)}</div>
+            </td>
+          </tr>
+
+          <!-- Linie aurie -->
+          <tr><td style="height:3px;background:linear-gradient(90deg,#C9A84C,#EDD998,#C9A84C);"></td></tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 32px 16px;">
+              <p style="margin:0 0 20px;font-size:15px;color:#4a6358;line-height:1.65;">
+                Apas&#259; pe butonul de mai jos pentru a desc&#259;rca materialul.
+                Linkul r&#259;m&#226;ne activ <strong style="color:#1A3C2E;">${ttlHours} ore</strong>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td align="center" style="padding:0 32px 20px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="border-radius:12px;background:linear-gradient(135deg,#C9A84C,#a8782e);box-shadow:0 6px 20px rgba(201,168,76,.35);">
+                    <a href="${link}" target="_blank" rel="noopener"
+                       style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:.2px;">
+                      &#8659;&nbsp; Desc&#259;rc&#259; materialul
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Fallback link -->
+          <tr>
+            <td style="padding:0 32px 24px;">
+              <div style="padding:12px 14px;border-radius:10px;background:#FAF7F2;border:1px solid rgba(201,168,76,.2);">
+                <p style="margin:0 0 5px;font-size:11px;color:#8aA090;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Dac&#259; butonul nu func&#539;ioneaz&#259;:</p>
+                <a href="${link}" target="_blank" rel="noopener" style="font-size:12px;color:#C9A84C;word-break:break-all;text-decoration:underline;">${link}</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr><td style="padding:0 32px;"><div style="height:1px;background:rgba(26,60,46,.08);"></div></td></tr>
+
+          <!-- Footer body -->
+          <tr>
+            <td style="padding:20px 32px 28px;">
+              <p style="margin:0 0 8px;font-size:13.5px;color:#5a7264;line-height:1.6;">
+                Po&#539;i accesa oricând materialul &#351;i genera un nou link din
+                <a href="${siteUrl}/dashboard.html" target="_blank" style="color:#C9A84C;font-weight:600;text-decoration:none;">contul t&#259;u</a>.
+              </p>
+              ${support ? `<p style="margin:0 0 16px;font-size:13px;color:#8aA090;">&#206;ntreb&#259;ri? Scrie-mi la <a href="mailto:${support}" style="color:#C9A84C;text-decoration:none;">${support}</a>.</p>` : ''}
+              <p style="margin:0;font-size:14px;color:#1A3C2E;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
+            </td>
+          </tr>
+
+          <!-- Footer bar -->
+          <tr>
+            <td align="center" style="background:#0B1A10;padding:14px 20px;font-size:11.5px;color:rgba(255,255,255,.45);border-top:1px solid rgba(201,168,76,.12);">
+              &#169; ${new Date().getFullYear()} ${escapeHtml(fromName)}&nbsp;&middot;&nbsp;
+              <a href="${siteUrl}" target="_blank" style="color:#C9A84C;text-decoration:none;">Education with Style&#174;</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}) {
+  const fromName = process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu';
+  const siteUrl  = process.env.BRAND_SITE_URL || 'https://www.anca-farkas-rusu.com';
+  const support  = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
   const logoUrl  = process.env.BRAND_LOGO_URL || ''; // pentru varianta cu URL public
   const pre = `${intro} Link valabil ${ttlHours} ore.`;
 
@@ -580,6 +686,78 @@ const cancelURL  =
   } catch (error) {
     console.error('❌ Error creating checkout session:', error)
     return res.status(500).json({ error: 'Unable to create checkout session' })
+  }
+})
+
+
+/* ------------- Endpoint GRATUIT (fără Stripe) ------------- */
+app.post('/claim-free', async (req, res) => {
+  try {
+    const { itemId, userEmail } = req.body
+    if (!itemId)    return res.status(400).json({ error: 'Missing itemId' })
+    if (!userEmail) return res.status(400).json({ error: 'Missing userEmail' })
+
+    // Verifică că produsul există, e activ și chiar e gratuit
+    const { data: prod, error: pErr } = await supa
+      .from('products')
+      .select('name, amount_cents, file_path, file_bucket, active')
+      .eq('id', String(itemId))
+      .eq('active', true)
+      .maybeSingle()
+
+    if (pErr)  return res.status(500).json({ error: 'DB error' })
+    if (!prod) return res.status(404).json({ error: 'Product not found' })
+    if (prod.amount_cents !== 0) return res.status(400).json({ error: 'Product is not free' })
+
+    const filePath = prod.file_path || 'curs-1.pdf'
+    const bucket   = prod.file_bucket || 'product-files'
+    const ttl      = getTtlFromEnv(86400)
+
+    // Salvează achiziția
+    const { error: insErr } = await supa
+      .from('purchases')
+      .insert([{
+        stripe_session_id: `free_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        user_email: userEmail,
+        status: 'free',
+        amount: 0,
+        item_id: String(itemId),
+        file_path: filePath
+      }])
+    if (insErr) console.error('❌ claim-free insert error:', insErr)
+
+    // Generează link semnat
+    const { data: signed, error: sErr } = await supa
+      .storage.from(bucket).createSignedUrl(filePath, ttl)
+    if (sErr) return res.status(500).json({ error: 'Sign error: ' + sErr.message })
+
+    // Trimite email
+    const ttlHours = Math.floor(ttl / 3600)
+    const productName = prod.name || 'materialul tău'
+    try {
+      await resend.emails.send({
+        from: `${process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu'} <${process.env.SEND_FROM_EMAIL || 'orders@anca-farkas-rusu.com'}>`,
+        to: userEmail,
+        subject: `Acces gratuit la ${productName}`,
+        text: emailText({ productName, link: signed.signedUrl, ttlHours, intro: 'Îți trimit linkul de acces la materialul gratuit.' }),
+        html: emailHtml({
+          productName,
+          link: signed.signedUrl,
+          ttlHours,
+          intro: 'Materialul este gratuit — bucură-te de el! Îți trimit linkul de descărcare.',
+          useCidLogo: !!CID_LOGO_ATTACHMENT
+        }),
+        attachments: CID_LOGO_ATTACHMENT
+      })
+      console.log('📧 Email gratuit trimis către', userEmail)
+    } catch (mailErr) {
+      console.error('❌ claim-free email error:', mailErr)
+    }
+
+    return res.json({ ok: true })
+  } catch (e) {
+    console.error('❌ /claim-free error:', e)
+    return res.status(500).json({ error: 'Server error' })
   }
 })
 
