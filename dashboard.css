@@ -288,25 +288,17 @@ body{ background: var(--bg); color: var(--text); font-family: system-ui, -apple-
 /* === NAVBAR PRO (Dashboard) — Inter + Sora, dark glass === */
 /* Fonts încărcate în <head> din dashboard.html */
 
-/* Variabile pentru fundal nav (folosește paleta ta existentă) */
+/* Navbar — verde identic cu restul site-ului */
 .navbar{
-  --nav-bg-1: rgba(12,21,30,.90);
-  --nav-bg-2: rgba(12,21,30,.86);
-}
-
-/* Bara de navigație */
-.navbar{
-  background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%) !important;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 8px 24px var(--shadow);
-  transition: background-color .35s ease, box-shadow .35s ease, padding .35s ease;
+  background: rgba(16,42,28,.96) !important;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 28px rgba(0,0,0,.18);
+  transition: background .3s, box-shadow .3s, padding .3s;
   padding-block: .6rem;
 }
-
-/* (opțional) compact la scroll dacă îi adaugi .scrolled din JS */
 .navbar.scrolled{
-  background: rgba(12,21,30,.96) !important;
-  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  background: rgba(13,34,22,.98) !important;
+  box-shadow: 0 4px 28px rgba(0,0,0,.22);
   padding-block: .5rem;
 }
 
