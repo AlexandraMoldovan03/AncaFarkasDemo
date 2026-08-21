@@ -222,6 +222,17 @@
       <h5><i class="fa-solid fa-pen-to-square me-2" style="color:var(--gold)"></i>Adaugă / editează produs</h5>
     </div>
     <div class="a-card-body">
+      <!-- Banner editare (ascuns implicit) -->
+      <div id="editBanner" class="d-none mb-3 p-3 rounded-3 d-flex align-items-center gap-3"
+           style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3)">
+        <i class="fa-solid fa-pen-to-square" style="color:var(--gold);font-size:1.1rem"></i>
+        <div style="flex:1">
+          <strong style="color:var(--green)">Mod editare:</strong>
+          <span id="editName" style="color:#444;margin-left:6px"></span>
+        </div>
+        <img id="editImgPreview" src="" alt="" style="height:48px;width:48px;object-fit:cover;border-radius:8px;display:none;border:1.5px solid rgba(201,168,76,.4)">
+      </div>
+
       <form id="frm" class="row g-3">
         <input type="hidden" id="id" />
 
@@ -270,15 +281,15 @@
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Fișier produs (PDF sau Video)</label>
+          <label class="form-label" id="fileLabel">Fișier produs (PDF sau Video)</label>
           <input id="file" type="file" class="form-control" accept=".pdf,video/*">
-          <div class="hint mt-1">Se încarcă privat în bucket-ul <code>product-files</code>.</div>
+          <div class="hint mt-1" id="fileHint">Obligatoriu la adăugare.</div>
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Imagine de copertă (JPG/PNG)</label>
           <input id="image" type="file" class="form-control" accept="image/*">
-          <div class="hint mt-1">Public, folosită în listare. Dacă nu alegi, rămâne cea existentă (la editare).</div>
+          <div class="hint mt-1" id="imgHint">Obligatorie la adăugare.</div>
         </div>
 
         <div class="col-12">
@@ -379,18 +390,52 @@ const gate  = document.getElementById('gate')
 const rows  = document.getElementById('rows')
 const q     = document.getElementById('q')
 
-const frm     = document.getElementById('frm')
-const idEl    = document.getElementById('id')
-const nameEl  = document.getElementById('name')
-const typeEl  = document.getElementById('type')
-const priceEl = document.getElementById('price')
-const catEl   = document.getElementById('category')
-const subEl   = document.getElementById('subcategory')
-const descEl  = document.getElementById('description')
-const fileEl  = document.getElementById('file')
-const imgEl   = document.getElementById('image')
-const btnSave = document.getElementById('btnSave')
-const btnReset= document.getElementById('btnReset')
+const frm          = document.getElementById('frm')
+const idEl         = document.getElementById('id')
+const nameEl       = document.getElementById('name')
+const typeEl       = document.getElementById('type')
+const priceEl      = document.getElementById('price')
+const catEl        = document.getElementById('category')
+const subEl        = document.getElementById('subcategory')
+const descEl       = document.getElementById('description')
+const fileEl       = document.getElementById('file')
+const imgEl        = document.getElementById('image')
+const btnSave      = document.getElementById('btnSave')
+const btnReset     = document.getElementById('btnReset')
+const editBanner   = document.getElementById('editBanner')
+const editName     = document.getElementById('editName')
+const editImgPrev  = document.getElementById('editImgPreview')
+const fileHint     = document.getElementById('fileHint')
+const imgHint      = document.getElementById('imgHint')
+
+function setEditMode(prod) {
+  if (!prod) {
+    // Mod adăugare
+    editBanner.classList.add('d-none')
+    editImgPrev.style.display = 'none'
+    editImgPrev.src = ''
+    btnSave.textContent = 'Salvează'
+    fileHint.textContent = 'Obligatoriu la adăugare.'
+    imgHint.textContent  = 'Obligatorie la adăugare.'
+    return
+  }
+  // Mod editare
+  editBanner.classList.remove('d-none')
+  editName.textContent = prod.name
+  if (prod.image_url) {
+    editImgPrev.src = prod.image_url
+    editImgPrev.style.display = 'block'
+  } else {
+    editImgPrev.style.display = 'none'
+  }
+  btnSave.textContent = 'Actualizează'
+  fileHint.innerHTML  = prod.file_path
+    ? '✅ Fișier existent păstrat. Alege unul nou doar dacă vrei să îl înlocuiești.'
+    : 'Niciun fișier înregistrat.'
+  imgHint.innerHTML   = prod.image_url
+    ? '✅ Imagine existentă păstrată. Alege alta doar dacă vrei să o înlocuiești.'
+    : 'Nicio imagine înregistrată.'
+}
 
 let USER = null
 let DATA = []
@@ -473,13 +518,16 @@ rows.addEventListener('click', async (e)=>{
   if (!prod) return
 
   if (act==='edit'){
-    idEl.value = prod.id
-    nameEl.value = prod.name
-    typeEl.value = prod.type
+    idEl.value    = prod.id
+    nameEl.value  = prod.name
+    typeEl.value  = prod.type
     priceEl.value = (prod.amount_cents/100).toFixed(2)
-    catEl.value = prod.category || 'exp'
-    subEl.value = prod.subcategory || ''
-    descEl.value = prod.description || ''
+    catEl.value   = prod.category || 'exp'
+    subEl.value   = prod.subcategory || ''
+    descEl.value  = prod.description || ''
+    fileEl.value  = ''
+    imgEl.value   = ''
+    setEditMode(prod)
     window.scrollTo({ top: 0, behavior:'smooth' })
   }
   if (act==='toggle'){
@@ -502,6 +550,7 @@ rows.addEventListener('click', async (e)=>{
 
 btnReset.addEventListener('click', ()=>{
   frm.reset(); idEl.value=''
+  setEditMode(null)
 })
 
 frm.addEventListener('submit', async (e)=>{
@@ -540,6 +589,7 @@ frm.addEventListener('submit', async (e)=>{
     }
 
     frm.reset(); idEl.value=''
+    setEditMode(null)
     await load()
     alert('Salvat!')
   }catch(err){
