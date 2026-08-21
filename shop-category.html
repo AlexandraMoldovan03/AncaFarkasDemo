@@ -199,18 +199,26 @@
       border: 1.5px solid #d6e2d8;
       outline: none; min-width: 0; flex: 1 1 200px;
       font-family: inherit; font-size: 14px;
-      height: 40px; /* fix: împiedică input-ul să se întindă pe toată înălțimea */
-      resize: none;
+      height: 44px; max-height: 44px;
     }
     .invite-box input:focus {
       border-color: var(--sc-gold);
       box-shadow: 0 0 0 3px rgba(201,168,76,.16);
     }
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .shop-authbar { flex-direction: column; align-items: stretch; }
       #authStatus, .invite-box { width: 100%; }
-      .invite-box { flex-direction: column; align-items: stretch; gap: 8px; }
-      .invite-box input { width: 100%; flex: none; height: 42px; min-height: unset; }
+      .invite-box {
+        display: block;
+      }
+      .invite-box label {
+        display: block; margin-bottom: 8px; font-weight: 500;
+      }
+      .invite-box input {
+        display: block; width: 100%;
+        height: 44px !important; max-height: 44px !important;
+        flex: none;
+      }
     }
 
     /* ══════════════════════════════════════════
