@@ -139,27 +139,56 @@ function emailHtml({
   const logoTag = ''; // logo dezactivat — Gmail blochează imaginile externe
 
   return `<!doctype html>
-<html lang="ro">
+<html lang="ro" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
   <title>${escapeHtml(productName)}</title>
+  <style>
+    :root { color-scheme: light dark; }
+
+    body { margin:0; padding:0; background:#F0EDE8; }
+    .email-wrap { background:#F0EDE8; }
+    .card { background:#ffffff; border:1px solid rgba(201,168,76,.2); }
+    .body-text { color:#4a6358; }
+    .strong-text { color:#1A3C2E; }
+    .footer-text { color:#5a7264; }
+    .muted-text { color:#8aA090; }
+    .sign-text { color:#1A3C2E; }
+    .fallback-box { background:#FAF7F2; border:1px solid rgba(201,168,76,.2); }
+    .fallback-label { color:#8aA090; }
+    .divider { background:rgba(26,60,46,.08); }
+
+    @media (prefers-color-scheme: dark) {
+      body, .email-wrap { background:#0f1a14 !important; }
+      .card { background:#1a2e22 !important; border-color:rgba(201,168,76,.25) !important; }
+      .body-text { color:#a8c4b0 !important; }
+      .strong-text { color:#EDD998 !important; }
+      .footer-text { color:#8aaa96 !important; }
+      .muted-text { color:#6a9278 !important; }
+      .sign-text { color:#c8e0d0 !important; }
+      .fallback-box { background:#0f2018 !important; border-color:rgba(201,168,76,.3) !important; }
+      .fallback-label { color:#6a9278 !important; }
+      .divider { background:rgba(201,168,76,.12) !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#F0EDE8;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
+<body class="email-wrap" style="margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
   <span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;max-height:0;overflow:hidden;mso-hide:all;">${escapeHtml(pre)}</span>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F0EDE8;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="email-wrap">
     <tr>
       <td align="center" style="padding:32px 12px 40px;">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-               style="max-width:600px;background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,168,76,.2);box-shadow:0 8px 40px rgba(26,60,46,.1);">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="card"
+               style="max-width:600px;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.15);">
 
-          <!-- Header verde -->
+          <!-- Header verde — identic în light și dark -->
           <tr>
             <td style="background:linear-gradient(135deg,#0B1A10 0%,#1A3C2E 60%,#2D5A3D 100%);padding:28px 32px 22px;">
-              ${logoTag ? `<div style="margin-bottom:14px;">${logoTag}</div>` : ''}
               <div style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;">&#8212;&nbsp;Education with Style&#174;&nbsp;&#8212;</div>
               <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.25;margin-bottom:8px;">${escapeHtml(productName)}</div>
-              <div style="font-size:14px;color:rgba(255,255,255,.72);line-height:1.55;">${escapeHtml(intro)}</div>
+              <div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.55;">${escapeHtml(intro)}</div>
             </td>
           </tr>
 
@@ -169,9 +198,9 @@ function emailHtml({
           <!-- Body -->
           <tr>
             <td style="padding:28px 32px 16px;">
-              <p style="margin:0 0 20px;font-size:15px;color:#4a6358;line-height:1.65;">
+              <p class="body-text" style="margin:0 0 20px;font-size:15px;line-height:1.65;">
                 Apas&#259; pe butonul de mai jos pentru a desc&#259;rca materialul.
-                Linkul r&#259;m&#226;ne activ <strong style="color:#1A3C2E;">${ttlHours} ore</strong>.
+                Linkul r&#259;m&#226;ne activ <strong class="strong-text">${ttlHours} ore</strong>.
               </p>
             </td>
           </tr>
@@ -181,7 +210,7 @@ function emailHtml({
             <td align="center" style="padding:0 32px 20px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="border-radius:12px;background:linear-gradient(135deg,#C9A84C,#a8782e);box-shadow:0 6px 20px rgba(201,168,76,.35);">
+                  <td style="border-radius:12px;background:linear-gradient(135deg,#C9A84C,#a8782e);box-shadow:0 6px 20px rgba(201,168,76,.4);">
                     <a href="${link}" target="_blank" rel="noopener"
                        style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:.2px;">
                       &#8659;&nbsp; Desc&#259;rc&#259; materialul
@@ -195,25 +224,25 @@ function emailHtml({
           <!-- Fallback link -->
           <tr>
             <td style="padding:0 32px 24px;">
-              <div style="padding:12px 14px;border-radius:10px;background:#FAF7F2;border:1px solid rgba(201,168,76,.2);">
-                <p style="margin:0 0 5px;font-size:11px;color:#8aA090;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Dac&#259; butonul nu func&#539;ioneaz&#259;:</p>
+              <div class="fallback-box" style="padding:12px 14px;border-radius:10px;">
+                <p class="fallback-label" style="margin:0 0 5px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Dac&#259; butonul nu func&#539;ioneaz&#259;:</p>
                 <a href="${link}" target="_blank" rel="noopener" style="font-size:12px;color:#C9A84C;word-break:break-all;text-decoration:underline;">${link}</a>
               </div>
             </td>
           </tr>
 
           <!-- Divider -->
-          <tr><td style="padding:0 32px;"><div style="height:1px;background:rgba(26,60,46,.08);"></div></td></tr>
+          <tr><td style="padding:0 32px;"><div class="divider" style="height:1px;"></div></td></tr>
 
           <!-- Footer body -->
           <tr>
             <td style="padding:20px 32px 28px;">
-              <p style="margin:0 0 8px;font-size:13.5px;color:#5a7264;line-height:1.6;">
+              <p class="footer-text" style="margin:0 0 8px;font-size:13.5px;line-height:1.6;">
                 Po&#539;i accesa oricând materialul &#351;i genera un nou link din
                 <a href="${siteUrl}/dashboard.html" target="_blank" style="color:#C9A84C;font-weight:600;text-decoration:none;">contul t&#259;u</a>.
               </p>
-              ${support ? `<p style="margin:0 0 16px;font-size:13px;color:#8aA090;">&#206;ntreb&#259;ri? Scrie-mi la <a href="mailto:${support}" style="color:#C9A84C;text-decoration:none;">${support}</a>.</p>` : ''}
-              <p style="margin:0;font-size:14px;color:#1A3C2E;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
+              ${support ? `<p class="muted-text" style="margin:0 0 16px;font-size:13px;">&#206;ntreb&#259;ri? Scrie-mi la <a href="mailto:${support}" style="color:#C9A84C;text-decoration:none;">${support}</a>.</p>` : ''}
+              <p class="sign-text" style="margin:0;font-size:14px;">Cu drag,<br><strong>${escapeHtml(fromName)}</strong></p>
             </td>
           </tr>
 
