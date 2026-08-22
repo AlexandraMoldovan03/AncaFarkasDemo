@@ -612,8 +612,15 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ itemId, userEmail: email })
           });
-          const js = await resp.json().catch(()=>({}));
-          if (!resp.ok || !js?.ok) { alert(js?.error || 'Eroare la revendicare'); return; }
+          const rawText = await resp.text();
+          console.log('[claim-free] status:', resp.status, 'body:', rawText);
+          let js = {};
+          try { js = JSON.parse(rawText); } catch(_){}
+          if (!resp.ok || !js?.ok) {
+            const msg = js?.error || js?.message || rawText || `Eroare server (${resp.status})`;
+            alert(`Eroare la revendicare:\n${msg}\n\n(Status: ${resp.status})\n\nDacă serverul tocmai a pornit, mai încearcă în 30s.`);
+            return;
+          }
           location.href = '/success.html';
         } else {
           const resp = await fetch(`${API_BASE}/create-checkout-session`,{
