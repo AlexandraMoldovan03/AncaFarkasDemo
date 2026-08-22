@@ -607,21 +607,46 @@
         btn.disabled = true;
         btn.textContent = 'Se procesează...';
         if (isFree) {
-          const resp = await fetch(`${API_BASE}/claim-free`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemId, userEmail: email })
-          });
-          const rawText = await resp.text();
-          console.log('[claim-free] status:', resp.status, 'body:', rawText);
-          let js = {};
-          try { js = JSON.parse(rawText); } catch(_){}
-          if (!resp.ok || !js?.ok) {
-            const msg = js?.error || js?.message || rawText || `Eroare server (${resp.status})`;
-            alert(`Eroare la revendicare:\n${msg}\n\n(Status: ${resp.status})\n\nDacă serverul tocmai a pornit, mai încearcă în 30s.`);
+          // Înregistrăm direct în Supabase (bypass backend — ruta /claim-free nu există)
+          const { data: prod, error: prodErr } = await supabase
+            .from('products')
+            .select('id, name, file_path')
+            .eq('id', itemId)
+            .single();
+
+          if (prodErr || !prod) {
+            alert('Produsul nu a fost găsit.');
             return;
           }
-          location.href = '/success.html';
+          if (!prod.file_path) {
+            alert('Produsul nu are un fișier atașat. Contactați administratorul.');
+            return;
+          }
+
+          // Inserăm înregistrarea achiziției
+          const { error: insErr } = await supabase
+            .from('purchases')
+            .insert({ item_id: itemId, user_email: email, status: 'free', amount: 0 });
+
+          if (insErr) {
+            console.warn('Purchases insert:', insErr.message);
+            // Continuăm oricum — poate RLS blochează pentru guest
+          }
+
+          // Generăm URL semnat (24h) pentru descărcare directă
+          const { data: signedData, error: signErr } = await supabase.storage
+            .from('product-files')
+            .createSignedUrl(prod.file_path, 86400);
+
+          if (signErr || !signedData?.signedUrl) {
+            // Fallback — trimitem la success fără link direct
+            location.href = '/success.html?free=1&name=' + encodeURIComponent(prod.name);
+            return;
+          }
+
+          // Succes — redirectăm cu link direct de descărcare
+          location.href = '/success.html?free=1&name=' + encodeURIComponent(prod.name)
+            + '&url=' + encodeURIComponent(signedData.signedUrl);
         } else {
           const resp = await fetch(`${API_BASE}/create-checkout-session`,{
             method:'POST',

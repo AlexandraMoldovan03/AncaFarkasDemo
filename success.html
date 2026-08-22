@@ -251,16 +251,26 @@
         </div>
         <div>
           <div class="s-eyebrow">Education with Style®</div>
-          <h1>Plată reușită!</h1>
-          <p class="lead mb-0">Mulțumim pentru achiziție. Materialul tău este disponibil acum.</p>
+          <h1 id="successTitle">Plată reușită!</h1>
+          <p class="lead mb-0" id="successLead">Mulțumim pentru achiziție. Materialul tău este disponibil acum.</p>
         </div>
       </div>
 
       <div class="s-body">
-        <p>
+        <p id="successMsg">
           • Dacă ești autentificat(ă), îl găsești în <strong>„Cursurile mele"</strong> din contul tău.<br>
           • Dacă ai cumpărat ca invitat(ă), ți-am trimis pe email link-ul de descărcare.
         </p>
+        <!-- Buton descărcare directă (doar pentru produse gratuite) -->
+        <div id="freeDownloadWrap" style="display:none;margin:16px 0">
+          <a id="freeDownloadBtn" href="#" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;
+                    background:linear-gradient(135deg,#C9A84C,#a8782e);color:#fff;
+                    border-radius:12px;font-weight:600;text-decoration:none;font-size:15px">
+            <i class="fa-solid fa-download"></i> Descarcă materialul
+          </a>
+          <p style="font-size:13px;color:#888;margin-top:8px">Link valid 24 de ore.</p>
+        </div>
         <div class="info-strip">
           <div id="orderRef" class="small"></div>
           <div class="redirect-note">
@@ -295,6 +305,23 @@
     const params = new URLSearchParams(location.search);
     const ref = params.get('ref');
     if (ref) document.getElementById('orderRef').textContent = `Referință comandă: ${ref}`;
+
+    // Produs gratuit — personalizăm pagina și afișăm link direct
+    const isFree = params.get('free') === '1';
+    if (isFree) {
+      const name = params.get('name') || 'material';
+      const url  = params.get('url');
+      document.getElementById('successTitle').textContent = 'Material obținut cu succes!';
+      document.getElementById('successLead').textContent  = `„${name}" este al tău — descarcă-l mai jos.`;
+      document.getElementById('successMsg').innerHTML =
+        '• Dacă ești autentificat(ă), îl găsești și în <strong>„Cursurile mele"</strong>.<br>' +
+        '• Link-ul de descărcare este valabil 24 de ore.';
+      if (url) {
+        const wrap = document.getElementById('freeDownloadWrap');
+        document.getElementById('freeDownloadBtn').href = url;
+        wrap.style.display = 'block';
+      }
+    }
 
     const target = params.get('redirect') || '/dashboard.html';
     const countEl = document.getElementById('count');
