@@ -235,11 +235,19 @@ function emailHtml({
   </table>
 </body>
 </html>`;
+}
+
+function emailHtmlDark({
+  productName = 'materialul tău',
+  intro = 'Mulțumesc pentru achiziție! Îți trimit linkul de descărcare.',
+  link,
+  ttlHours = 24,
+  useCidLogo = false
 }) {
   const fromName = process.env.SEND_FROM_NAME || 'Anca Farkas-Rusu';
   const siteUrl  = process.env.BRAND_SITE_URL || 'https://www.anca-farkas-rusu.com';
   const support  = process.env.BRAND_SUPPORT_EMAIL || 'contact@anca-farkas-rusu.com';
-  const logoUrl  = process.env.BRAND_LOGO_URL || ''; // pentru varianta cu URL public
+  const logoUrl  = process.env.BRAND_LOGO_URL || '';
   const pre = `${intro} Link valabil ${ttlHours} ore.`;
 
   // alege sursa logo-ului
