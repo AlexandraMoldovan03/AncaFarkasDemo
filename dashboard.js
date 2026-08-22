@@ -19,7 +19,7 @@ const API_BASE = 'https://stripe-backend-q89t.onrender.com'
 // ---------- utilitare ----------
 const fmtRON  = v => (v / 100).toFixed(2) + ' RON'
 const fmtDate = iso => new Date(iso).toLocaleString('ro-RO')
-const isPaid  = s => ['paid','succeeded'].includes(String(s).toLowerCase())
+const isPaid  = s => ['paid','succeeded','free','completed'].includes(String(s).toLowerCase())
 const esc = (s='') => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
 const short = (s='', n=220) => s.length>n ? s.slice(0,n-1)+'…' : s
 const extFromPath = (p='') => (p.split('?')[0].split('#')[0].match(/\.([a-z0-9]+)$/i)||[])[1]?.toLowerCase() || ''
