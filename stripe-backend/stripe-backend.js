@@ -136,11 +136,7 @@ function emailHtml({
   const logoUrl  = process.env.BRAND_LOGO_URL || '';
   const pre = `${intro} Link valabil ${ttlHours} ore.`;
 
-  // Logo: CID (dacă serverul are fișierul) → URL env → URL public site
-  const publicLogoUrl = logoUrl || `${siteUrl}/logo1.jpg`;
-  const logoTag = useCidLogo
-    ? `<img src="cid:brand-logo" alt="${escapeHtml(fromName)}" width="48" height="48" style="display:block;border:0;border-radius:10px;">`
-    : `<img src="${publicLogoUrl}" alt="${escapeHtml(fromName)}" width="48" height="48" style="display:block;border:0;border-radius:10px;">`;
+  const logoTag = ''; // logo dezactivat — Gmail blochează imaginile externe
 
   return `<!doctype html>
 <html lang="ro">
