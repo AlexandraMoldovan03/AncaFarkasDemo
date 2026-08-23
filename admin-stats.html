@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <title>Statistici — Education with Style</title>
+  <link rel="icon" type="image/jpeg" href="/logo1.jpg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="/page-transition.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+      --green:  #1A3C2E;
+      --green2: #0B1A10;
+      --gold:   #C9A84C;
+      --cream:  #FAF7F2;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: #1a2a1f;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAVBAR ── */
+    .a-navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1030;
+      background: rgba(16,42,28,.97);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(201,168,76,.18);
+      padding: .65rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .a-brand {
+      display: flex; align-items: center; gap: .7rem;
+      color: #fff; text-decoration: none; font-weight: 600;
+      font-size: clamp(13px, 1.8vw, 15px);
+    }
+    .a-brand img { height: 34px; width: 34px; border-radius: 9px; border: 1.5px solid rgba(201,168,76,.4); object-fit: cover; }
+    .a-brand b { color: var(--gold); }
+    .a-badge {
+      background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.3);
+      color: var(--gold); font-size: 11px; font-weight: 600;
+      padding: 2px 10px; border-radius: 20px; letter-spacing: .5px; text-transform: uppercase;
+    }
+    .a-who { color: rgba(255,255,255,.55); font-size: 13px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .a-nav-links { display: flex; align-items: center; gap: .3rem; }
+    .a-link {
+      color: rgba(255,255,255,.65); font-size: 13px; text-decoration: none;
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 8px; transition: background .2s, color .2s; white-space: nowrap;
+    }
+    .a-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .a-link.active { color: var(--gold); background: rgba(201,168,76,.1); }
+    @media (max-width: 576px) {
+      .a-navbar { padding: .55rem 1rem; gap: .5rem; }
+      .a-brand span:not(.a-badge) { display: none; }
+      .a-who { display: none; }
+      .a-link span { display: none; }
+      .a-link { padding: 5px 8px; }
+    }
+
+    /* ── LAYOUT ── */
+    .with-navbar { padding-top: 72px; }
+    .a-page { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      color: var(--green); margin: 0 0 4px;
+    }
+    .page-header p { color: #6a8070; margin: 0; font-size: .9rem; }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid rgba(26,60,46,.1);
+      padding: 20px 20px 18px;
+      box-shadow: 0 2px 12px rgba(26,60,46,.06);
+      transition: transform .2s, box-shadow .2s;
+      position: relative; overflow: hidden;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,60,46,.1); }
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), #EDD998);
+    }
+    .stat-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 14px;
+    }
+    .stat-icon.green  { background: rgba(26,60,46,.1);  color: var(--green); }
+    .stat-icon.gold   { background: rgba(201,168,76,.12); color: #a8782e; }
+    .stat-icon.blue   { background: rgba(59,130,246,.1);  color: #3b82f6; }
+    .stat-icon.purple { background: rgba(139,92,246,.1);  color: #8b5cf6; }
+    .stat-val {
+      font-size: 1.75rem; font-weight: 700; color: var(--green); line-height: 1;
+      margin-bottom: 4px; font-variant-numeric: tabular-nums;
+    }
+    .stat-label { font-size: .8rem; color: #7a8a7e; font-weight: 500; }
+    .stat-sub { font-size: .75rem; color: #9aaa94; margin-top: 2px; }
+
+    /* ── SECTION CARDS ── */
+    .s-card {
+      background: #fff;
+      border: 1px solid rgba(26,60,46,.1);
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(26,60,46,.06);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .s-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(26,60,46,.08);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .s-head h5 {
+      margin: 0; font-family: 'Playfair Display', serif;
+      color: var(--green); font-size: 1.05rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .s-head h5 i { font-size: .9rem; color: var(--gold); }
+    .s-body { padding: 20px 22px; }
+
+    /* ── TABLE ── */
+    .s-table { font-size: .855rem; width: 100%; border-collapse: collapse; }
+    .s-table thead th {
+      font-weight: 700; font-size: .75rem; text-transform: uppercase;
+      letter-spacing: .5px; color: #8090a0;
+      padding: 10px 12px; background: rgba(26,60,46,.03);
+      border-bottom: 1px solid rgba(26,60,46,.08);
+      white-space: nowrap;
+    }
+    .s-table tbody td { padding: 11px 12px; vertical-align: middle; border-bottom: 1px solid rgba(26,60,46,.05); }
+    .s-table tbody tr:last-child td { border-bottom: none; }
+    .s-table tbody tr:hover td { background: rgba(201,168,76,.04); }
+    .email-cell { font-size: .82rem; color: #445; word-break: break-all; }
+    .product-cell { font-weight: 600; color: var(--green); }
+    .date-cell { color: #8090a0; font-size: .8rem; white-space: nowrap; }
+    .amount-cell { font-weight: 600; color: var(--green); white-space: nowrap; }
+
+    /* ── STATUS BADGE ── */
+    .s-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: .73rem; font-weight: 700; letter-spacing: .3px;
+    }
+    .s-badge.paid    { background: rgba(26,160,70,.1);  color: #166534; }
+    .s-badge.free    { background: rgba(59,130,246,.1); color: #1d4ed8; }
+    .s-badge.pending { background: rgba(201,168,76,.12); color: #92610a; }
+    .s-badge.failed  { background: rgba(220,53,69,.1);  color: #9b1c1c; }
+
+    /* ── RANK BAR ── */
+    .rank-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .rank-row:last-child { margin-bottom: 0; }
+    .rank-name { font-size: .875rem; font-weight: 600; color: var(--green); min-width: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-bar-wrap { flex: 2; background: rgba(26,60,46,.07); border-radius: 20px; height: 8px; overflow: hidden; }
+    .rank-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--gold), #EDD998); transition: width .6s ease; }
+    .rank-count { font-size: .8rem; color: #7a8a7e; min-width: 36px; text-align: right; font-weight: 600; }
+
+    /* ── CHART ── */
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── SEARCH ── */
+    .st-search {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .st-search input, .st-search select {
+      border: 1.5px solid rgba(26,60,46,.18); border-radius: 10px;
+      font-size: .85rem; padding: 7px 12px; background: #fff;
+      color: #1a2a1f; outline: none;
+      transition: border-color .2s;
+    }
+    .st-search input:focus, .st-search select:focus { border-color: var(--gold); }
+    .st-search input { flex: 1; min-width: 160px; }
+
+    /* ── EMPTY / LOADING ── */
+    .s-empty { text-align: center; padding: 36px 20px; color: #9aaa94; font-size: .9rem; }
+    .s-empty i { font-size: 2rem; margin-bottom: 10px; display: block; opacity: .5; }
+    .skeleton { background: linear-gradient(90deg, rgba(26,60,46,.06) 25%, rgba(26,60,46,.12) 50%, rgba(26,60,46,.06) 75%); background-size: 400% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+    .sk-line { height: 14px; margin-bottom: 10px; }
+    .sk-line.w60 { width: 60%; }
+    .sk-line.w80 { width: 80%; }
+    .sk-line.w40 { width: 40%; }
+
+    /* ── TWO COL ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── RESPONSIVE TABLE ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    @media (max-width: 600px) {
+      .hide-mobile { display: none !important; }
+      .s-body { padding: 14px 14px; }
+      .s-head { padding: 14px 16px; }
+    }
+
+    /* ── GATE ── */
+    #gate { border-radius: 14px; border: none; background: #fff0f0; color: #8b0000; border-left: 4px solid #dc3545; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<nav class="a-navbar" aria-label="Admin navigație">
+  <a class="a-brand" href="/admin.html">
+    <img src="/logo1.jpg" alt="logo">
+    <span>Prof &amp; Coach <b>ANCA</b></span>
+    <span class="a-badge">Admin</span>
+  </a>
+  <div class="d-flex align-items: center; gap: .25rem;">
+    <div class="a-nav-links">
+      <a class="a-link" href="/admin.html"><i class="fa-solid fa-box-open"></i><span>Produse</span></a>
+      <a class="a-link active" href="/admin-stats.html"><i class="fa-solid fa-chart-line"></i><span>Statistici</span></a>
+      <a class="a-link" href="/index.html"><i class="fa-solid fa-house"></i><span>Site</span></a>
+    </div>
+    <span class="a-who ms-2" id="who"></span>
+  </div>
+</nav>
+
+<div class="with-navbar">
+<main class="a-page">
+
+  <div id="gate" class="alert alert-danger d-none mt-2">
+    Acces restricționat. Trebuie să fii administrator.
+  </div>
+
+  <div id="statsContent">
+    <div class="page-header">
+      <h1><i class="fa-solid fa-chart-line" style="color:var(--gold);font-size:1.3rem;margin-right:8px;"></i>Statistici vânzări</h1>
+      <p id="lastUpdated">Se încarcă datele…</p>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="stat-val" id="sTotalPurchases">—</div>
+        <div class="stat-label">Comenzi totale</div>
+        <div class="stat-sub" id="sPaidCount">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-coins"></i></div>
+        <div class="stat-val" id="sTotalRevenue">—</div>
+        <div class="stat-label">Venituri totale</div>
+        <div class="stat-sub">doar plăți finalizate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-val" id="sUniqueCustomers">—</div>
+        <div class="stat-label">Cursanți unici</div>
+        <div class="stat-sub" id="sFreeCount">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-box-open"></i></div>
+        <div class="stat-val" id="sTotalProducts">—</div>
+        <div class="stat-label">Materiale active</div>
+        <div class="stat-sub" id="sFreeProducts">—</div>
+      </div>
+    </div>
+
+    <!-- TOP PRODUSE + GRAFIC LUNI -->
+    <div class="two-col">
+      <div class="s-card">
+        <div class="s-head">
+          <h5><i class="fa-solid fa-trophy"></i> Top materiale</h5>
+        </div>
+        <div class="s-body">
+          <div id="topProducts">
+            <div class="sk-line skeleton w80"></div>
+            <div class="sk-line skeleton w60"></div>
+            <div class="sk-line skeleton w40"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-head">
+          <h5><i class="fa-solid fa-chart-bar"></i> Comenzi pe luni</h5>
+        </div>
+        <div class="s-body">
+          <div class="chart-wrap">
+            <canvas id="monthChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABEL COMENZI -->
+    <div class="s-card">
+      <div class="s-head">
+        <h5><i class="fa-solid fa-list"></i> Toate comenzile</h5>
+        <span id="purchaseCount" class="badge" style="background:rgba(26,60,46,.1);color:var(--green);font-size:.8rem;font-weight:600;"></span>
+      </div>
+      <div class="s-body">
+        <div class="st-search">
+          <input type="text" id="searchInput" placeholder="Caută după email sau produs…" />
+          <select id="filterStatus">
+            <option value="">Toate statusurile</option>
+            <option value="paid">Plătit</option>
+            <option value="free">Gratuit</option>
+            <option value="succeeded">Succeeded</option>
+            <option value="pending">În așteptare</option>
+          </select>
+          <select id="filterProduct">
+            <option value="">Toate materialele</option>
+          </select>
+        </div>
+        <div class="table-scroll">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>Email cursant</th>
+                <th>Material</th>
+                <th class="hide-mobile">Status</th>
+                <th class="hide-mobile">Sumă</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="purchasesBody">
+              <tr><td colspan="5"><div class="s-empty"><i class="fa-solid fa-spinner fa-spin"></i>Se încarcă…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="noResults" class="s-empty d-none">
+          <i class="fa-solid fa-search"></i>
+          Niciun rezultat pentru filtrele selectate.
+        </div>
+      </div>
+    </div>
+
+    <!-- CURSANȚI UNICI -->
+    <div class="s-card">
+      <div class="s-head">
+        <h5><i class="fa-solid fa-graduation-cap"></i> Cursanți</h5>
+        <span id="studentCount" class="badge" style="background:rgba(26,60,46,.1);color:var(--green);font-size:.8rem;font-weight:600;"></span>
+      </div>
+      <div class="s-body">
+        <div class="table-scroll">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Nr. achiziții</th>
+                <th class="hide-mobile">Total cheltuit</th>
+                <th class="hide-mobile">Prima achiziție</th>
+                <th>Ultima achiziție</th>
+              </tr>
+            </thead>
+            <tbody id="studentsBody">
+              <tr><td colspan="5"><div class="s-empty"><i class="fa-solid fa-spinner fa-spin"></i>Se încarcă…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /statsContent -->
+</main>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const supabase = createClient(
+  'https://gxavdytkcukxnvonasur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXZkeXRrY3VreG52b25hc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4NzUzOTgsImV4cCI6MjA2OTQ1MTM5OH0.n2vXj6iziz3896EpzhjOotTuveqd7GjIhgAuExCOLW8',
+  { auth: { persistSession: true, autoRefreshToken: true } }
+)
+
+// ── helpers ──
+const esc = s => String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
+const fmtRON = v => (v/100).toLocaleString('ro-RO', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' RON'
+const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('ro-RO', {day:'2-digit',month:'short',year:'numeric'}) : '—'
+const isPaid = s => ['paid','succeeded','completed'].includes(String(s||'').toLowerCase())
+const isFree = s => String(s||'').toLowerCase() === 'free'
+const badgeClass = s => { const v=String(s||'').toLowerCase(); if(isPaid(v)) return 'paid'; if(isFree(v)) return 'free'; if(v==='pending') return 'pending'; return 'failed'; }
+
+;(async () => {
+  // ── auth check ──
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) { location.href = '/auth.html'; return }
+
+  const { data: adminRows } = await supabase.from('admins').select('user_id').eq('user_id', user.id).limit(1)
+  if (!adminRows?.length) {
+    document.getElementById('gate').classList.remove('d-none')
+    document.getElementById('statsContent').style.opacity = '.2'
+    document.getElementById('statsContent').style.pointerEvents = 'none'
+    document.getElementById('who').textContent = user.email
+    return
+  }
+  document.getElementById('who').textContent = user.email
+
+  // ── fetch data ──
+  const [{ data: purchases }, { data: products }] = await Promise.all([
+    supabase.from('purchases').select('item_id, status, amount, user_email, created_at').order('created_at', { ascending: false }),
+    supabase.from('products').select('id, name, price, active')
+  ])
+
+  const prods = purchases || []
+  const allProducts = products || []
+
+  // ── products map ──
+  const prodMap = {}
+  allProducts.forEach(p => { prodMap[String(p.id)] = p })
+
+  // ── stat cards ──
+  const totalPurchases = prods.length
+  const paidPurchases = prods.filter(p => isPaid(p.status))
+  const freePurchases = prods.filter(p => isFree(p.status))
+  const totalRevenue = paidPurchases.reduce((s, p) => s + (p.amount||0), 0)
+  const uniqueEmails = [...new Set(prods.map(p => p.user_email).filter(Boolean))]
+  const activeProds = allProducts.filter(p => p.active !== false)
+  const freeProds = allProducts.filter(p => (p.price||0) === 0)
+
+  document.getElementById('sTotalPurchases').textContent = totalPurchases
+  document.getElementById('sPaidCount').textContent = `${paidPurchases.length} plătite • ${freePurchases.length} gratuite`
+  document.getElementById('sTotalRevenue').textContent = fmtRON(totalRevenue)
+  document.getElementById('sUniqueCustomers').textContent = uniqueEmails.length
+  document.getElementById('sFreeCount').textContent = `${freePurchases.length} revendicări gratuite`
+  document.getElementById('sTotalProducts').textContent = activeProds.length
+  document.getElementById('sFreeProducts').textContent = freeProds.length ? `${freeProds.length} materiale gratuite` : 'niciun material gratuit'
+
+  const now = new Date()
+  document.getElementById('lastUpdated').textContent =
+    `Actualizat la ${now.toLocaleTimeString('ro-RO', {hour:'2-digit',minute:'2-digit'})} — ${now.toLocaleDateString('ro-RO',{day:'numeric',month:'long',year:'numeric'})}`
+
+  // ── top products ──
+  const countByProd = {}
+  prods.forEach(p => {
+    const k = String(p.item_id)
+    countByProd[k] = (countByProd[k]||0) + 1
+  })
+  const sorted = Object.entries(countByProd).sort((a,b)=>b[1]-a[1])
+  const maxCount = sorted[0]?.[1] || 1
+
+  const topEl = document.getElementById('topProducts')
+  if (!sorted.length) {
+    topEl.innerHTML = '<div class="s-empty"><i class="fa-solid fa-box-open"></i>Nicio vânzare încă.</div>'
+  } else {
+    topEl.innerHTML = sorted.slice(0,8).map(([id,cnt]) => {
+      const name = prodMap[id]?.name || `Produs #${id}`
+      const pct = Math.round((cnt/maxCount)*100)
+      return `
+        <div class="rank-row">
+          <span class="rank-name" title="${esc(name)}">${esc(name)}</span>
+          <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
+          <span class="rank-count">${cnt}</span>
+        </div>`
+    }).join('')
+  }
+
+  // ── monthly chart ──
+  const monthMap = {}
+  prods.forEach(p => {
+    if (!p.created_at) return
+    const d = new Date(p.created_at)
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`
+    monthMap[key] = (monthMap[key]||0) + 1
+  })
+  const last8 = []
+  for (let i=7; i>=0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth()-i)
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`
+    last8.push({ key, label: d.toLocaleDateString('ro-RO',{month:'short',year:'2-digit'}), val: monthMap[key]||0 })
+  }
+
+  const ctx = document.getElementById('monthChart').getContext('2d')
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: last8.map(x=>x.label),
+      datasets: [{
+        label: 'Comenzi',
+        data: last8.map(x=>x.val),
+        backgroundColor: 'rgba(201,168,76,.25)',
+        borderColor: '#C9A84C',
+        borderWidth: 2,
+        borderRadius: 7,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#7a8a7e' } },
+        y: { grid: { color: 'rgba(26,60,46,.07)' }, ticks: { font: { size: 11 }, color: '#7a8a7e', stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  })
+
+  // ── populate product filter ──
+  const filterProd = document.getElementById('filterProduct')
+  sorted.forEach(([id]) => {
+    const name = prodMap[id]?.name || `Produs #${id}`
+    const opt = document.createElement('option')
+    opt.value = id; opt.textContent = name
+    filterProd.appendChild(opt)
+  })
+
+  // ── render purchases table ──
+  function renderPurchases(rows) {
+    const tbody = document.getElementById('purchasesBody')
+    const noRes = document.getElementById('noResults')
+    document.getElementById('purchaseCount').textContent = `${rows.length} comenzi`
+    if (!rows.length) {
+      tbody.innerHTML = ''
+      noRes.classList.remove('d-none')
+      return
+    }
+    noRes.classList.add('d-none')
+    tbody.innerHTML = rows.map(p => {
+      const name = esc(prodMap[String(p.item_id)]?.name || `Produs #${p.item_id}`)
+      const bc = badgeClass(p.status)
+      const amount = isPaid(p.status) ? fmtRON(p.amount||0) : (isFree(p.status) ? '0 RON' : '—')
+      return `<tr>
+        <td class="email-cell">${esc(p.user_email||'—')}</td>
+        <td class="product-cell">${name}</td>
+        <td class="hide-mobile"><span class="s-badge ${bc}">${esc(p.status||'—')}</span></td>
+        <td class="hide-mobile amount-cell">${amount}</td>
+        <td class="date-cell">${fmtDate(p.created_at)}</td>
+      </tr>`
+    }).join('')
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim()
+    const st = document.getElementById('filterStatus').value.toLowerCase()
+    const pr = document.getElementById('filterProduct').value
+
+    let rows = prods
+    if (q) rows = rows.filter(p =>
+      (p.user_email||'').toLowerCase().includes(q) ||
+      (prodMap[String(p.item_id)]?.name||'').toLowerCase().includes(q)
+    )
+    if (st) rows = rows.filter(p => (p.status||'').toLowerCase() === st)
+    if (pr) rows = rows.filter(p => String(p.item_id) === pr)
+    renderPurchases(rows)
+  }
+
+  document.getElementById('searchInput').addEventListener('input', applyFilters)
+  document.getElementById('filterStatus').addEventListener('change', applyFilters)
+  document.getElementById('filterProduct').addEventListener('change', applyFilters)
+  renderPurchases(prods)
+
+  // ── students table ──
+  const studentMap = {}
+  prods.forEach(p => {
+    const e = p.user_email||'—'
+    if (!studentMap[e]) studentMap[e] = { count:0, revenue:0, first: p.created_at, last: p.created_at }
+    studentMap[e].count++
+    if (isPaid(p.status)) studentMap[e].revenue += (p.amount||0)
+    if (p.created_at < studentMap[e].first) studentMap[e].first = p.created_at
+    if (p.created_at > studentMap[e].last)  studentMap[e].last  = p.created_at
+  })
+
+  const studentsSorted = Object.entries(studentMap).sort((a,b)=>b[1].count-a[1].count)
+  document.getElementById('studentCount').textContent = `${studentsSorted.length} cursanți`
+
+  const sbody = document.getElementById('studentsBody')
+  if (!studentsSorted.length) {
+    sbody.innerHTML = `<tr><td colspan="5"><div class="s-empty"><i class="fa-solid fa-graduation-cap"></i>Niciun cursant încă.</div></td></tr>`
+  } else {
+    sbody.innerHTML = studentsSorted.map(([email, info]) => `
+      <tr>
+        <td class="email-cell">${esc(email)}</td>
+        <td><strong>${info.count}</strong></td>
+        <td class="hide-mobile amount-cell">${info.revenue ? fmtRON(info.revenue) : '—'}</td>
+        <td class="hide-mobile date-cell">${fmtDate(info.first)}</td>
+        <td class="date-cell">${fmtDate(info.last)}</td>
+      </tr>`).join('')
+  }
+
+})()
+</script>
+</body>
+</html>
