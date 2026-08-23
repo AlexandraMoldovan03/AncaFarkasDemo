@@ -22,7 +22,8 @@ export default defineConfig({
         'shop-category': resolve(__dirname, 'shop-category.html'),
         termeni:  resolve(__dirname, 'termeni.html'),
         'update-password': resolve(__dirname, 'update-password.html'),
-        admin:    resolve(__dirname, 'admin.html'),
+        admin:       resolve(__dirname, 'admin.html'),
+        'admin-stats': resolve(__dirname, 'admin-stats.html'),
       }
     }
   },
